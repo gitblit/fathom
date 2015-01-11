@@ -1,0 +1,24 @@
+# Script to load a Redis database with realm information
+
+flushdb
+
+set fathom:phineas:password iKnowWhatWereGonnaDoToday
+set fathom:phineas:name "Phineas Flynn"
+rpush fathom:phineas:email phineas.flynn@disney.com
+rpush fathom:phineas:roles inventor
+rpush fathom:phineas:permissions secure:view
+
+set fathom:ferb:password ferb
+set fathom:ferb:name "Ferb Fletcher"
+rpush fathom:ferb:email ferb.fletcher@disney.com
+rpush fathom:ferb:roles inventor
+rpush fathom:ferb:permissions secure:view
+
+set fathom:candace:password ilovejeremy
+set fathom:candace:name "Candace Flynn"
+rpush fathom:candace:permissions secure:view
+rpush fathom:candace:email candace.flynn@disney.com
+
+set fathom:linda:password imLindanaAndIWannaHaveFun
+set fathom:linda:name "Linda Flynn-Fletcher"
+rpush fathom:linda:email linda.fletcher@disney.com

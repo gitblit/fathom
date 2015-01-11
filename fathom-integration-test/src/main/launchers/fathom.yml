@@ -1,0 +1,14 @@
+#
+# Stork Packaging
+# https://github.com/fizzed/java-stork
+#
+name: "fathom-fit"
+domain: "com.gitblit.fathom"
+display_name: "fathom-fit"
+short_description: "Fathom Integration Test"
+type: DAEMON
+main_class: "fathom.Boot"
+platforms: [ WINDOWS, LINUX, MAC_OSX ]
+min_java_version: "1.8"
+min_java_memory: 1024
+symlink_java: true

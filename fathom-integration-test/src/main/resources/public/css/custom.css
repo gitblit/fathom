@@ -1,0 +1,12 @@
+/* These are some custom styles to tweak the stock Foundation behavior */
+.inline {
+    display: inline-block;
+}
+
+.inline a.button {
+    margin-bottom: 0px;
+}
+
+.inline button {
+    margin-bottom: 0px;
+}

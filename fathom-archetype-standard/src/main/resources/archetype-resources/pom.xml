@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>${artifactId}</artifactId>
+    <groupId>${groupId}</groupId>
+    <version>${version}</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <fathom.version>@project.version@</fathom.version>
+        <pippo.version>@project.version@</pippo.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-core</artifactId>
+            <version>${fathom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-rest</artifactId>
+            <version>${fathom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-rest-security</artifactId>
+            <version>${fathom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-quartz</artifactId>
+            <version>${fathom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-mailer</artifactId>
+            <version>${fathom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-jcache</artifactId>
+            <version>${fathom.version}</version>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>org.ehcache</groupId>-->
+        <!--<artifactId>jcache</artifactId>-->
+        <!--<version>1.0.1</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-jcache</artifactId>
+            <version>7.1.0.Final</version>
+        </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>com.hazelcast</groupId>-->
+        <!--<artifactId>hazelcast</artifactId>-->
+        <!--<version>3.4</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-freemarker</artifactId>
+            <version>${pippo.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
+            <artifactId>pippo-gson</artifactId>
+            <version>${pippo.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>foundation</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>4.3.0-1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-test-tools</artifactId>
+            <version>${fathom.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArguments>
+                        <parameters/>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.fizzed</groupId>
+                <artifactId>fizzed-stork-maven-plugin</artifactId>
+                <version>1.2.2</version>
+                <executions>
+                    <execution>
+                        <id>generate-stork-launchers</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-stork-assembly</id>
+                        <goals>
+                            <goal>assembly</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+</project>

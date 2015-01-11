@@ -1,0 +1,158 @@
+<!-- Copyright (C) 2012-2014 the original author or authors. Licensed under 
+	the Apache License, Version 2.0 (the "License"); you may not use this file 
+	except in compliance with the License. You may obtain a copy of the License 
+	at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable 
+	law or agreed to in writing, software distributed under the License is distributed 
+	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
+	express or implied. See the License for the specific language governing permissions 
+	and limitations under the License. -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.gitblit.fathom</groupId>
+    <artifactId>fathom-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>0.4.0-SNAPSHOT</version>
+    <url>http://fathom.gitblit.com</url>
+
+    <organization>
+        <name>James Moger</name>
+    </organization>
+
+    <modules>
+        <module>fathom-core</module>
+        <module>fathom-eventbus</module>
+        <module>fathom-jcache</module>
+        <module>fathom-metrics</module>
+        <module>fathom-metrics-librato</module>
+        <module>fathom-metrics-influxdb</module>
+        <module>fathom-metrics-graphite</module>
+        <module>fathom-metrics-ganglia</module>
+        <module>fathom-mailer</module>
+        <module>fathom-quartz</module>
+        <module>fathom-rest</module>
+        <module>fathom-rest-security</module>
+        <module>fathom-test-tools</module>
+        <module>fathom-security</module>
+        <module>fathom-security-htpasswd</module>
+        <module>fathom-security-pam</module>
+        <module>fathom-security-windows</module>
+        <module>fathom-security-ldap</module>
+        <module>fathom-security-jdbc</module>
+        <module>fathom-security-redis</module>
+        <module>fathom-rest-shiro</module>
+        <module>fathom-integration-test</module>
+        <module>fathom-archetype-standard</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <siteProjectVersion>${project.version}</siteProjectVersion>
+        <guice.version>4.0-beta5</guice.version>
+        <pippo.version>0.4.0-SNAPSHOT</pippo.version>
+        <h2.version>1.4.182</h2.version>
+        <mockito.version>1.9.5</mockito.version>
+        <junit.version>4.10</junit.version>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <!-- bump submodule versions automatically -->
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <!-- install next final version in local repo, so that tests on archetypes
+                            work -->
+                        <preparationGoals>clean install</preparationGoals>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <additionalparam>-Xdoclint:none</additionalparam>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.3</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <scm>
+        <url>https://github.com/gitblit/fathom</url>
+        <connection>scm:git://github.com/gitblit/fathom.git</connection>
+        <developerConnection>scm:git:git@github.com:gitblit/fathom.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/gitblit/fathom/issues/</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+</project>
