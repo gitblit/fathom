@@ -52,6 +52,11 @@
         </dependency>
         <dependency>
             <groupId>ro.pippo</groupId>
+            <artifactId>pippo-session</artifactId>
+            <version>${pippo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ro.pippo</groupId>
             <artifactId>pippo-metrics</artifactId>
             <version>${pippo.version}</version>
         </dependency>

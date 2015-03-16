@@ -18,7 +18,6 @@ package fathom.rest;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.inject.multibindings.Multibinder;
 import fathom.ServletsModule;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngines;
@@ -27,7 +26,6 @@ import ro.pippo.core.Languages;
 import ro.pippo.core.Messages;
 import ro.pippo.core.PippoSettings;
 import ro.pippo.core.RuntimeMode;
-import ro.pippo.core.SessionFactory;
 import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.HttpCacheToolkit;
@@ -87,7 +85,6 @@ public class RestModule extends ServletsModule {
         bind(MimeTypes.class).toInstance(application.getMimeTypes());
         bind(ErrorHandler.class).toInstance(application.getErrorHandler());
         bind(TemplateEngine.class).toInstance(application.getTemplateEngine());
-        bind(SessionFactory.class).toInstance(application.getSessionFactory());
         bind(HttpCacheToolkit.class).toInstance(application.getHttpCacheToolkit());
         bind(ContentTypeEngines.class).toInstance(application.getContentTypeEngines());
 
