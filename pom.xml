@@ -51,9 +51,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <siteProjectVersion>${project.version}</siteProjectVersion>
-        <guice.version>4.0-beta5</guice.version>
-        <pippo.version>0.4.0-SNAPSHOT</pippo.version>
-        <h2.version>1.4.182</h2.version>
+        <pippo.version>0.4.0</pippo.version>
+        <h2.version>1.4.186</h2.version>
         <mockito.version>1.9.5</mockito.version>
         <junit.version>4.10</junit.version>
     </properties>

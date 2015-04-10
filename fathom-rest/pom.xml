@@ -29,11 +29,6 @@
     <name>Fathom-REST</name>
     <description>RESTful Routes and Controllers based on Pippo</description>
 
-    <properties>
-        <pippo.version>0.4.0-SNAPSHOT</pippo.version>
-    </properties>
-
-
     <dependencies>
         <dependency>
             <groupId>com.gitblit.fathom</groupId>
@@ -48,11 +43,6 @@
         <dependency>
             <groupId>ro.pippo</groupId>
             <artifactId>pippo-core</artifactId>
-            <version>${pippo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ro.pippo</groupId>
-            <artifactId>pippo-session</artifactId>
             <version>${pippo.version}</version>
         </dependency>
         <dependency>

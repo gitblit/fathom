@@ -19,7 +19,7 @@ import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import fathom.conf.Settings;
 import fathom.metrics.MetricsReporter;
-import metrics_influxdb.Influxdb;
+import metrics_influxdb.InfluxdbHttp;
 import metrics_influxdb.InfluxdbReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class Reporter implements MetricsReporter {
 
             try {
 
-                Influxdb influxdb = new Influxdb(address, port, database, username, password);
+                InfluxdbHttp influxdb = new InfluxdbHttp(address, port, database, username, password);
                 reporter = InfluxdbReporter.forRegistry(metricRegistry).prefixedWith(hostname)
                         .convertRatesTo(TimeUnit.SECONDS).convertDurationsTo(TimeUnit.MILLISECONDS)
                         .filter(MetricFilter.ALL).build(influxdb);
