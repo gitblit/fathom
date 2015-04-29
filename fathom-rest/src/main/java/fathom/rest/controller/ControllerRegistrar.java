@@ -29,6 +29,7 @@ import ro.pippo.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class ControllerRegistrar extends ControllerScanner {
 
         Collection<Class<?>> classes = discoverClasses(packageNames);
         if (classes.isEmpty()) {
-            log.warn("No annotated controllers found in package(s) '{}'", packageNames);
+            log.warn("No annotated controllers found in package(s) '{}'", Arrays.toString(packageNames));
             return;
         }
 
@@ -75,7 +76,7 @@ public class ControllerRegistrar extends ControllerScanner {
         Map<Method, Class<? extends Annotation>> discoveredMethods = discoverMethods(classes);
         if (discoveredMethods.isEmpty()) {
             // if we are using the registrar we expect to discover controllers!
-            log.warn("No annotated methods found in package(s) '{}'", packageNames);
+            log.warn("No annotated methods found in package(s) '{}'", Arrays.toString(packageNames));
             return;
         }
 

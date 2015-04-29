@@ -62,7 +62,7 @@ public abstract class ControllerScanner {
      * @return controller classes
      */
     protected Collection<Class<?>> discoverClasses(String... packageNames) {
-        log.debug("Discovering annotated controller in package(s) '{}'", packageNames);
+        log.debug("Discovering annotated controller in package(s) '{}'", Arrays.toString(packageNames));
         Collection<Class<?>> classes = ClassUtil.getAnnotatedClasses(Controller.class, packageNames);
         return classes;
     }
