@@ -6,7 +6,7 @@
 
         <p>These routes are NOT GUARDED.</p>
         <#list items as item>
-            <li><a href="${contextPath}/api/${item.id}">${item.name}</a></li>
+            <li><a href="${appPath}/api/${item.id}">${item.name}</a></li>
         </#list>
     </div>
     <div class="large-6 columns">
@@ -15,7 +15,7 @@
         <p>These routes are GUARDED by form authentication.</p>
         <ul>
             <#list items as item>
-                <li><a href="${contextPath}/secure/${item.id}">${item.name}</a></li>
+                <li><a href="${appPath}/secure/${item.id}">${item.name}</a></li>
             </#list>
         </ul>
     </div>
@@ -24,8 +24,8 @@
     <div class="large-6 columns">
         <h3>Other Sample Routes</h3>
         <ul>
-            <li><a href="${contextPath}/notFound">An example 404</a></li>
-            <li><a href="${contextPath}/internalError">An example 500</a></li>
+            <li><a href="${appPath}/notFound">An example 404</a></li>
+            <li><a href="${appPath}/internalError">An example 500</a></li>
         </ul>
     </div>
     <div class="large-6 columns">

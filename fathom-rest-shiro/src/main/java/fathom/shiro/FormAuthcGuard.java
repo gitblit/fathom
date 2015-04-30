@@ -48,7 +48,7 @@ public class FormAuthcGuard implements RouteHandler<Context> {
 
         if (!SecurityUtils.getSubject().isAuthenticated()) {
             // unauthenticated session, save request & redirect to login url
-            String requestUri = context.getRequest().getContextUriWithQuery();
+            String requestUri = context.getRequest().getApplicationUriWithQuery();
             context.setSession(DESTINATION_ATTRIBUTE, requestUri);
             context.redirect(loginUrl);
         } else {

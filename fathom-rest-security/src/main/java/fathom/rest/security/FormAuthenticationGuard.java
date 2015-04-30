@@ -45,7 +45,7 @@ public class FormAuthenticationGuard implements RouteHandler<Context> {
 
         if (context.getSession(AuthConstants.ACCOUNT_ATTRIBUTE) == null) {
             // unauthenticated session, save request & redirect to login url
-            String requestUri = context.getRequest().getContextUriWithQuery();
+            String requestUri = context.getRequest().getApplicationUriWithQuery();
             context.setSession(AuthConstants.DESTINATION_ATTRIBUTE, requestUri);
             context.redirect(loginUrl);
         } else {

@@ -93,9 +93,9 @@ class RestService implements Service {
         initializeRouter(applicationPackage);
 
         log.info(border);
-        log.info("RESTful routes ({}) for context '{}'",
+        log.info("RESTful routes ({}) served on base path '{}'",
                 router.getRoutes().size(),
-                Strings.isNullOrEmpty(router.getContextPath()) ? "/" : router.getContextPath());
+                Strings.isNullOrEmpty(router.getApplicationPath()) ? "/" : router.getApplicationPath());
         log.info(border);
         logRoutes(router);
     }

@@ -74,7 +74,7 @@
                     <input type="hidden" name="csrfToken" value="${csrfToken}">
                     <button type="submit" class="small radius">${i18n('fathom.save')}</button>
                     <a class="button small radius secondary"
-                       href="${contextPath}/secure/employees">${i18n('fathom.cancel')}</a>
+                       href="${appPath}/secure/employees">${i18n('fathom.cancel')}</a>
                 </div>
             </div>
         </form>
@@ -91,7 +91,7 @@
                 <p class="lead">Are you sure you want to delete this employee?</p>
                 <a class="close-reveal-modal">&#215;</a>
 
-                <form class="inline" method="POST" action="${contextPath}/secure/employee/${employee.id}/delete">
+                <form class="inline" method="POST" action="${appPath}/secure/employee/${employee.id}/delete">
                     <input type="hidden" value="${csrfToken}" name="csrfToken"/>
                     <button type="submit" class="small radius alert">
                     ${i18n('fathom.delete')}

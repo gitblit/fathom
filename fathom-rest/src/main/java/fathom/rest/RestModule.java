@@ -30,6 +30,7 @@ import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
+import ro.pippo.core.util.StringUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -74,6 +75,11 @@ public class RestModule extends ServletsModule {
 
         // must set context path before starting application
         application.getRouter().setContextPath(getSettings().getContextPath());
+
+        // must set application path before starting application
+        String contextPath = application.getRouter().getContextPath();
+        String applicationPath = StringUtils.addEnd(contextPath, "/") + StringUtils.removeStart(basePath, "/");
+        application.getRouter().setApplicationPath(applicationPath);
 
         // start the application which sets up all initializers
         application.init();
