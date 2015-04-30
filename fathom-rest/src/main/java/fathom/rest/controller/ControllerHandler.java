@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteHandler;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
@@ -83,6 +84,13 @@ public class ControllerHandler implements RouteHandler<Context> {
 
             context.next();
 
+        } catch (InvocationTargetException e) {
+            Throwable t = e.getTargetException();
+            if (t instanceof FathomException) {
+                // pass-through the thrown exception
+                throw (FathomException) t;
+            }
+            throw new FathomException(t);
         } catch (Exception e) {
             throw new FathomException(e);
         }
