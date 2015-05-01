@@ -20,23 +20,24 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fathom.conf.Settings;
+import fathom.rest.RouteRegistration;
 import fathom.utils.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ro.pippo.core.route.Route;
-import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Registers annotated controllers with the Router.
+ * Collects annotated controller routes.
  *
  * @author James Moger
  */
@@ -46,13 +47,13 @@ public class ControllerRegistrar extends ControllerScanner {
 
     private final Injector injector;
 
-    private final Router router;
+    private final List<RouteRegistration> routeRegistrations;
 
     @Inject
-    public ControllerRegistrar(Injector injector, Settings settings, Router router) {
+    public ControllerRegistrar(Injector injector, Settings settings) {
         super(settings);
         this.injector = injector;
-        this.router = router;
+        this.routeRegistrations = new ArrayList<>();
     }
 
     /**
@@ -62,8 +63,6 @@ public class ControllerRegistrar extends ControllerScanner {
      * @param packageNames
      */
     public final void init(String... packageNames) {
-
-        final int initialRouteCount = router.getRoutes().size();
 
         Collection<Class<?>> classes = discoverClasses(packageNames);
         if (classes.isEmpty()) {
@@ -83,10 +82,18 @@ public class ControllerRegistrar extends ControllerScanner {
         log.debug("Found {} annotated controller method(s)", discoveredMethods.size());
 
         registerControllerMethods(discoveredMethods);
-        final int endRouteCount = router.getRoutes().size();
 
-        log.debug("Added {} annotated routes from {}", endRouteCount - initialRouteCount, packageNames);
+        log.debug("Added {} annotated routes from {}", routeRegistrations.size(), packageNames);
 
+    }
+
+    /**
+     * Return the collected route registrations.
+     *
+     * @return the route registrations
+     */
+    public List<RouteRegistration> getRouteRegistrations() {
+        return routeRegistrations;
     }
 
     /**
@@ -127,8 +134,8 @@ public class ControllerRegistrar extends ControllerScanner {
                     String fullPath = StringUtils.addStart(StringUtils.removeEnd(path, "/"), "/");
 
                     ControllerHandler handler = new ControllerHandler(injector, controllerClass, method.getName());
-                    Route route = new Route(fullPath, httpMethod, handler);
-                    router.addRoute(route);
+                    RouteRegistration registration = new RouteRegistration(httpMethod, fullPath, handler);
+                    routeRegistrations.add(registration);
                 }
 
             }

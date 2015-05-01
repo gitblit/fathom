@@ -176,8 +176,9 @@ public abstract class RoutesModule {
     }
 
     protected void addAnnotatedControllers(String... packageNames) {
-        ControllerRegistrar registrar = new ControllerRegistrar(injector, settings, router);
+        ControllerRegistrar registrar = new ControllerRegistrar(injector, settings);
         registrar.init(packageNames);
+        routeRegistrations.addAll(registrar.getRouteRegistrations());
     }
 
     protected RouteRegistration ALL(String uriPattern, RouteHandler<Context> handler) {
