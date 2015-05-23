@@ -16,45 +16,141 @@
 
 package fathom.shiro;
 
-import fathom.rest.route.AbstractCSRFHandler;
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
+import fathom.exception.StatusCodeException;
 import fathom.rest.Context;
-import org.apache.shiro.SecurityUtils;
+import fathom.rest.controller.HttpMethod;
+import fathom.utils.CryptoUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ro.pippo.core.route.RouteHandler;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.Set;
 
 /**
- * Generates and validates an CSRF token based on an authenticated Shiro session.
+ * Base class for generating and validating a CSRF token.
+ * <p>
+ * An attacker can coerce a victims browser to make the following types of requests:
+ * <p>
+ * GET requests
+ * POST requests with a "Content-Type" of "application/x-www-form-urlencoded", "multipart/form-data", and "text/plain".
+ * <p>
+ * An attacker can not:
+ * <p>
+ * Coerce the browser to use other request methods such as PUT and DELETE.
+ * Coerce the browser to post other content types, such as "application/json".
+ * Coerce the browser to send new cookies, other than those that the server has already set.
+ * Coerce the browser to set arbitrary headers, other than the normal headers the browser adds to requests.
+ * <p>
+ * Since GET requests are not meant to be mutative, there is no danger to an application that follows this
+ * best practice.
+ * <p>
+ * Rules:
+ * <p>
+ * Permit POST if the "Content-Type" is not a guarded type (see above).
+ * Permit POST if the "Csrf-Token" header is "nocheck".
+ * Permit POST if the "csrfToken" query parameter or form parameter matches the session csrf token.
  *
  * @author James Moger
  */
-public class CSRFHandler extends AbstractCSRFHandler {
+public class CSRFHandler implements RouteHandler<Context> {
 
-    /**
-     * Constructs an CSRF handler with a dynamically generated SecretKey.
-     */
+    public static final String TOKEN = "csrfToken";
+
+    private static final Logger log = LoggerFactory.getLogger(CSRFHandler.class);
+
+    private final Set<String> guardedTypes = Sets.newHashSet("application/x-www-form-urlencoded", "multipart/form-data", "text/plain");
+
+    private final String secretKey;
+
+    private final String algorithm;
+
     public CSRFHandler() {
-        super();
+        this(CryptoUtil.generateSecretKey());
     }
 
     public CSRFHandler(String secretKey) {
-        super(secretKey);
+        this(secretKey, CryptoUtil.HMAC_SHA256);
     }
 
     public CSRFHandler(String secretKey, String algorithm) {
-        super(secretKey, algorithm);
+        this.secretKey = secretKey;
+        this.algorithm = algorithm;
     }
 
-    @Override
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
     protected String getSessionCsrfToken(Context context) {
-        return (String) SecurityUtils.getSubject().getSession().getAttribute(TOKEN);
+        return context.getSession(TOKEN);
     }
 
-    @Override
     protected void setSessionCsrfToken(Context context, String token) {
-        SecurityUtils.getSubject().getSession().setAttribute(TOKEN, token);
+        context.setSession(TOKEN, token);
+    }
+
+    protected String getTokenId(Context context) {
+        return context.getSession().getId().toString();
     }
 
     @Override
-    protected String getTokenId(Context context) {
-        return SecurityUtils.getSubject().getSession().getId().toString();
+    public void handle(Context context) {
+
+        if (HttpMethod.POST.equals(context.getRequestMethod())) {
+
+            // Verify the content-type is guarded
+            String contentType = context.getHeader("Content-Type").toLowerCase();
+            if (!guardedTypes.contains(contentType)) {
+                log.debug("Ignoring '{}' request for {} '{}'", contentType, context.getRequestMethod(),
+                        context.getRequestUri());
+                return;
+            }
+
+            // Permit "nocheck" Csrf-Token headers
+            String requestToken = context.getHeader("Csrf-Token");
+            if ("nocheck".equals(requestToken)) {
+                log.debug("Ignoring 'nocheck' request for {} '{}'", context.getRequestMethod(), context.getRequestUri());
+                return;
+            }
+
+            if (Strings.isNullOrEmpty(requestToken)) {
+                requestToken = context.getParameter(TOKEN).toString();
+            }
+
+            if (Strings.isNullOrEmpty(requestToken)) {
+                throw new StatusCodeException(HttpServletResponse.SC_FORBIDDEN, "Illegal request, no '{}'!", TOKEN);
+            }
+
+            // Validate the request token against the session token
+            String sessionToken = getSessionCsrfToken(context);
+            if (!requestToken.equals(sessionToken)) {
+                throw new StatusCodeException(HttpServletResponse.SC_FORBIDDEN, "Illegal request, invalid '{}'!", TOKEN);
+            }
+
+            log.debug("Validated '{}' for {} '{}'", TOKEN, context.getRequestMethod(), context.getRequestUri());
+
+        } else if (HttpMethod.GET.equals(context.getRequestMethod())) {
+
+            // Generate a CSRF session token on reads
+            if (getSessionCsrfToken(context) == null) {
+                String sessionId = getTokenId(context);
+                String token = CryptoUtil.hmacDigest(sessionId, secretKey, algorithm);
+                setSessionCsrfToken(context, token);
+                log.debug("Generated '{}' for {} '{}'", TOKEN, context.getRequestMethod(), context.getRequestUri());
+            }
+
+            String token = getSessionCsrfToken(context);
+            context.setLocal(TOKEN, token);
+        }
+
+        context.next();
     }
 
 }
