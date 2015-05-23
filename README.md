@@ -44,16 +44,17 @@ There are several modules available to build your Fathom foundation:
 - [EventBus](/fathom-eventbus/) module for decoupled event passing
 - [Mailer](/fathom-mailer/) module for email sending
 - [Quartz](/fathom-quartz/) module for Quartz scheduling integration
-- [REST](/fathom-rest/) module for RESTful routing & controllers
+- [REST](/fathom-rest/) module for RESTful routing & controllers based on [Pippo][8]
     - [Security](/fathom-rest-security/) module for RESTful Authentication & Authorization against PAM, Windows, LDAP, JDBC, Redis, etc.
     - [Shiro](/fathom-rest-shiro/) module for RESTful Authenication & Authorization
-    - Uses Pippo content-type engines
+    - Multiple content-type engine choices
         - JAXB _(default)_
         - [XStream](https://github.com/decebals/pippo/tree/master/pippo-xstream)
         - [GSON](https://github.com/decebals/pippo/tree/master/pippo-gson)
         - [FastJSON](https://github.com/decebals/pippo/tree/master/pippo-fastjson)
+        - [Jackson](https://github.com/decebals/pippo/tree/master/pippo-jackson)
         - [SnakeYAML](https://github.com/decebals/pippo/tree/master/pippo-snakeyaml)
-    - Uses Pippo template engines with [Webjars](http://www.webjars.org) support, localization (i18n), & [pretty-time](http://www.ocpsoft.org/prettytime) integration.
+    - Multiple template engine choices with [Webjars](http://www.webjars.org) support, localization (i18n), & [pretty-time](http://www.ocpsoft.org/prettytime) integration.
         - [Freemarker](https://github.com/decebals/pippo/tree/master/pippo-freemarker)
         - [Jade](https://github.com/decebals/pippo/tree/master/pippo-jade)
         - [Pebble](https://github.com/decebals/pippo/tree/master/pippo-pebble)
@@ -70,6 +71,7 @@ There are several modules available to build your Fathom foundation:
 * Flexible config file with runtime-mode setting variations, property substitutions, & environment variable substitutions
 * Integrated support for HTTPS, HTTP, AJP, &amp; HTTP/2 transports
 * Integrated [Commons-Daemon][7] service support for Windows & UNIX
+* Distribution bundling with [Stork](https://github.com/fizzed/stork)
 
 ### Footprint
 
@@ -96,3 +98,4 @@ Distributed under the Apache Software License 2.0.
 [5]: http://logback.qos.ch
 [6]: http://args4j.kohsuke.org
 [7]: http://commons.apache.org/proper/commons-daemon
+[8]: http://www.pippo.ro
