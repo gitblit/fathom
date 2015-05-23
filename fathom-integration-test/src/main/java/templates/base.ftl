@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="${webjarsAt("normalize.css/3.0.1/normalize.css")}">
     <link rel="stylesheet" href="${webjarsAt("foundation/5.5.2/css/foundation.min.css")}">
     <link rel="stylesheet" href="${webjarsAt("font-awesome/4.3.0/css/font-awesome.min.css")}">
-    <link rel="stylesheet" href="${webjarsAt("datatables/1.10.6/css/jquery.dataTables.min.css")}">
+    <link rel="stylesheet" href="${webjarsAt("datatables/1.10.7/css/jquery.dataTables.min.css")}">
     <link rel="stylesheet" href="${webjarsAt("pickadate.js/3.5.4/compressed/themes/classic.css")}">
     <link rel="stylesheet" href="${webjarsAt("pickadate.js/3.5.4/compressed/themes/classic.date.css")}">
     <link rel="stylesheet" href="${publicAt("css/custom.css")}">
@@ -78,7 +78,7 @@
 <script src="${webjarsAt("jquery/2.1.1/jquery.min.js")}"></script>
 <script src="${webjarsAt("foundation/5.5.2/js/foundation.min.js")}"></script>
 <script src="${webjarsAt("foundation/5.5.2/js/foundation/foundation.alert.js")}"></script>
-<script src="${webjarsAt("datatables/1.10.6/js/jquery.dataTables.min.js")}"></script>
+<script src="${webjarsAt("datatables/1.10.7/js/jquery.dataTables.min.js")}"></script>
 <script src="${webjarsAt("pickadate.js/3.5.4/compressed/picker.js")}"></script>
 <script src="${webjarsAt("pickadate.js/3.5.4/compressed/picker.date.js")}"></script>
 <script>
