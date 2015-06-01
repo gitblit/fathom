@@ -27,10 +27,6 @@ public class SessionExtractor implements NamedExtractor, ConfigurableExtractor<S
     private String name;
 
     @Override
-    public void checkTargetType(Class<?> targetType) {
-    }
-
-    @Override
     public Class<Session> getAnnotationClass() {
         return Session.class;
     }
@@ -51,8 +47,8 @@ public class SessionExtractor implements NamedExtractor, ConfigurableExtractor<S
     }
 
     @Override
-    public <T> T extract(Context context, Class<T> classOfT) {
-        T t = context.getSession(name);
-        return t;
+    public Object extract(Context context) {
+        Object o = context.getSession(name);
+        return o;
     }
 }

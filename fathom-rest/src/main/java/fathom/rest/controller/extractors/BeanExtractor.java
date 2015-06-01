@@ -21,15 +21,17 @@ import fathom.rest.Context;
 /**
  * @author James Moger
  */
-public class BeanExtractor implements ArgumentExtractor {
+public class BeanExtractor implements TypedExtractor {
 
-    @Override
-    public void checkTargetType(Class<?> targetType) {
+    private Class<?> objectType;
+
+    public void setObjectType(Class<?> objectType) {
+        this.objectType = objectType;
     }
 
     @Override
-    public <T> T extract(Context context, Class<T> classOfT) {
-        T t = context.createEntityFromParameters(classOfT);
-        return t;
+    public Object extract(Context context) {
+        Object o = context.createEntityFromParameters(objectType);
+        return o;
     }
 }

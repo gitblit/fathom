@@ -21,15 +21,16 @@ import fathom.rest.Context;
 /**
  * @author James Moger
  */
-public class BodyExtractor implements ArgumentExtractor {
+public class BodyExtractor extends DefaultObjectExtractor {
 
     @Override
-    public void checkTargetType(Class<?> targetType) {
+    public void setObjectType(Class<?> objectType) {
+        this.objectType = objectType;
     }
 
     @Override
-    public <T> T extract(Context context, Class<T> classOfT) {
-        T t = context.createEntityFromBody(classOfT);
-        return t;
+    public Object extract(Context context) {
+        Object o = context.createEntityFromBody(objectType);
+        return o;
     }
 }

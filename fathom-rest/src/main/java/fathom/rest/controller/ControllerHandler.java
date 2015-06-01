@@ -20,13 +20,14 @@ import com.google.common.base.Strings;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import fathom.exception.FathomException;
+import fathom.rest.Context;
 import fathom.rest.controller.extractors.ArgumentExtractor;
 import fathom.rest.controller.extractors.ConfigurableExtractor;
 import fathom.rest.controller.extractors.ContextExtractor;
 import fathom.rest.controller.extractors.ExtractWith;
 import fathom.rest.controller.extractors.NamedExtractor;
 import fathom.rest.controller.extractors.ParamExtractor;
-import fathom.rest.Context;
+import fathom.rest.controller.extractors.TypedExtractor;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
 import org.slf4j.Logger;
@@ -116,11 +117,11 @@ public class ControllerHandler implements RouteHandler<Context> {
                     extractors = new ArgumentExtractor[types.length];
                     patterns = new String[types.length];
                     for (int i = 0; i < types.length; i++) {
-                        Class<?> type = types[i];
+                        Class<?> objectType = types[i];
 
                         // determine the appropriate extractor
                         Class<? extends ArgumentExtractor> extractorType;
-                        if (Context.class == type) {
+                        if (Context.class == objectType) {
                             extractorType = ContextExtractor.class;
                         } else {
                             extractorType = getArgumentExtractor(controllerMethod, i);
@@ -139,7 +140,10 @@ public class ControllerHandler implements RouteHandler<Context> {
                         }
 
                         // test the target type
-                        extractors[i].checkTargetType(type);
+                        if (extractors[i] instanceof TypedExtractor) {
+                            TypedExtractor extractor = (TypedExtractor) extractors[i];
+                            extractor.setObjectType(objectType);
+                        }
 
                         if (extractors[i] instanceof NamedExtractor) {
                             // ensure that the extractor has a proper name
@@ -153,15 +157,15 @@ public class ControllerHandler implements RouteHandler<Context> {
                                 } else {
                                     log.error("Properly annotate your controller methods OR specify the '-parameters' flag for your Java compiler!");
                                     throw new FathomException(
-                                            "Controller method '{}.{}' parameter {} of type '{}' does not specify a name!",
-                                            controllerClass.getSimpleName(), method.getName(), i + 1, type.getSimpleName());
+                                            "Controller method '{}' parameter {} of type '{}' does not specify a name!",
+                                            Util.toString(method), i + 1, objectType.getSimpleName());
                                 }
                             }
                         }
                     }
                 } else {
-                    throw new FathomException("Found overloaded controller method '{}.{}'. Method names must be unique!",
-                            controllerClass.getSimpleName(), method.getName());
+                    throw new FathomException("Found overloaded controller method '{}'. Method names must be unique!",
+                            Util.toString(method));
                 }
             }
         }
@@ -180,7 +184,7 @@ public class ControllerHandler implements RouteHandler<Context> {
         for (int i = 0; i < args.length; i++) {
             Class<?> type = types[i];
             ArgumentExtractor extractor = extractors[i];
-            Object value = extractor.extract(context, type);
+            Object value = extractor.extract(context);
             if (value == null || ClassUtil.isAssignable(value, type)) {
                 args[i] = value;
             } else {

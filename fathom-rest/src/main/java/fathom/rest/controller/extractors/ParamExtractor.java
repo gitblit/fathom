@@ -16,24 +16,19 @@
 
 package fathom.rest.controller.extractors;
 
-import fathom.rest.controller.Param;
 import fathom.rest.Context;
+import fathom.rest.controller.Param;
 import ro.pippo.core.ParameterValue;
 
 /**
  * @author James Moger
  */
-public class ParamExtractor implements NamedExtractor, ConfigurableExtractor<Param> {
+public class ParamExtractor extends DefaultObjectExtractor
+        implements NamedExtractor, PatternExtractor, ConfigurableExtractor<Param> {
 
     private String name;
 
     private String pattern;
-
-    @Override
-    public void checkTargetType(Class<?> targetType) {
-        ParameterValue testValue = new ParameterValue();
-        testValue.to(targetType);
-    }
 
     @Override
     public Class<Param> getAnnotationClass() {
@@ -56,18 +51,20 @@ public class ParamExtractor implements NamedExtractor, ConfigurableExtractor<Par
         this.name = name;
     }
 
+    @Override
     public String getPattern() {
         return pattern;
     }
 
+    @Override
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
 
     @Override
-    public <T> T extract(Context context, Class<T> classOfT) {
+    public Object extract(Context context) {
         ParameterValue pv = context.getParameter(name);
-        T t = pv.to(classOfT, pattern);
-        return t;
+        Object o = pv.to(objectType, pattern);
+        return o;
     }
 }

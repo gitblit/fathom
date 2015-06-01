@@ -26,10 +26,6 @@ public class LocalExtractor implements NamedExtractor, ConfigurableExtractor<Loc
 
     private String name;
 
-    @Override
-    public void checkTargetType(Class<?> targetType) {
-    }
-
     public Class<Local> getAnnotationClass() {
         return Local.class;
     }
@@ -50,8 +46,8 @@ public class LocalExtractor implements NamedExtractor, ConfigurableExtractor<Loc
     }
 
     @Override
-    public <T> T extract(Context context, Class<T> classOfT) {
-        T t = context.getLocal(name);
-        return t;
+    public Object extract(Context context) {
+        Object o = context.getLocal(name);
+        return o;
     }
 }

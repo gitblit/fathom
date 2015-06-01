@@ -46,7 +46,7 @@ public class RequirePermissionsInterceptor implements MethodInterceptor {
 
         Context context = RouteDispatcher.getRouteContext();
         AuthExtractor extractor = new AuthExtractor();
-        Account account = extractor.extract(context, Account.class);
+        Account account = extractor.extract(context);
 
         account.checkPermissions(permissions.toArray(new String[permissions.size()]));
 

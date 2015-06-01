@@ -16,22 +16,19 @@
 
 package fathom.rest.controller.extractors;
 
-import fathom.rest.controller.Header;
 import fathom.rest.Context;
+import fathom.rest.controller.Header;
 import ro.pippo.core.ParameterValue;
 
 /**
  * @author James Moger
  */
-public class HeaderExtractor implements NamedExtractor, ConfigurableExtractor<Header> {
+public class HeaderExtractor extends DefaultObjectExtractor
+        implements NamedExtractor, PatternExtractor, ConfigurableExtractor<Header> {
 
     private String name;
 
-    @Override
-    public void checkTargetType(Class<?> targetType) {
-        ParameterValue testValue = new ParameterValue();
-        testValue.to(targetType);
-    }
+    private String pattern;
 
     public Class<Header> getAnnotationClass() {
         return Header.class;
@@ -40,6 +37,7 @@ public class HeaderExtractor implements NamedExtractor, ConfigurableExtractor<He
     @Override
     public void configure(Header header) {
         setName(header.value());
+        setPattern(header.pattern());
     }
 
     @Override
@@ -53,9 +51,19 @@ public class HeaderExtractor implements NamedExtractor, ConfigurableExtractor<He
     }
 
     @Override
-    public <T> T extract(Context context, Class<T> classOfT) {
+    public String getPattern() {
+        return pattern;
+    }
+
+    @Override
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+
+    @Override
+    public Object extract(Context context) {
         ParameterValue pv = new ParameterValue(context.getHeader(name));
-        T t = pv.to(classOfT);
-        return t;
+        Object o = pv.to(objectType, pattern);
+        return o;
     }
 }

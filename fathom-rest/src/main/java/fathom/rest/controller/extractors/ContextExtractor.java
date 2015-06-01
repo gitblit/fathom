@@ -22,15 +22,15 @@ import fathom.rest.Context;
 /**
  * @author James Moger
  */
-public class ContextExtractor implements ArgumentExtractor {
+public class ContextExtractor implements TypedExtractor, ArgumentExtractor {
 
     @Override
-    public void checkTargetType(Class<?> targetType) {
-        Preconditions.checkArgument(Context.class == targetType, "'{}' is not a valid target type", targetType.getName());
+    public void setObjectType(Class<?> objectType) {
+        Preconditions.checkArgument(Context.class == objectType, "'{}' is not a valid target type", objectType.getName());
     }
 
     @Override
-    public <T> T extract(Context context, Class<T> classOfT) {
-        return (T) context;
+    public Context extract(Context context) {
+        return context;
     }
 }

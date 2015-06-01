@@ -26,14 +26,9 @@ import fathom.rest.security.AuthConstants;
 /**
  * @author James Moger
  */
-public class AuthExtractor implements NamedExtractor, ConfigurableExtractor<Auth> {
+public class AuthExtractor implements TypedExtractor, NamedExtractor, ConfigurableExtractor<Auth> {
 
     private String name;
-
-    @Override
-    public void checkTargetType(Class<?> targetType) {
-        Preconditions.checkState(Account.class.isAssignableFrom(targetType));
-    }
 
     @Override
     public Class<Auth> getAnnotationClass() {
@@ -56,10 +51,14 @@ public class AuthExtractor implements NamedExtractor, ConfigurableExtractor<Auth
     }
 
     @Override
-    public <T> T extract(Context context, Class<T> classOfT) {
+    public void setObjectType(Class<?> objectType) {
+        Preconditions.checkState(Account.class.isAssignableFrom(objectType));
+    }
+
+    @Override
+    public Account extract(Context context) {
         Account session = context.getSession(AuthConstants.ACCOUNT_ATTRIBUTE);
         Account account = Optional.fromNullable(session).or(Account.GUEST);
-        T t = (T) account;
-        return t;
+        return account;
     }
 }

@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fathom.rest.controller;
 
-import fathom.rest.controller.extractors.ExtractWith;
-import fathom.rest.controller.extractors.HeaderExtractor;
+package fathom.rest.controller.extractors;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import ro.pippo.core.ParameterValue;
 
 /**
- * Annotation that identifies that a request header should be mapped to a Java object.
- *
  * @author James Moger
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-@ExtractWith(HeaderExtractor.class)
-public @interface Header {
-    String value() default "";
+abstract class DefaultObjectExtractor implements TypedExtractor {
 
-    String pattern() default "";
+    protected Class<?> objectType;
+
+    @Override
+    public void setObjectType(Class<?> objectType) {
+        ParameterValue testValue = new ParameterValue();
+        testValue.to(objectType);
+        this.objectType = objectType;
+    }
+
 }

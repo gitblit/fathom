@@ -25,7 +25,5 @@ import fathom.rest.Context;
  */
 public interface ArgumentExtractor {
 
-    void checkTargetType(Class<?> targetType);
-
-    <T> T extract(Context context, Class<T> targetType);
+    Object extract(Context context);
 }

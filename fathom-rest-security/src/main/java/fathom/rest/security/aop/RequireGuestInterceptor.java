@@ -37,7 +37,7 @@ public class RequireGuestInterceptor implements MethodInterceptor {
 
         Context context = RouteDispatcher.getRouteContext();
         AuthExtractor extractor = new AuthExtractor();
-        Account account = extractor.extract(context, Account.class);
+        Account account = extractor.extract(context);
 
         account.checkGuest();
 
