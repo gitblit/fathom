@@ -23,7 +23,6 @@ import com.google.inject.Singleton;
 import conf.Caches;
 import fathom.utils.ClassUtil;
 import models.Employee;
-import org.infinispan.util.concurrent.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,8 +62,8 @@ public class EmployeeDao {
     public EmployeeDao() {
         idCounter = new AtomicInteger();
         employees = new ConcurrentHashMap<>();
-        offices = new ConcurrentHashSet<>();
-        positions = new ConcurrentHashSet<>();
+        offices = Collections.synchronizedSet(new HashSet<>());
+        positions = Collections.synchronizedSet(new HashSet<>());
 
         loadEmployees();
     }
