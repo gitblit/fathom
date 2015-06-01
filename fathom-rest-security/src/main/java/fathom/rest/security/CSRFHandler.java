@@ -103,7 +103,8 @@ public class CSRFHandler implements RouteHandler<Context> {
     @Override
     public void handle(Context context) {
 
-        if (HttpMethod.POST.equals(context.getRequestMethod())) {
+        String httpSerlvetRequestMethod = context.getRequest().getHttpServletRequest().getMethod();
+        if (HttpMethod.POST.equals(httpSerlvetRequestMethod)) {
 
             // Verify the content-type is guarded
             String contentType = context.getHeader("Content-Type").toLowerCase();
@@ -136,14 +137,14 @@ public class CSRFHandler implements RouteHandler<Context> {
 
             log.debug("Validated '{}' for {} '{}'", TOKEN, context.getRequestMethod(), context.getRequestUri());
 
-        } else if (HttpMethod.GET.equals(context.getRequestMethod())) {
+        } else if (HttpMethod.GET.equals(httpSerlvetRequestMethod)) {
 
             // Generate a CSRF session token on reads
             if (getSessionCsrfToken(context) == null) {
                 String sessionId = getTokenId(context);
                 String token = CryptoUtil.hmacDigest(sessionId, secretKey, algorithm);
                 setSessionCsrfToken(context, token);
-                log.debug("Generated '{}' for {} '{}'", TOKEN, context.getRequestMethod(), context.getRequestUri());
+                log.debug("Generated '{}' for {} '{}'", TOKEN, httpSerlvetRequestMethod, context.getRequestUri());
             }
 
             String token = getSessionCsrfToken(context);
