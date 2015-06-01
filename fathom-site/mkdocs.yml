@@ -1,0 +1,13 @@
+site_name: Fathom
+site_url: http://fathom.gitblit.com
+repo_url: https://github.com/gitblit/fathom
+repo_name: 'GitHub'
+site_description: A JVM-based Microservice Foundation
+site_author: James Moger
+copyright: (c) 2015 James Moger
+theme: readthedocs
+markdown_extensions:
+    - smarty
+    - toc:
+        permalink: True
+    - sane_lists
