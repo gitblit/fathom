@@ -50,10 +50,7 @@ public class RequireRolesInterceptor implements MethodInterceptor {
 
         account.checkRoles(roles.toArray(new String[roles.size()]));
 
-        try {
-            return invocation.proceed();
-        } finally {
-        }
+        return invocation.proceed();
     }
 
 }

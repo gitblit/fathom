@@ -41,10 +41,7 @@ public class RequireGuestInterceptor implements MethodInterceptor {
 
         account.checkGuest();
 
-        try {
-            return invocation.proceed();
-        } finally {
-        }
+        return invocation.proceed();
     }
 
 }

@@ -44,10 +44,7 @@ public class RequireRoleInterceptor implements MethodInterceptor {
 
         account.checkRole(role);
 
-        try {
-            return invocation.proceed();
-        } finally {
-        }
+        return invocation.proceed();
     }
 
 }

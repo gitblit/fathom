@@ -50,10 +50,7 @@ public class RequirePermissionsInterceptor implements MethodInterceptor {
 
         account.checkPermissions(permissions.toArray(new String[permissions.size()]));
 
-        try {
-            return invocation.proceed();
-        } finally {
-        }
+        return invocation.proceed();
     }
 
 }

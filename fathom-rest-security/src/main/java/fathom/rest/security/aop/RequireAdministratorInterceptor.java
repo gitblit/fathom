@@ -41,10 +41,7 @@ public class RequireAdministratorInterceptor implements MethodInterceptor {
 
         account.checkAdministrator();
 
-        try {
-            return invocation.proceed();
-        } finally {
-        }
+        return invocation.proceed();
     }
 
 }

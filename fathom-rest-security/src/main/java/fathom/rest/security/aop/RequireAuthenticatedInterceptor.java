@@ -41,10 +41,7 @@ public class RequireAuthenticatedInterceptor implements MethodInterceptor {
 
         account.checkAuthenticated();
 
-        try {
-            return invocation.proceed();
-        } finally {
-        }
+        return invocation.proceed();
     }
 
 }

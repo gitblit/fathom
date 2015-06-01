@@ -44,10 +44,7 @@ public class RequirePermissionInterceptor implements MethodInterceptor {
 
         account.checkPermission(permission);
 
-        try {
-            return invocation.proceed();
-        } finally {
-        }
+        return invocation.proceed();
     }
 
 }
