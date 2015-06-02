@@ -105,9 +105,9 @@ public class ControllerRegistrar extends ControllerScanner {
 
         Collection<Method> methods = sortMethods(discoveredMethods.keySet());
 
-        Map<Class<?>, Set<String>> controllers = new HashMap<>();
+        Map<Class<? extends Controller>, Set<String>> controllers = new HashMap<>();
         for (Method method : methods) {
-            Class<?> controllerClass = method.getDeclaringClass();
+            Class<? extends Controller> controllerClass = (Class<? extends Controller>) method.getDeclaringClass();
             if (!controllers.containsKey(controllerClass)) {
                 Set<String> paths = collectPaths(controllerClass);
                 controllers.put(controllerClass, paths);

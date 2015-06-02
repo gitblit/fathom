@@ -16,14 +16,12 @@
 package controllers;
 
 import com.google.common.base.Optional;
-import com.google.inject.Singleton;
-import fathom.rest.controller.Template;
+import fathom.rest.controller.Controller;
 
-@Singleton
-public class HelloInstanceController {
+public class HelloInstanceController extends Controller {
 
-    public Template hello(String name) {
-        return Template.view("hello").set("greeting", "Hello " + Optional.fromNullable(name).or("World"));
+    public void hello(String name) {
+        getResponse().bind("greeting", "Hello " + Optional.fromNullable(name).or("World")).render("hello");
     }
 
 }

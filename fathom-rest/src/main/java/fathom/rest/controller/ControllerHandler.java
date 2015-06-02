@@ -19,6 +19,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import fathom.exception.FathomException;
 import fathom.rest.Context;
 import fathom.rest.controller.extractors.ArgumentExtractor;
@@ -52,17 +53,21 @@ public class ControllerHandler implements RouteHandler<Context> {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerHandler.class);
 
-    protected final Provider<?> controllerProvider;
+    protected final Provider<? extends Controller> controllerProvider;
     protected final Method method;
     protected ArgumentExtractor[] extractors;
     protected String[] patterns;
 
-    public ControllerHandler(Injector injector, Class<?> controllerClass, String methodName) {
+    public ControllerHandler(Injector injector, Class<? extends Controller> controllerClass, String methodName) {
+        if (controllerClass.isAnnotationPresent(Singleton.class)
+                || controllerClass.isAnnotationPresent(javax.inject.Singleton.class)) {
+            throw new FathomException("Controller '{}' may not be annotated as a Singleton!", controllerClass.getName());
+        }
+
         this.controllerProvider = injector.getProvider(controllerClass);
         this.method = findMethod(injector, controllerClass, methodName);
 
-        Preconditions.checkNotNull(method, "Failed to find controller method '%s::%s'", controllerClass.getSimpleName(),
-                methodName);
+        Preconditions.checkNotNull(method, "Failed to find method '%s'", Util.toString(controllerClass, methodName));
         log.trace("Obtained method for '{}'", Util.toString(method));
     }
 
@@ -79,15 +84,23 @@ public class ControllerHandler implements RouteHandler<Context> {
             Object[] args = prepareMethodArgs(context);
 
             log.trace("Invoking '{}'", Util.toString(method));
-            Object controller = controllerProvider.get();
+            Controller controller = controllerProvider.get();
+            controller.setContext(context);
+            controller.setLogger(LoggerFactory.getLogger(method.getDeclaringClass()));
 
-            ControllerResult result = (ControllerResult) method.invoke(controller, args);
+            if (method.isAnnotationPresent(Produces.class)) {
+                Produces produces = method.getAnnotation(Produces.class);
+                String defaultContentType = produces.value()[0];
+                context.getResponse().contentType(defaultContentType);
 
-            Preconditions.checkNotNull(result, "Controller method '{}' returned null!", Util.toString(method));
-            log.trace("Processing '{}' result from '{}'", result.getClass().getSimpleName(), Util.toString(method));
-            result.process(context, method);
+                if (produces.negotiate()) {
+                    context.negotiateContentType();
+                }
+            }
 
-            context.next();
+            method.invoke(controller, args);
+
+           context.next();
 
         } catch (InvocationTargetException e) {
             Throwable t = e.getTargetException();
@@ -108,13 +121,6 @@ public class ControllerHandler implements RouteHandler<Context> {
             if (method.getName().equals(name)) {
                 if (controllerMethod == null) {
                     controllerMethod = method;
-
-                    // validate method return type
-                    if (!ControllerResult.class.isAssignableFrom(method.getReturnType())) {
-                        throw new FathomException("The return type of '{}' must be an implementation of '{}'!",
-                                Util.toString(controllerMethod),
-                                ControllerResult.class.getName());
-                    }
 
                     // mapped parameters
                     Class<?>[] types = method.getParameterTypes();

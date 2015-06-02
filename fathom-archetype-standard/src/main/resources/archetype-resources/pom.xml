@@ -10,7 +10,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <fathom.version>@project.version@</fathom.version>
-        <pippo.version>@project.version@</pippo.version>
+        <pippo.version>@pippo.version@</pippo.version>
     </properties>
 
     <dependencies>

@@ -16,20 +16,18 @@
 package controllers;
 
 import com.google.common.base.Optional;
-import com.google.inject.Singleton;
 import fathom.metrics.Timed;
+import fathom.rest.controller.ControllerPath;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
-import fathom.rest.controller.Template;
 
-@Singleton
-@Controller("/annotated")
-public class HelloAnnotatedController {
+@ControllerPath("/annotated")
+public class HelloAnnotatedController extends Controller {
 
     @Timed("hello.annotated")
     @GET("/")
-    public Template hello(String name) {
-        return Template.view("hello").set("greeting", "Hello " + Optional.fromNullable(name).or("World"));
+    public void hello(String name) {
+        getResponse().bind("greeting", "Hello " + Optional.fromNullable(name).or("World")).render("hello");
     }
 
 }

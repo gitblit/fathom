@@ -17,26 +17,21 @@
 package controllers;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import dao.ItemDao;
 import fathom.metrics.Metered;
 import fathom.realm.Account;
 import fathom.rest.controller.Auth;
+import fathom.rest.controller.ControllerPath;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
-import fathom.rest.controller.Result;
+import fathom.rest.controller.Produces;
 import models.Item;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * To be discoverable, a controller must be annotated with {@code @Controller}.
+ * To be discoverable, a controller must be annotated with {@code @ControllerPath}.
  */
-@Singleton
-@Controller("/api/")
-public class ApiController {
-
-    private final static Logger log = LoggerFactory.getLogger(ApiController.class);
+@ControllerPath("/api/")
+public class ApiController extends Controller {
 
     @Inject
     ItemDao dao;
@@ -63,15 +58,16 @@ public class ApiController {
      * @return Reply
      */
     @GET("{id: [0-9]+}")
+    @Produces({Produces.JSON, Produces.XML})
     @Metered
-    public Result get(int id, @Auth Account account) {
+    public void get(int id, @Auth Account account) {
 
         log.debug("GET item #{} for '{}'", id, account);
         Item item = dao.get(id);
         if (item == null) {
-            return Result.notFound("Item #{} does not exist", id);
+            getResponse().notFound().send("Item #{} does not exist", id);
         } else {
-            return Result.ok(item);
+            getResponse().ok().send(item);
         }
     }
 

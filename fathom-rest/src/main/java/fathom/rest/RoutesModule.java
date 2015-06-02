@@ -22,6 +22,7 @@ import com.google.inject.Injector;
 import fathom.conf.Settings;
 import fathom.rest.controller.ControllerHandler;
 import fathom.rest.controller.ControllerRegistrar;
+import fathom.rest.controller.Controller;
 import fathom.rest.controller.HttpMethod;
 import fathom.rest.route.LanguageHandler;
 import fathom.utils.RequireUtil;
@@ -189,7 +190,7 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.OPTIONS, handler);
     }
 
-    protected RouteRegistration OPTIONS(String uriPattern, Class<?> controllerClass, String methodName) {
+    protected RouteRegistration OPTIONS(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.OPTIONS, controllerClass, methodName);
     }
 
@@ -197,7 +198,7 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.HEAD, handler);
     }
 
-    protected RouteRegistration HEAD(String uriPattern, Class<?> controllerClass, String methodName) {
+    protected RouteRegistration HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.HEAD, controllerClass, methodName);
     }
 
@@ -211,7 +212,7 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.GET, handler);
     }
 
-    protected RouteRegistration GET(String uriPattern, Class<?> controllerClass, String methodName) {
+    protected RouteRegistration GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.GET, controllerClass, methodName);
     }
 
@@ -219,7 +220,7 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.POST, handler);
     }
 
-    protected RouteRegistration POST(String uriPattern, Class<?> controllerClass, String methodName) {
+    protected RouteRegistration POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.POST, controllerClass, methodName);
     }
 
@@ -227,7 +228,7 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.PUT, handler);
     }
 
-    protected RouteRegistration PUT(String uriPattern, Class<?> controllerClass, String methodName) {
+    protected RouteRegistration PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.PUT, controllerClass, methodName);
     }
 
@@ -235,7 +236,7 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.PATCH, handler);
     }
 
-    protected RouteRegistration PATCH(String uriPattern, Class<?> controllerClass, String methodName) {
+    protected RouteRegistration PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.PATCH, controllerClass, methodName);
     }
 
@@ -243,11 +244,11 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.DELETE, handler);
     }
 
-    protected RouteRegistration DELETE(String uriPattern, Class<?> controllerClass, String methodName) {
+    protected RouteRegistration DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.DELETE, controllerClass, methodName);
     }
 
-    protected RouteRegistration registerRoute(String uriPattern, String httpMethod, Class<?> controllerClass, String methodName) {
+    protected RouteRegistration registerRoute(String uriPattern, String httpMethod, Class<? extends Controller> controllerClass, String methodName) {
         ControllerHandler controllerHandler = new ControllerHandler(injector, controllerClass, methodName);
         return registerRoute(uriPattern, httpMethod, controllerHandler);
     }

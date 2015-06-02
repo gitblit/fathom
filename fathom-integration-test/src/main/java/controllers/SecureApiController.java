@@ -17,28 +17,22 @@
 package controllers;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import dao.ItemDao;
 import fathom.metrics.Metered;
 import fathom.realm.Account;
 import fathom.rest.controller.Auth;
 import fathom.rest.controller.Controller;
+import fathom.rest.controller.ControllerPath;
 import fathom.rest.controller.GET;
-import fathom.rest.controller.Result;
+import fathom.rest.controller.Produces;
 import fathom.rest.security.aop.RequirePermission;
 import models.Item;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * To be discoverable, a controller must be annotated
- * with {@code @Controller}
+ * To be discoverable, a controller must be annotated with {@code @ControllerPath}
  */
-@Singleton
-@Controller("/secure/")
-public class SecureApiController {
-
-    private final static Logger log = LoggerFactory.getLogger(SecureApiController.class);
+@ControllerPath("/secure/")
+public class SecureApiController extends Controller {
 
     @Inject
     ItemDao dao;
@@ -64,9 +58,10 @@ public class SecureApiController {
      * @return Reply
      */
     @GET("{id: [0-9]+}")
+    @Produces({Produces.JSON, Produces.XML})
     @Metered
     @RequirePermission("secure:view")
-    public Result get(int id, @Auth Account account) {
+    public void get(int id, @Auth Account account) {
 
         // Enforce a required permission (see Components.java).
         // Alternatively we could skip @RequirePermission and
@@ -77,9 +72,9 @@ public class SecureApiController {
         log.debug("GET item #{} for '{}'", id, account);
         Item item = dao.get(id);
         if (item == null) {
-            return Result.notFound("Item #{} does not exist", id);
+            getResponse().notFound().send("Item #{} does not exist", id);
         } else {
-            return Result.ok(item);
+            getResponse().ok().send(item);
         }
     }
 
