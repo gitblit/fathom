@@ -33,6 +33,8 @@
             <li><a href="${appPath}/notFound">An example 404</a></li>
             <li><a href="${appPath}/internalError">An example 500</a></li>
             <li><a href="${appPath}/secure/employees">${i18n('fathom.employees')}</a></li>
+            <li><a href="${appPath}/collections">Collections (forms)</a></li>
+            <li><a href="${appPath}/content">JSON Content (forms)</a></li>
         </ul>
     </div>
     <div class="large-6 columns">

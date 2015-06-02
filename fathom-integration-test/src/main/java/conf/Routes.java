@@ -112,7 +112,8 @@ public class Routes extends RoutesModule {
          * Register a CSRF token generator and validator.
          * This creates a session for all matching requests.
          */
-        ALL("/secure/.*", new CSRFHandler()).named("CSRF handler");
+        CSRFHandler csrfHandler = new CSRFHandler();
+        ALL("/(secure/|collections|content).*", csrfHandler).named("CSRF handler");
 
         /*
          * Create a form authentication guard for secure routes.
@@ -120,8 +121,8 @@ public class Routes extends RoutesModule {
          * to the login url.
          */
         FormAuthenticationGuard guard = new FormAuthenticationGuard("/login");
-        GET("/secure/.*", guard);
-        POST("/secure/.*", guard);
+        GET("/(secure/|collections|content).*", guard);
+        POST("/(secure/|collections|content).*", guard);
 
         /*
          * Root page
