@@ -16,14 +16,39 @@
 
 package fathom.rest.controller.extractors;
 
+import fathom.exception.FathomException;
+import fathom.rest.Context;
 import ro.pippo.core.ParameterValue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author James Moger
  */
-abstract class DefaultObjectExtractor implements TypedExtractor {
+abstract class DefaultObjectExtractor implements CollectionExtractor {
+
+    protected Class<? extends Collection> collectionType;
 
     protected Class<?> objectType;
+
+    @Override
+    public void setCollectionType(Class<? extends Collection> collectionType) {
+        if (collectionType.isInterface() && !(Set.class == collectionType || List.class == collectionType)) {
+            throw new FathomException("Collection type '{}' is not supported!", collectionType.getName());
+        }
+
+        if (Set.class == collectionType) {
+            this.collectionType = HashSet.class;
+        } else if (List.class == collectionType) {
+            this.collectionType = ArrayList.class;
+        } else {
+            this.collectionType = collectionType;
+        }
+    }
 
     @Override
     public void setObjectType(Class<?> objectType) {

@@ -63,7 +63,12 @@ public class HeaderExtractor extends DefaultObjectExtractor
     @Override
     public Object extract(Context context) {
         ParameterValue pv = new ParameterValue(context.getHeader(name));
-        Object o = pv.to(objectType, pattern);
+        if (collectionType == null) {
+            Object o = pv.to(objectType, pattern);
+            return o;
+        }
+
+        Object o = pv.toCollection(collectionType, objectType, pattern);
         return o;
     }
 }

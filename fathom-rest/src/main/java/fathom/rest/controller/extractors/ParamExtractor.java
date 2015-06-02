@@ -20,6 +20,8 @@ import fathom.rest.Context;
 import fathom.rest.controller.Param;
 import ro.pippo.core.ParameterValue;
 
+import java.util.Collection;
+
 /**
  * @author James Moger
  */
@@ -64,7 +66,12 @@ public class ParamExtractor extends DefaultObjectExtractor
     @Override
     public Object extract(Context context) {
         ParameterValue pv = context.getParameter(name);
-        Object o = pv.to(objectType, pattern);
+        if (collectionType == null) {
+            Object o = pv.to(objectType, pattern);
+            return o;
+        }
+
+        Object o = pv.toCollection(collectionType, objectType, pattern);
         return o;
     }
 }

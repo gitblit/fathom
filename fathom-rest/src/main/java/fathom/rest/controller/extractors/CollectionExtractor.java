@@ -16,26 +16,13 @@
 
 package fathom.rest.controller.extractors;
 
-import fathom.rest.Context;
+import java.util.Collection;
 
 /**
  * @author James Moger
  */
-public class BodyExtractor extends DefaultObjectExtractor {
+public interface CollectionExtractor extends TypedExtractor {
 
-    @Override
-    public void setObjectType(Class<?> objectType) {
-        this.objectType = objectType;
-    }
+    void setCollectionType(Class<? extends Collection> collectionType);
 
-    @Override
-    public Object extract(Context context) {
-        if (collectionType == null) {
-            Object o = context.createEntityFromBody(objectType);
-            return o;
-        }
-        // TODO improve body collection support
-        Object o = context.createEntityFromBody(collectionType);
-        return o;
-    }
 }

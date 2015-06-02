@@ -22,6 +22,7 @@ import com.google.inject.Provider;
 import fathom.exception.FathomException;
 import fathom.rest.Context;
 import fathom.rest.controller.extractors.ArgumentExtractor;
+import fathom.rest.controller.extractors.CollectionExtractor;
 import fathom.rest.controller.extractors.ConfigurableExtractor;
 import fathom.rest.controller.extractors.ContextExtractor;
 import fathom.rest.controller.extractors.ExtractWith;
@@ -38,6 +39,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 /**
  * ControllerHandler executes controller methods.
@@ -117,7 +121,15 @@ public class ControllerHandler implements RouteHandler<Context> {
                     extractors = new ArgumentExtractor[types.length];
                     patterns = new String[types.length];
                     for (int i = 0; i < types.length; i++) {
-                        Class<?> objectType = types[i];
+                        final Class<? extends Collection> collectionType;
+                        final Class<?> objectType;
+                        if (Collection.class.isAssignableFrom(types[i])) {
+                            collectionType = (Class<? extends Collection>) types[i];
+                            objectType = getParameterGenericType(method, i);
+                        } else {
+                            collectionType = null;
+                            objectType = types[i];
+                        }
 
                         // determine the appropriate extractor
                         Class<? extends ArgumentExtractor> extractorType;
@@ -139,7 +151,17 @@ public class ControllerHandler implements RouteHandler<Context> {
                             }
                         }
 
-                        // test the target type
+                        if (collectionType != null) {
+                            if (extractors[i] instanceof CollectionExtractor) {
+                                CollectionExtractor extractor = (CollectionExtractor) extractors[i];
+                                extractor.setCollectionType(collectionType);
+                            } else {
+                                throw new FathomException(
+                                        "Controller method '{}' parameter {} of type '{}' does not specify an argument extractor that supports collections!",
+                                        Util.toString(method), i + 1, describeType(collectionType, objectType));
+                            }
+                        }
+
                         if (extractors[i] instanceof TypedExtractor) {
                             TypedExtractor extractor = (TypedExtractor) extractors[i];
                             extractor.setObjectType(objectType);
@@ -158,7 +180,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                                     log.error("Properly annotate your controller methods OR specify the '-parameters' flag for your Java compiler!");
                                     throw new FathomException(
                                             "Controller method '{}' parameter {} of type '{}' does not specify a name!",
-                                            Util.toString(method), i + 1, objectType.getSimpleName());
+                                            Util.toString(method), i + 1, describeType(collectionType, objectType));
                                 }
                             }
                         }
@@ -182,7 +204,7 @@ public class ControllerHandler implements RouteHandler<Context> {
 
         Object[] args = new Object[types.length];
         for (int i = 0; i < args.length; i++) {
-            Class<?> type = types[i];
+            final Class<?> type = types[i];
             ArgumentExtractor extractor = extractors[i];
             Object value = extractor.extract(context);
             if (value == null || ClassUtil.isAssignable(value, type)) {
@@ -213,6 +235,23 @@ public class ControllerHandler implements RouteHandler<Context> {
         return null;
     }
 
+    protected Class<?> getParameterGenericType(Method method, int i) {
+        Type parameterType = method.getGenericParameterTypes()[i];
+        if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
+            throw new FathomException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
+                    method.getParameterTypes()[i].getName(), i, Util.toString(method));
+        }
+
+        ParameterizedType parameterizedType = (ParameterizedType) parameterType;
+        try {
+            Class<?> genericClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            return genericClass;
+        } catch (ClassCastException e) {
+            throw new FathomException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
+                    method.getParameterTypes()[i].getName(), i, Util.toString(method));
+        }
+    }
+
     protected Class<? extends ArgumentExtractor> getArgumentExtractor(Method method, int i) {
         Annotation[] annotations = method.getParameterAnnotations()[i];
         for (Annotation annotation : annotations) {
@@ -234,5 +273,12 @@ public class ControllerHandler implements RouteHandler<Context> {
             }
         }
         return null;
+    }
+
+    protected String describeType(Class<? extends Collection> collectionType, Class<?> objectType) {
+        if (collectionType == null) {
+            return objectType.getSimpleName();
+        }
+        return collectionType.getSimpleName() + "<" + objectType.getSimpleName() + ">";
     }
 }
