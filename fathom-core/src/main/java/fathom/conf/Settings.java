@@ -57,6 +57,7 @@ public class Settings {
     private final long defaultUploadFilesMaxSize = -1L;
     private final Config config;
     private final Properties overrides;
+    private String profile = "default";
     private Constants.Mode mode;
 
     public Settings() {
@@ -80,11 +81,13 @@ public class Settings {
     }
 
     private Config loadConfig() {
+        log.info("Runtime profile is '{}'", profile);
+
         // start with an empty config
         Config runtimeConfig = ConfigFactory.empty();
 
         // merge the classpath config file
-        URL url = ClassUtil.getResource("conf/application.conf");
+        URL url = ClassUtil.getResource(String.format("conf/%s.conf", profile));
         Config classpathConfig = loadConfig(url);
         if (classpathConfig != null) {
             runtimeConfig = classpathConfig.withFallback(runtimeConfig);
@@ -93,7 +96,7 @@ public class Settings {
 
         // merge an external config file
         try {
-            Path path = Paths.get(System.getProperty("user.dir"), "application.conf");
+            Path path = Paths.get(System.getProperty("user.dir"), String.format("%s.conf", profile));
             if (path.toFile().exists()) {
                 URL externalUrl = path.toUri().toURL();
                 Config externalConfig = loadConfig(externalUrl);
@@ -144,14 +147,6 @@ public class Settings {
 
     public boolean isProd() {
         return Constants.Mode.PROD == mode;
-    }
-
-    public boolean isMaster() {
-        return Constants.Mode.MASTER == mode;
-    }
-
-    public boolean isSlave() {
-        return Constants.Mode.SLAVE == mode;
     }
 
     public String getApplicationName() {
@@ -220,6 +215,20 @@ public class Settings {
         }
     }
 
+    public String getProfile() {
+        return profile;
+    }
+
+    @Option(name = "--profile", metaVar = "PROFILE",
+            usage = "Specify the settings profile name\n" +
+                    "e.g. 'application' to load the 'application.conf' settings\n" +
+                    "     'master' to load the 'master.conf' settings")
+    public Settings profile(String profile) {
+        this.profile = profile;
+
+        return this;
+    }
+
     public Constants.Mode getMode() {
         return mode;
     }
@@ -229,9 +238,7 @@ public class Settings {
             usage = "Fathom runtime mode.\n" +
                     "PROD = production mode\n" +
                     "TEST = test mode\n" +
-                    "DEV = development mode\n" +
-                    "MASTER = master mode\n" +
-                    "SLAVE = slave mode")
+                    "DEV = development mode")
     public Settings mode(Constants.Mode mode) {
         this.mode = mode;
 

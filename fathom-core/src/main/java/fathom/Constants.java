@@ -99,7 +99,7 @@ public class Constants {
     }
 
     public static enum Mode {
-        DEV, TEST, PROD, MASTER, SLAVE;
+        DEV, TEST, PROD;
 
         public static Mode byName(String name) {
             for (Mode mode : values()) {
