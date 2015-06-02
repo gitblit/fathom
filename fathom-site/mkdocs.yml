@@ -12,11 +12,12 @@ markdown_extensions:
         permalink: True
     - sane_lists
 pages:
-  - Introduction: 'index.md'
-  - Layout: 'layout.md'
-  - Configuration: 'configuration.md'
-  - Testing: 'testing.md'
-  - Deployment: 'deployment.md'
+  - Core:
+      - Introduction: 'index.md'
+      - Layout: 'layout.md'
+      - Configuration: 'configuration.md'
+      - Testing: 'testing.md'
+      - Deployment: 'deployment.md'
   - Modules:
       - 'Fathom-REST' : 'rest.md'
       - 'Fathom-REST-Security' : 'rest-security.md'
