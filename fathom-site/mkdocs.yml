@@ -11,3 +11,18 @@ markdown_extensions:
     - toc:
         permalink: True
     - sane_lists
+pages:
+  - Introduction: 'index.md'
+  - Layout: 'layout.md'
+  - Configuration: 'configuration.md'
+  - Testing: 'testing.md'
+  - Deployment: 'deployment.md'
+  - Modules:
+      - 'Fathom-REST' : 'rest.md'
+      - 'Fathom-REST-Security' : 'rest-security.md'
+      - 'Fathom-Security' : 'security.md'
+      - 'Fathom-Metrics' : 'metrics.md'
+      - 'Fathom-Mailer' : 'mail.md'
+      - 'Fathom-Eventbus' : 'eventbus.md'
+      - 'Fathom-JCache' : 'jcache.md'
+      - 'Fathom-Quartz' : 'quartz.md'
