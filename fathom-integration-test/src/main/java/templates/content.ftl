@@ -8,7 +8,7 @@
                     <h2>JSON Content
                         <small>PUT application/json from a form</small>
                     </h2>
-                    <textarea id="desserts" rows=5 name="_content">${myDesserts}</textarea>
+                    <textarea id="desserts" name="_content">${myDesserts}</textarea>
 
                     <!-- dress-up our textarea wth CodeMirror -->
                     <link rel="stylesheet" href="${webjarsAt('codemirror/5.3/lib/codemirror.css')}">
@@ -30,7 +30,7 @@
             </div>
             <div class="row">
                 <div class="large-12 columns">
-                    <input type="hidden" name="csrfToken" value="${csrfToken}">
+                    <input type="hidden" name="_csrf_token" value="${csrfToken}">
                     <input type="hidden" name="_method" value="PUT">
                     <input type="hidden" name="_content_type" value="application/json">
                     <button type="submit" class="small radius">${i18n('fathom.save')}</button>

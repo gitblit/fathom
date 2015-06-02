@@ -113,7 +113,7 @@ public class Routes extends RoutesModule {
          * This creates a session for all matching requests.
          */
         CSRFHandler csrfHandler = new CSRFHandler();
-        ALL("/(secure/|collections|content).*", csrfHandler).named("CSRF handler");
+        ALL("/(secure/.*|collections|content)", csrfHandler).named("CSRF handler");
 
         /*
          * Create a form authentication guard for secure routes.
@@ -121,8 +121,8 @@ public class Routes extends RoutesModule {
          * to the login url.
          */
         FormAuthenticationGuard guard = new FormAuthenticationGuard("/login");
-        GET("/(secure/|collections|content).*", guard);
-        POST("/(secure/|collections|content).*", guard);
+        GET("/(secure/.*|collections|content)", guard);
+        POST("/(secure/.*|collections|content)", guard);
 
         /*
          * Root page

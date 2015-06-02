@@ -41,7 +41,7 @@
 
             <div class="row">
                 <div class="large-12 columns">
-                    <input type="hidden" name="csrfToken" value="${csrfToken}">
+                    <input type="hidden" name="_csrf_token" value="${csrfToken}">
                     <input type="hidden" name="_method" value="PUT">
                     <button type="submit" class="small radius">${i18n('fathom.save')}</button>
                     <a class="button small radius secondary" href="${appPath}/">${i18n('fathom.cancel')}</a>
