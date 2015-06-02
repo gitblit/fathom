@@ -26,12 +26,16 @@ import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Produces;
 import models.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * To be discoverable, a controller must be annotated with {@code @ControllerPath}.
  */
 @ControllerPath("/api/")
 public class ApiController extends Controller {
+
+    private final Logger log = LoggerFactory.getLogger(ApiController.class);
 
     @Inject
     ItemDao dao;

@@ -28,12 +28,16 @@ import fathom.rest.controller.GET;
 import fathom.rest.controller.Produces;
 import fathom.rest.security.aop.RequirePermission;
 import models.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * To be discoverable, a controller must be annotated with {@code @ControllerPath}
  */
 @ControllerPath("/secure")
 public class SecureApiController extends Controller {
+
+    private final Logger log = LoggerFactory.getLogger(SecureApiController.class);
 
     @Inject
     ItemDao dao;

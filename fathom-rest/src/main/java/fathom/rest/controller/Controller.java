@@ -13,13 +13,7 @@ import ro.pippo.core.Response;
  */
 public class Controller {
 
-    protected Logger log;
-
     private Context context;
-
-    public final void setLogger(Logger log) {
-        this.log = log;
-    }
 
     public final void setContext(Context context) {
         this.context = context;

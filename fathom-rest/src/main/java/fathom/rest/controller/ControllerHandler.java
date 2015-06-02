@@ -86,7 +86,6 @@ public class ControllerHandler implements RouteHandler<Context> {
             log.trace("Invoking '{}'", Util.toString(method));
             Controller controller = controllerProvider.get();
             controller.setContext(context);
-            controller.setLogger(LoggerFactory.getLogger(method.getDeclaringClass()));
 
             if (method.isAnnotationPresent(Produces.class)) {
                 Produces produces = method.getAnnotation(Produces.class);
@@ -100,7 +99,7 @@ public class ControllerHandler implements RouteHandler<Context> {
 
             method.invoke(controller, args);
 
-           context.next();
+            context.next();
 
         } catch (InvocationTargetException e) {
             Throwable t = e.getTargetException();
