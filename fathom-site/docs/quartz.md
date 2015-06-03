@@ -2,6 +2,8 @@
 
 **Fathom-Quartz** provides [Quartz Scheduler]() integration for your application.
 
+This is a fork of [Apache Onami Scheduler](https://onami.apache.org/scheduler)
+
 ## Installation
 
 Add the **Fathom-Quartz** artifact.
@@ -34,7 +36,13 @@ public class Jobs extends JobsModule {
         }
 
     }
+```
 
+## Usage
+
+By default, this module will try to configure Quartz from a `conf/quartz.properties` file, if it exists.
+
+```java
     private static class ProdJob implements Job {
 
         final Logger log = LoggerFactory.getLogger(ProdJob.class);
@@ -57,3 +65,24 @@ public class Jobs extends JobsModule {
     }
 }
 ```
+
+### Annotated Scheduling
+
+Job classes annotated with `fathom.quartz.Scheduled` will be automatically scheduled.
+
+```java
+@Singleton
+@Scheduled(jobName = "test", cronExpression = "0/2 * * * * ?")
+public class com.acme.MyJobImpl implements org.quartz.Job {
+
+    @Inject
+    private MyCustomService service;
+
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        service.customOperation();
+    }
+
+}
+```
+
+[1]: http://quartz-scheduler.org/documentation/quartz-2.2.x/quick-start

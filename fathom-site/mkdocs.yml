@@ -21,6 +21,7 @@ pages:
   - Modules:
       - 'Fathom-REST' : 'rest.md'
       - 'Fathom-REST-Security' : 'rest-security.md'
+      - 'Fathom-REST-Shiro' : 'rest-shiro.md'
       - 'Fathom-Security' : 'security.md'
       - 'Fathom-Metrics' : 'metrics.md'
       - 'Fathom-Mailer' : 'mail.md'
