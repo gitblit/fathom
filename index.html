@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Fathom by gitblit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Fathom</h1>
+      <h2 class="project-tagline">Modular &amp; injectable foundation for building JVM microservices</h2>
+      <a href="https://github.com/gitblit/fathom" class="btn">View on GitHub</a>
+      <a href="https://github.com/gitblit/fathom/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/gitblit/fathom/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h2>
+<a id="fathom" class="anchor" href="#fathom" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fathom</h2>
+
+<p>Fathom is an opinionated, modular, &amp; injectable foundation for building microservices on a JVM.</p>
+
+<pre>
+    (_)        ______      __  __
+   __|__      / ____/___ _/ /_/ /_  ____  ____ ___
+     |       / /_  / __ `/ __/ __ \/ __ \/ __ `__ \  Microservice Foundation
+ \__/ \__/  / __/ / /_/ / /_/ / / / /_/ / / / / / /  http://fathom.gitblit.com
+  °-. .-°  /_/    \__,_/\__/_/ /_/\____/_/ /_/ /_/
+     '
+</pre>
+
+<h3>
+<a id="microservice-foundation" class="anchor" href="#microservice-foundation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Microservice Foundation</h3>
+
+<p>Fathom provides a base to quickly bootstrap your microservice project using <a href="http://undertow.io">Undertow</a>, <a href="https://github.com/google/guice">Guice</a>,
+<a href="https://code.google.com/p/guava-libraries">Guava</a>, <a href="https://github.com/typesafehub/config">Config</a>, <a href="http://logback.qos.ch">Args4j</a>, <a href="http://args4j.kohsuke.org">Logback</a>, and <a href="http://commons.apache.org/proper/commons-daemon">Commons-Daemon</a>.</p>
+
+<blockquote>
+<p>Fathom applications are <em>developed-on</em> and <em>deployed-with</em> <a href="http://undertow.io">Undertow</a>.
+You do not build WARs with Fathom; you build integrated server applications.</p>
+</blockquote>
+
+<h3>
+<a id="opinionated" class="anchor" href="#opinionated" aria-hidden="true"><span class="octicon octicon-link"></span></a>Opinionated</h3>
+
+<ul>
+<li>
+<a href="http://undertow.io">Undertow</a> is <em>the</em> development &amp; deployment engine</li>
+<li>
+<a href="https://github.com/google/guice">Guice</a> is <em>the</em> dependency injection mechanism</li>
+<li>
+<a href="https://code.google.com/p/guava-libraries">Guava</a> is <em>the</em> standard library</li>
+<li>
+<a href="https://github.com/typesafehub/config">Config</a> is <em>the</em> configuration file parser</li>
+<li>
+<a href="http://logback.qos.ch">Args4j</a> is <em>the</em> command-line parsing framework</li>
+<li>
+<a href="http://args4j.kohsuke.org">Logback</a> is <em>the</em> logging framework</li>
+<li>
+<a href="http://commons.apache.org/proper/commons-daemon">Commons-Daemon</a> is <em>the</em> service control integration</li>
+<li>
+<em>Java 8</em> is the baseline JVM</li>
+</ul>
+
+<h3>
+<a id="modular" class="anchor" href="#modular" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modular</h3>
+
+<p>Fathom features a formal <code>Module</code> spec, <code>Service</code> classes, and dependency injection combined with the <a href="http://martinfowler.com/articles/injection.html#UsingAServiceLocator">Service Locator
+design</a> that gives <em>you</em> ultimate modularity.</p>
+
+<p>Modules &amp; services may be optionally disabled based on runtime mode and/or config settings.</p>
+
+<p>There are several modules available to build your Fathom foundation:</p>
+
+<ul>
+<li>
+<a href="/fathom-jcache/">JCache</a> module for <a href="http://hazelcast.org">Hazelcast</a>, <a href="http://infinispan.org">Infinispan</a>, or <a href="http://ehcache.org">Ehcache</a>.</li>
+<li>
+<a href="/fathom-metrics/">Metrics</a> module for runtime metrics collection</li>
+<li>
+<a href="/fathom-eventbus/">EventBus</a> module for decoupled event passing</li>
+<li>
+<a href="/fathom-mailer/">Mailer</a> module for email sending</li>
+<li>
+<a href="/fathom-quartz/">Quartz</a> module for Quartz scheduling integration</li>
+<li>
+<a href="/fathom-rest/">REST</a> module for RESTful routing &amp; controllers based on <a href="http://www.pippo.ro">Pippo</a>
+
+<ul>
+<li>
+<a href="/fathom-rest-security/">Security</a> module for RESTful Authentication &amp; Authorization against PAM, Windows, LDAP, JDBC, Redis, etc.</li>
+<li>
+<a href="/fathom-rest-shiro/">Shiro</a> module for RESTful Authenication &amp; Authorization</li>
+<li>Multiple content-type engine choices
+
+<ul>
+<li>JAXB <em>(default)</em>
+</li>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-xstream">XStream</a></li>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-gson">GSON</a></li>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-fastjson">FastJSON</a></li>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-jackson">Jackson</a></li>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-snakeyaml">SnakeYAML</a></li>
+</ul>
+</li>
+<li>Multiple template engine choices with <a href="http://www.webjars.org">Webjars</a> support, localization (i18n), &amp; <a href="http://www.ocpsoft.org/prettytime">pretty-time</a> integration.
+
+<ul>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-freemarker">Freemarker</a></li>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-jade">Jade</a></li>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-pebble">Pebble</a></li>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-trimou">Trimou</a></li>
+<li><a href="https://github.com/decebals/pippo/tree/master/pippo-groovy">Groovy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a id="testing" class="anchor" href="#testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Testing</h3>
+
+<ul>
+<li>Integration testing based on <a href="https://code.google.com/p/rest-assured">Rest-Assured</a>.</li>
+</ul>
+
+<h3>
+<a id="deployment" class="anchor" href="#deployment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deployment</h3>
+
+<ul>
+<li>Five runtime modes: PROD, TEST, DEV, MASTER &amp; SLAVE</li>
+<li>Flexible config file with runtime-mode setting variations, property substitutions, &amp; environment variable substitutions</li>
+<li>Integrated support for HTTPS, HTTP, AJP, &amp; HTTP/2 transports</li>
+<li>Integrated <a href="http://commons.apache.org/proper/commons-daemon">Commons-Daemon</a> service support for Windows &amp; UNIX</li>
+<li>Distribution bundling with <a href="https://github.com/fizzed/stork">Stork</a>
+</li>
+</ul>
+
+<h3>
+<a id="footprint" class="anchor" href="#footprint" aria-hidden="true"><span class="octicon octicon-link"></span></a>Footprint</h3>
+
+<p>The footprint of a <em>Hello World</em> Fathom servlet microservice is about <em>7MB</em>.</p>
+
+<h3>
+<a id="similar-alternatives" class="anchor" href="#similar-alternatives" aria-hidden="true"><span class="octicon octicon-link"></span></a>Similar alternatives</h3>
+
+<ul>
+<li><a href="http://restlet.com">Restlet</a></li>
+<li><a href="http://ratpack.io">Ratpack</a></li>
+<li><a href="http://sparkjava.com">SparkJava</a></li>
+<li><a href="http://projects.spring.io/spring-boot">Spring Boot</a></li>
+<li><a href="http://www.ninjaframework.org">Ninja</a></li>
+<li><a href="https://playframework.com">Play</a></li>
+<li><a href="http://dropwizard.github.io/dropwizard">DropWizard</a></li>
+</ul>
+
+<h3>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h3>
+
+<p>Distributed under the Apache Software License 2.0.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/gitblit/fathom">Fathom</a> is maintained by <a href="https://github.com/gitblit">gitblit</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
