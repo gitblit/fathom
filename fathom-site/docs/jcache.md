@@ -16,11 +16,22 @@ Add the **Fathom-JCache** artifact...
 
 ... and also add your preferred JCache provider:
 
-| Provider        | Coordinates                      |
-|-----------------|----------------------------------|
-| [Hazelcast][]   | com.hazelcast:hazelcast          |
-| [Infinispan][]  | org.infinispan:infinispan-jcache |
-| [Ehcache][]     | org.ehcache:jcache               |
+| Provider      | Artifact                           |
+|---------------|------------------------------------|
+| [Hazelcast]   | [com.hazelcast:hazelcast]          |
+| [Infinispan]  | [org.infinispan:infinispan-jcache] |
+| [Ehcache]     | [org.ehcache:jcache]               |
+
+## Layout
+
+```
+YourApp
+└── src
+    └── main
+        └── java
+            └── conf
+                └── Caches.java
+```
 
 ## Configuration
 
@@ -57,3 +68,7 @@ public class Caches extends CachesModule {
 [Hazelcast]: http://hazelcast.org
 [Infinispan]: http://infinispan.org
 [Ehcache]: http://ehcache.org
+
+[com.hazelcast:hazelcast]: http://search.maven.org/#search|ga|1|g:"com.hazelcast"%20AND%20a:"hazelcast"
+[org.infinispan:infinispan-jcache]: http://search.maven.org/#search|ga|1|g:"org.infinispan"%20AND%20a:"infinispan-jcache"
+[org.ehcache:jcache]: http://search.maven.org/#search|ga|1|g:"org.ehcache"%20AND%20a:"jcache"

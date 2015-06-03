@@ -76,7 +76,7 @@ There are several modules available to build your Fathom foundation:
 
 ### Footprint
 
-The footprint of a _Hello World_ Fathom servlet microservice is about *7MB*.
+The footprint of a _Hello World_ Fathom servlet-based microservice is about *7.5MB*.
 
 ### Similar alternatives
 

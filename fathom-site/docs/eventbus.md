@@ -1,6 +1,6 @@
 ## About
 
-**Fathom-Eventbus** provides an injectable [Guava Eventbus]() instance for decoupled event passing.
+**Fathom-Eventbus** provides an injectable [Guava Eventbus](https://code.google.com/p/guava-libraries/wiki/EventBusExplained) instance for decoupled event passing.
 
 ## Installation
 
@@ -13,7 +13,6 @@ Add the **Fathom-Eventbus** artifact.
     <version>${fathom.version}</version>
 </dependency>
 ```
-
 
 ## Configuration
 

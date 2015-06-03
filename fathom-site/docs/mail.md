@@ -2,9 +2,8 @@
 
 **Fathom-Mailer** provides your application with an outgoing email capability.
 
-**Fathom-Mailer** is based on [Sisu-Mailer](https://github.com/sonatype/sisu-mailer) and is integrated
-with your chosen Pippo `TemplateEngine`.  This allows you to generate email notifications from templates rather
-than wasting your time using `StringBuilder` and friends.
+**Fathom-Mailer** is based on [Sisu-Mailer](https://github.com/sonatype/sisu-mailer), depends on [Fathom-REST](rest.md), and is integrated
+with your chosen [Pippo Template Engine](rest/#template-engines).
 
 ## Installation
 
@@ -18,24 +17,35 @@ Add the **Fathom-Mailer** artifact.
 </dependency>
 ```
 
-**Fathom-Mailer** depends on [Fathom-REST](rest.md) and a Pippo Template Engine.
-
 ## Configuration
 
 Configure your mail server.
-```properties
-mail.server = smtp.gmail.com
-mail.port = 465
-mail.useSsl = true
-mail.useTls = true
-mail.username = username
-mail.password = password
-mail.debug = false
-mail.systemName = Fathom
-mail.systemAddress = fathom@gitblit.com
-mail.bounceAddress = fathom@gitblit.com
+
+```hocon
+mail {
+  server = smtp.gmail.com
+  port = 465
+  useSsl = true
+  useTls = true
+  username = username
+  password = password
+  debug = false
+  systemName = Fathom
+  systemAddress = fathom@gitblit.com
+  bounceAddress = fathom@gitblit.com
+}
 ```
 
 ## Usage
 
 Inject `fathom.mailer.Mailer` when you need email sending.
+
+```java
+@ControllerPath("/example")
+public class MyController extends Controller {
+
+  @Inject
+  Mailer mailer;
+
+}
+```

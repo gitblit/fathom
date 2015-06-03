@@ -1,6 +1,6 @@
 ## About
 
-**Fathom-REST-Shiro** integrates [Fathom-REST](rest.md) with [Apache Shiro][]] to provide your RESTful Routes and Controllers with flexible authentication and authorization.
+**Fathom-REST-Shiro** integrates [Fathom-REST](rest.md) with [Apache Shiro][] to provide your RESTful Routes and Controllers with flexible authentication and authorization.
 
 ## Installation
 
@@ -12,6 +12,17 @@ Add the **Fathom-REST-Shiro** artifact.
     <artifactId>fathom-rest-shiro</artifactId>
     <version>${fathom.version}</version>
 </dependency>
+```
+
+## Layout
+
+```
+YourApp
+└── src
+    └── main
+        └── java
+            └── conf
+                └── shiro.ini
 ```
 
 ## Configuration

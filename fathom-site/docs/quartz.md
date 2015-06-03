@@ -2,7 +2,7 @@
 
 **Fathom-Quartz** provides [Quartz Scheduler]() integration for your application.
 
-This is a fork of [Apache Onami Scheduler](https://onami.apache.org/scheduler)
+This is a fork of the [Apache Onami Scheduler](https://onami.apache.org/scheduler).
 
 ## Installation
 
@@ -14,6 +14,17 @@ Add the **Fathom-Quartz** artifact.
     <artifactId>fathom-quartz</artifactId>
     <version>${fathom.version}</version>
 </dependency>
+```
+
+## Layout
+
+```
+YourApp
+└── src
+    └── main
+        └── java
+            └── conf
+                └── quartz.properties
 ```
 
 ## Configuration

@@ -12,17 +12,21 @@ markdown_extensions:
         permalink: True
     - sane_lists
 pages:
-  - Core:
+  - Fathom:
       - Introduction: 'index.md'
+      - About: 'about.md'
       - Layout: 'layout.md'
       - Configuration: 'configuration.md'
+      - Components: 'components.md'
+      - Servlets: 'servlets.md'
+      - Logging: 'logging.md'
       - Testing: 'testing.md'
       - Deployment: 'deployment.md'
   - Modules:
       - 'Fathom-REST' : 'rest.md'
+      - 'Fathom-Security' : 'security.md'
       - 'Fathom-REST-Security' : 'rest-security.md'
       - 'Fathom-REST-Shiro' : 'rest-shiro.md'
-      - 'Fathom-Security' : 'security.md'
       - 'Fathom-Metrics' : 'metrics.md'
       - 'Fathom-Mailer' : 'mail.md'
       - 'Fathom-Eventbus' : 'eventbus.md'

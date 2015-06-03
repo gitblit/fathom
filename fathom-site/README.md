@@ -1,6 +1,6 @@
 ## Fathom Documentation Site
 
-This documentation is built using [MkDocs][], a Python-based static-site generator using Markdown.
+This documentation is built using [MkDocs], a Python-based static-site generator using Markdown.
 
 ## Installation
 
@@ -51,7 +51,7 @@ From the `fathom-site` directory...
 mkdocs gh-deploy
 ```
 
-**Sadly**, this [does not work properly yet](https://github.com/mkdocs/mkdocs/issues/578).
+**Sadly**, this [does not work properly yet](https://github.com/mkdocs/mkdocs/issues/578). :(
 
 [MkDocs]: http://www.mkdocs.org
 [Atom]: https://atom.io
