@@ -8,7 +8,7 @@
 
 Add the **fathom-test-tools** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-test-tools</artifactId>

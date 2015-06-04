@@ -6,7 +6,7 @@
 
 Add the **Fathom-REST-Security** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-rest-security</artifactId>
@@ -15,3 +15,9 @@ Add the **Fathom-REST-Security** artifact.
 ```
 
 ## Configuration
+
+See [Fathom-Security](security/#configuration).
+
+## Usage
+
+TODO.

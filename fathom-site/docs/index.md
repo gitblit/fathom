@@ -13,7 +13,7 @@ Fathom is an opinionated, modular, & injectable foundation for building microser
 
 ### Microservice Foundation
 
-Fathom provides a base to quickly bootstrap your microservice project using best-of-breed components.
+Fathom provides a tightly integrated base to quickly bootstrap your microservice project using best-of-breed components.
 
 ### Opinionated
 
@@ -23,8 +23,8 @@ Fathom provides a base to quickly bootstrap your microservice project using best
 * [Config] is *the* configuration file parser
 * [Args4j] is *the* command-line parsing framework
 * [Logback] is *the* logging framework
-* [Commons-Daemon] is *the* service control integration
-* *Java 8* is the baseline JVM
+* [SLF4J] is *the* logging interface
+* **Java 8** is the baseline JVM
 
 The footprint of the **Fathom-Core** foundation is ~7.5MB.
 
@@ -43,5 +43,6 @@ Distributed under the Apache Software License 2.0.
 [Guava]: https://github.com/google/guava
 [Config]: https://github.com/typesafehub/config
 [Logback]: http://logback.qos.ch
+[SLF4J]: http://www.slf4j.org
 [Args4j]: http://args4j.kohsuke.org
 [Commons-Daemon]: http://commons.apache.org/proper/commons-daemon

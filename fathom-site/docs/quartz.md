@@ -1,6 +1,6 @@
 ## About
 
-**Fathom-Quartz** provides [Quartz Scheduler]() integration for your application.
+**Fathom-Quartz** provides [Quartz Scheduler] integration for your application.  Quartz allows you to easily setup scheduled tasks within your application.
 
 This is a fork of the [Apache Onami Scheduler](https://onami.apache.org/scheduler).
 
@@ -8,7 +8,7 @@ This is a fork of the [Apache Onami Scheduler](https://onami.apache.org/schedule
 
 Add the **Fathom-Quartz** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-quartz</artifactId>
@@ -29,7 +29,13 @@ YourApp
 
 ## Configuration
 
-```Java
+By default, this module will try to configure Quartz from a `conf/quartz.properties` file, if it exists.
+
+## Usage
+
+Create a `conf/Jobs.java` class.
+
+```java
 package conf;
 
 /**
@@ -49,51 +55,30 @@ public class Jobs extends JobsModule {
     }
 ```
 
-## Usage
-
-By default, this module will try to configure Quartz from a `conf/quartz.properties` file, if it exists.
+Then create some `Job` classes.  Jobs can be manually scheduled in the `conf/Jobs` class or they can be annotated on each `Job` class.
 
 ```java
-    private static class ProdJob implements Job {
+public class ProdJob implements Job {
 
-        final Logger log = LoggerFactory.getLogger(ProdJob.class);
+    final Logger log = LoggerFactory.getLogger(ProdJob.class);
 
-        @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-            log.debug("My PROD job triggered");
-        }
-    }
-
-    @Scheduled(jobName = "DEV Job", cronExpression = "0/30 * * * * ?")
-    private static class DevJob implements Job {
-
-        final Logger log = LoggerFactory.getLogger(DevJob.class);
-
-        @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-            log.debug("My DEV job triggered");
-        }
-    }
-}
-```
-
-### Annotated Scheduling
-
-Job classes annotated with `fathom.quartz.Scheduled` will be automatically scheduled.
-
-```java
-@Singleton
-@Scheduled(jobName = "test", cronExpression = "0/2 * * * * ?")
-public class com.acme.MyJobImpl implements org.quartz.Job {
-
-    @Inject
-    private MyCustomService service;
-
+    @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        service.customOperation();
+        log.debug("My PROD job triggered");
     }
-
 }
 ```
 
-[1]: http://quartz-scheduler.org/documentation/quartz-2.2.x/quick-start
+```Java
+@Scheduled(jobName = "DEV Job", cronExpression = "0/30 * * * * ?")
+public class DevJob implements Job {
+
+    final Logger log = LoggerFactory.getLogger(DevJob.class);
+
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        log.debug("My DEV job triggered");
+    }
+}
+```
+[Quartz Scheduler]: http://quartz-scheduler.org/documentation/quartz-2.2.x/quick-start

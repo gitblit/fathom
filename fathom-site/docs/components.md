@@ -15,7 +15,7 @@ YourApp
                 └── Components.java
 ```
 
-```Java
+```java
 package conf;
 
 /**

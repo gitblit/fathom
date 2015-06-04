@@ -6,7 +6,7 @@
 
 Add the **Fathom-Security** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-security</artifactId>
@@ -80,7 +80,7 @@ realms: [
 
 Add the **Fathom-Security-LDAP** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-security-ldap</artifactId>
@@ -138,7 +138,7 @@ realms: [
 
 Add the **Fathom-Security-JDBC** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-security-jdbc</artifactId>
@@ -230,7 +230,7 @@ realms: [
 
 Add the **Fathom-Security-Redis** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-security-redis</artifactId>
@@ -254,7 +254,7 @@ realms: [
 
 Add the **Fathom-Security-PAM** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-security-pam</artifactId>
@@ -278,7 +278,7 @@ realms: [
 
 Add the **Fathom-Security-Windows** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-security-windows</artifactId>
@@ -302,7 +302,7 @@ realms: [
 
 Add the **Fathom-Security-Htpasswd** artifact.
 
-```XML
+```xml
 <dependency>
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-security-htpasswd</artifactId>

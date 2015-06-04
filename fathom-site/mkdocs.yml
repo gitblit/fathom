@@ -22,6 +22,7 @@ pages:
       - Logging: 'logging.md'
       - Testing: 'testing.md'
       - Deployment: 'deployment.md'
+      - Maven Tricks: 'maven.md'
   - Modules:
       - 'Fathom-REST' : 'rest.md'
       - 'Fathom-Security' : 'security.md'

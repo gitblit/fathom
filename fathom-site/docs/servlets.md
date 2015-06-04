@@ -17,7 +17,7 @@ YourApp
 
 ### Configuration
 
-```Java
+```java
 package conf;
 
 /**

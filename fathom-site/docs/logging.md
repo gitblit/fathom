@@ -8,9 +8,17 @@ Details on configuring Logback can be found [here](http://logback.qos.ch/documen
 
 ### Mode-Specific Configuration
 
-If a mode-specific Logback config file is discovered on the classpath, this file will be used instead of `logback.xml`.
+You can specify a mode-specific Logback configuration in your profile configuration file.
 
-Mode-specific config files are specified by appending *-mode* to the basename of the file.  For example, `conf/logback-dev.xml` is the Logback config for the DEV mode.
+```hocon
+# Default Logback configuration
+logback.configurationFile = "classpath:conf/logback-dev.xml"
+
+# Production Logback configuration
+prod {
+  logback.configurationFile = "classpath:conf/logback.xml"
+}
+```
 
 ### Manual Specification
 

@@ -27,8 +27,8 @@ Fathom provides a base to quickly bootstrap your microservice project using [Und
 * [Config][4] is *the* configuration file parser
 * [Args4j][5] is *the* command-line parsing framework
 * [Logback][6] is *the* logging framework
-* [Commons-Daemon][7] is *the* service control integration
-* *Java 8* is the baseline JVM
+* [SLF4J][7] is *the* logging interface
+* **Java 8** is the baseline JVM
 
 ### Modular
 
@@ -98,5 +98,5 @@ Distributed under the Apache Software License 2.0.
 [4]: https://github.com/typesafehub/config
 [5]: http://logback.qos.ch
 [6]: http://args4j.kohsuke.org
-[7]: http://commons.apache.org/proper/commons-daemon
+[7]: http://www.slf4j.org
 [8]: http://www.pippo.ro
