@@ -24,11 +24,13 @@ Bind your published & subscriber objects.  They can be any objects.
 
 ```java
 public class Components extends ComponentsModule {
-  protected void init() {
 
+  @Override
+  protected void init() {
     bind(MyDao.class);
     bind(MyEventsSubscriber.class);
   }
+
 }
 ```
 

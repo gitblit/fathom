@@ -25,7 +25,7 @@ package conf;
 import fathom.test.FathomTest;
 import org.junit.Test;
 
-import static com.jayway.restassured.RestAssured.get;
+import static com.jayway.restassured.RestAssured.*;
 
 public class RoutesTest extends FathomTest {
 

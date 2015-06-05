@@ -1,6 +1,6 @@
-## Servlets
+## Servlets.java
 
-The `conf/Servlets` class allows you to programatically specify servlets and filters to build your URL mappings.
+The `conf/Servlets.java` class allows you to programatically specify servlets and filters to build your URL mappings.
 
 You are not required to use or even have this class in your classpath.  For example, you might decide to use a `Module` that provides an alternative way to specify URL mappings like [Fathom-REST](rest.md).
 

@@ -1,6 +1,6 @@
 ## Logging
 
-[Logback] is the logging framework used by Fathom and [SLF4J] is the interface.
+[Logback] is the logging framework used by Fathom and [SLF4J] is the facade.
 
 You can configure Logback through the `conf/logback.xml` file.
 

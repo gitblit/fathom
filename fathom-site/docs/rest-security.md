@@ -1,6 +1,8 @@
 ## About
 
-**Fathom-REST-Security** integrates [Fathom-REST](rest.md) with [Fathom-Security](security.md) to provide your RESTful Routes and Controllers with flexible authentication and authorization.  This is a lightweight alternative to [Fathom-REST-Shiro](rest-shiro.md).
+**Fathom-REST-Security** integrates [Fathom-REST](rest.md) with [Fathom-Security](security.md) to provide your Routes and Controllers with flexible authentication and authorization.
+
+This is the recommended security module for [Fathom-REST](rest.md).
 
 ## Installation
 

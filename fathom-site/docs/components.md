@@ -1,6 +1,6 @@
-## Components
+## Components.java
 
-In all the but the simplest of applications you will want to specify re-usable and injectable components.  The `conf/Components` class is where you should bind your DAOs, managers, and services.
+In all the but the simplest of applications you will want to specify re-usable and injectable components.  The `conf/Components.java` class is where you should bind your DAOs, managers, and services.
 
 You are not required to use or even have this class in your classpath - but it's very likely that you will.
 
@@ -14,6 +14,8 @@ YourApp
             └── conf
                 └── Components.java
 ```
+
+### Configuration
 
 ```java
 package conf;

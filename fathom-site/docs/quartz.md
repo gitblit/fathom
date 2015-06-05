@@ -55,7 +55,7 @@ public class Jobs extends JobsModule {
     }
 ```
 
-Then create some `Job` classes.  Jobs can be manually scheduled in the `conf/Jobs` class or they can be annotated on each `Job` class.
+Then create some `Job` classes.  Jobs can be manually scheduled in the `conf/Jobs.java` class or they can be annotated on each `Job` class.
 
 ```java
 public class ProdJob implements Job {

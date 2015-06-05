@@ -17,10 +17,10 @@ pages:
       - About: 'about.md'
       - Layout: 'layout.md'
       - Configuration: 'configuration.md'
-      - Components: 'components.md'
-      - Servlets: 'servlets.md'
+      - Fathom.java: 'fathom.md'
+      - Components.java: 'components.md'
+      - Servlets.java: 'servlets.md'
       - Logging: 'logging.md'
-      - Testing: 'testing.md'
       - Deployment: 'deployment.md'
       - Maven Tricks: 'maven.md'
   - Modules:
@@ -33,3 +33,4 @@ pages:
       - 'Fathom-Eventbus' : 'eventbus.md'
       - 'Fathom-JCache' : 'jcache.md'
       - 'Fathom-Quartz' : 'quartz.md'
+      - 'Fathom-Test-Tools' : 'testing.md'

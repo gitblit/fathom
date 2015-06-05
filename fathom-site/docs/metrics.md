@@ -86,12 +86,16 @@ public class EmployeeDao {
 
 This transparent behavior is possible because the **Fathom-Metrics** module registers [AOP method interceptors] for the collection annotations AND [Guice] is being used to instantiate & inject your objects.
 
+----
+
 ## VisualVM or JConsole
 
 As long as `metrics.mbeans = true` in your runtime configuration, your metrics will be visible to [VisualVM] or [JConsole].
 
 **Note:**<br/>
 VisualVM does not ship with an MBeans viewer however there is an MBeans plugin that can be installed **from within** VisualVM to enable display of MBeans.
+
+----
 
 ## InfluxDB
 

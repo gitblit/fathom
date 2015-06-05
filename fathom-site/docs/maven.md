@@ -6,7 +6,7 @@ You are not required to use it, but clearly all the examples in this documentati
 
 ### Parameters Flag
 
-Fathom depends on Java 8.  For most things, this dependency is quite clear.  In other ways it can be subtle as some Fathom modules depend on the `-parameters` flag of the Java 8 *javac* compiler.  This flag embeds the names of method parameters in the generated *.class* files.
+Fathom depends on Java 8.  For most things, this dependency is quite clear.  In other ways it can be subtle as some Fathom modules depend on the `-parameters` flag of the Java 8 javac compiler.  This flag embeds the names of method parameters in the generated *.class* files.
 
 By default Java 8 does not compile with this flag set so you must specify compiler arguments for Maven.
 

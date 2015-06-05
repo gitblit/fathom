@@ -1,6 +1,6 @@
 ## About
 
-**Fathom-Security** provides rich authentication and authorization options.
+**Fathom-Security** provides authentication realms and authorization infrastructure.
 
 ## Installation
 
@@ -29,10 +29,17 @@ YourApp
 
 **Fathom-Security** is configured by the [HOCON] config file `conf/realms.conf`.
 
+----
+
 ## Memory Realm
+
+The **Memory Realm** defines *Accounts* & *Roles* within the `conf/realms.conf` file.
+
+*Accounts* and *Roles* are loaded only once on startup.
 
 ### Configuration
 
+**conf/realms.conf**
 ```hocon
 realms: [
   {
@@ -74,7 +81,104 @@ realms: [
 
 ----
 
+## File Realm
+
+The **File Realm** defines *Accounts* & *Roles* in an external [HOCON] file.
+
+This realm will hot-reload on modification to the [HOCON] file.
+
+### Configuration
+
+**conf/realms.conf**
+```hocon
+realms: [
+  {
+    # FILE REALM
+    # All Accounts and Roles are loaded from this definition and cached in a ConcurrentHashMap.
+    name: "File Realm"
+    type: "fathom.realm.FileRealm"
+    file: "classpath:conf/users.conf"
+  }
+]
+```
+
+**conf/users.conf**
+```hocon
+accounts: [
+  {
+    name: "Administrator"
+    username: "admin"
+    password: "admin"
+    emailAddresses: ["fathom@gitblit.com"]
+    roles: ["administrator"]
+    permissions: ["powers:speed,strength,agility"]
+  }
+
+  {name: "User", username: "user", password: "user", roles: ["normal"], disabled: true}
+  {name: "Guest", username: "guest", password: "guest"}
+
+  # assign metadata and a role to an htpasswd account
+  {name: "Luke Skywalker", username: "red5", roles: ["normal"]}
+
+  # assign a role to an ldap account
+  {username: "UserOne", roles: ["normal"]}
+]
+
+#
+# Defined Roles are named and have an array of Permissions.
+#
+roles: {
+  administrator: ["*"]
+  normal: ["secure:view"]
+}
+```
+
+----
+
+## Htpasswd Realm
+
+The **Htpasswd Realm** defines partial *Accounts* (username & password) in an external [htpasswd] file.
+
+This realm will hot-reload on modification to the [htpasswd] file.
+
+**Note:**<br/>
+You may only *authenticate* against an **Htpasswd Realm**.
+
+### Installation
+
+Add the **Fathom-Security-Htpasswd** artifact.
+
+```xml
+<dependency>
+    <groupId>com.gitblit.fathom</groupId>
+    <artifactId>fathom-security-htpasswd</artifactId>
+    <version>${fathom.version}</version>
+</dependency>
+```
+
+### Configuration
+
+**conf/realms.conf**
+```hocon
+realms: [
+  {
+    # HTPASSWD REALM
+    name: "Htpasswd Realm"
+    type: "fathom.realm.htpasswd.HtpasswdRealm"
+    file: "classpath:conf/users.htpasswd"
+    allowClearPasswords: false
+  }
+]
+```
+
+----
+
 ## LDAP Realm
+
+The **LDAP Realm** allows you to integrate authentication and authorization with your LDAP server.
+
+**Note:**<br/>
+You may authenticate and authorize using LDAP-sourced data but *Role definitions* are not currently supported in an **LDAP Realm**.
 
 ### Installation
 
@@ -90,6 +194,7 @@ Add the **Fathom-Security-LDAP** artifact.
 
 ### Configuration
 
+**conf/realms.conf**
 ```hocon
 realms: [
   {
@@ -134,6 +239,8 @@ realms: [
 
 ## JDBC Realm
 
+The **JDBC Realm** allows you to integrate authentication and authorization with an SQL database.
+
 ### Installation
 
 Add the **Fathom-Security-JDBC** artifact.
@@ -148,6 +255,7 @@ Add the **Fathom-Security-JDBC** artifact.
 
 ### Configuration
 
+**conf/realms.conf**
 ```hocon
 realms: [
   {
@@ -212,7 +320,7 @@ realms: [
     cacheTtl: 0
     cacheMax: 100
 
-    # fathom-auth-jdbc supports HikariCP
+    # fathom-security-jdbc supports HikariCP
     # see http://brettwooldridge.github.io/HikariCP/
     hikariCP {
       connectionTimeout: 5000
@@ -225,6 +333,11 @@ realms: [
 ----
 
 ## Redis Realm
+
+The **Redis Realm** allows you to integrate authentication and authorization with a Redis server.
+
+**Note:**<br/>
+You may authenticate and authorize using Redis-sourced data but *Role definitions* are not currently supported in a **Redis Realm**.
 
 ### Installation
 
@@ -240,15 +353,37 @@ Add the **Fathom-Security-Redis** artifact.
 
 ### Configuration
 
+**conf/realms.conf**
 ```hocon
 realms: [
+  {
+    # REDIS REALM
+    name: "Redis Realm"
+    type: "fathom.realm.redis.RedisRealm"
 
+    # Specify the url to the Redis database
+    url: "redis://localhost:6379/8"
+    # The password for the Redis server, if needed
+    password: ""
+
+    # Specify the key mappings for account and role lookups
+    passwordMapping: "fathom:${username}:password"
+    nameMapping: "fathom:${username}:name"
+    emailMapping: "fathom:${username}:email"
+    roleMapping: "fathom:${username}:roles"
+    permissionMapping: "fathom:${username}:permissions"
+  }
 ]
 ```
 
 ----
 
 ## PAM Realm
+
+The **PAM Realm** allows you to authenticate against the local accounts on a Linux/Unix/OSX machine.
+
+**Note:**<br/>
+You may only *authenticate* against a **PAM Realm**.
 
 ### Installation
 
@@ -264,15 +399,27 @@ Add the **Fathom-Security-PAM** artifact.
 
 ### Configuration
 
+**conf/realms.conf**
 ```hocon
 realms: [
+  {
+    # PAM REALM
+    name: "PAM Realm"
+    type: "fathom.realm.pam.PamRealm"
 
+    serviceName: "system-auth"
+  }
 ]
 ```
 
 ----
 
 ## Windows Realm
+
+The **Windows Realm** allows you to authenticate against the local accounts on a Windows machine.
+
+**Note:**<br/>
+You may only *authenticate* against a **Windows Realm**.
 
 ### Installation
 
@@ -288,34 +435,20 @@ Add the **Fathom-Security-Windows** artifact.
 
 ### Configuration
 
+**conf/realms.conf**
 ```hocon
 realms: [
+  {
+    # WINDOWS REALM
+    name: "Windows Realm"
+    type: "fathom.realm.windows.WindowsRealm"
 
-]
-```
-
-----
-
-## Htpasswd Realm
-
-### Installation
-
-Add the **Fathom-Security-Htpasswd** artifact.
-
-```xml
-<dependency>
-    <groupId>com.gitblit.fathom</groupId>
-    <artifactId>fathom-security-htpasswd</artifactId>
-    <version>${fathom.version}</version>
-</dependency>
-```
-
-### Configuration
-
-```hocon
-realms: [
-
+    defaultDomain: ""
+    allowGuests: false
+    adminGroups: [ "BUILTIN\Administrators" ]
+  }
 ]
 ```
 
 [HOCON]: https://github.com/typesafehub/config/blob/master/README.md
+[htpasswd]: https://httpd.apache.org/docs/current/programs/htpasswd.html

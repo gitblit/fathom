@@ -74,11 +74,11 @@ template.pathPrefix = ""
 
 **Fathom-REST** takes a slightly different approach to URL mapping compared to upstream [Pippo].
 
-In Pippo, the *Application* class is the core business component of your application and is used to register everything.
+In Pippo, the *Application* class is the core business component and is used to register everything.
 
-In **Fathom-REST** the Pippo *Application* is an internal component and of no value to your Fathom application.  As such, Filters, Routes, and Controllers are registered through the `conf/Routes` class.
+In **Fathom-REST** the Pippo *Application* is an internal component and not meant to be accessed.  As such, Filters, Routes, and Controllers are registered through the `conf/Routes.java` class.
 
-### Routes
+### Routes.java
 
 ```java
 package conf;

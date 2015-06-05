@@ -94,7 +94,7 @@ public class Caches extends CachesModule {
 
 The most elegant way to use Fathom's JCache integration is with annotations.
 
-In the following non-functional example we are annotating our employee DAO singleton to specify that all methods in this DAO access the *EMPLOYEE_CACHE* defined in our `conf/Caches` class.
+In the following non-functional example we are annotating our employee DAO singleton to specify that all methods in this DAO access the *EMPLOYEE_CACHE* defined in our `conf/Caches.java` class.
 
 We are also annotating the `get`, `getAll`, `delete`, and `save` methods.  Calling these methods will transparently populate & clear the cache.
 

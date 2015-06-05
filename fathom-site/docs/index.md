@@ -23,7 +23,7 @@ Fathom provides a tightly integrated base to quickly bootstrap your microservice
 * [Config] is *the* configuration file parser
 * [Args4j] is *the* command-line parsing framework
 * [Logback] is *the* logging framework
-* [SLF4J] is *the* logging interface
+* [SLF4J] is *the* logging facade
 * **Java 8** is the baseline JVM
 
 The footprint of the **Fathom-Core** foundation is ~7.5MB.
