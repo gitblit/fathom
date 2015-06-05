@@ -181,7 +181,7 @@ public class SecurityManager implements Service {
                     }
                     aggregateAccount.addEmailAddresses(account.getEmailAddresses());
                     aggregateAccount.getAuthorizations()
-                            .addRoles(buildRoles(account.getAuthorizations().getRoles()))
+                            .addRoles(account.getAuthorizations().getRoles())
                             .addPermissions(account.getAuthorizations().getPermissions());
                 });
 
@@ -243,26 +243,5 @@ public class SecurityManager implements Service {
         }
 
         return Collections.unmodifiableList(realms);
-    }
-
-    /**
-     * Builds a collection of Roles based on Account specifications and defined Roles.
-     *
-     * @param roles
-     * @return a collection of Roles
-     */
-    protected Collection<Role> buildRoles(Collection<Role> roles) {
-        List<Role> list = new ArrayList<>();
-//        for (Role role : roles) {
-//            if (definedRoles.containsKey(role.getName())) {
-//                // Defined Role
-//                list.add(definedRoles.get(role.getName()));
-//            } else {
-//                list.add(role);
-//            }
-//        }
-
-//        return Collections.unmodifiableList(list);
-        return roles;
     }
 }
