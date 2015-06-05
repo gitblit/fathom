@@ -83,7 +83,7 @@ public class FileRealm extends MemoryRealm {
             try {
                 Preconditions.checkArgument(realmFile.canRead(), "The file '{}' can not be read!", realmFile);
                 Config config = ConfigFactory.parseFile(realmFile);
-                setup(config);
+                super.setup(config);
             } catch (Exception e) {
                 log.error("Failed to read {}", realmFile, e);
             }
