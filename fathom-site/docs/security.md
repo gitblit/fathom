@@ -1,6 +1,6 @@
 ## About
 
-**Fathom-Security** provides authentication realms and authorization infrastructure.
+**Fathom-Security** provides support for multiple authentication realms and an authorization infrastructure.
 
 ## Installation
 
@@ -27,7 +27,47 @@ YourApp
 
 ## Configuration
 
+A complete authentication and authorization model will include declarations of:
+
+- **Realms**<br/>*Realms* are sources of *Accounts* and potentially *Roles* and *Permissions*.<br/>*Realms* are interrogated during the authentication process.
+- **Accounts**<br/>*Accounts* represent a *username-password* pair.<br/>They may also include additional metadata such as *display name*, *email addresses*, *Roles*, and *Permissions*.
+- **Roles**<br/>*Roles* are a named grouping of specific *Permissions*.
+- **Permissions**<br/>*Permissions* are discrete authorization rules.
+
+*Account* usernames are specified to be *global* across all *Realms*.  **Fathom-Security** will collect and merge *Account* definitions across all defined *Realms* to create an aggregate *Account*.  This is necessary because not all *Realms* are able to provide full *Account* metadata, *Roles*, or *Permissions*.
+
+For example, the *Account* named *james* is assumed to represent the same person across all defined *Realms* so that if *james* authenticates against a **PAM Realm**, his *Account* metadata, *Roles*, and *Permissions* will be collected from the *james* *Account* in the defined **File Realm**.
+
 **Fathom-Security** is configured by the [HOCON] config file `conf/realms.conf`.
+
+```hocon
+# Configured Realms.
+# Realms will be tried in the order specified until an authentication is successful.
+realms: []
+
+# If you have multiple Realms and are creating aggregate Accounts you
+# may cache the aggregate/assembled accounts in the SecurityManager.
+#
+# Configure the aggregated Account time-to-live (TTL) in minutes and the maximum
+# number of aggregated accounts to keep cached.
+# A TTL of 0 disables this cache.
+cacheTtl: 0
+cacheMax: 100
+```
+
+There are many realm integrations available for Fathom.
+
+| Realm       | Module                                                         |
+|-------------|----------------------------------------------------------------|
+| Memory      | [com.gitblit.fathom:fathom-security](#memory-realm)            |
+| File        | [com.gitblit.fathom:fathom-security](#file-realm)              |
+| Htpasswd    | [com.gitblit.fathom:fathom-security-htpasswd](#htpasswd-realm) |
+| LDAP        | [com.gitblit.fathom:fathom-security-ldap](#ldap-realm)         |
+| JDBC        | [com.gitblit.fathom:fathom-security-jdbc](#jdbc-realm)         |
+| Redis       | [com.gitblit.fathom:fathom-security-redis](#redis-realm)       |
+| PAM         | [com.gitblit.fathom:fathom-security-pam](#pam-realm)           |
+| Windows     | [com.gitblit.fathom:fathom-security-windows](#windows-realm)   |
+
 
 ----
 
@@ -142,7 +182,7 @@ The **Htpasswd Realm** defines partial *Accounts* (username & password) in an ex
 This realm will hot-reload on modification to the [htpasswd] file.
 
 **Note:**<br/>
-You may only *authenticate* against an **Htpasswd Realm**.
+You may only *authenticate* against an **Htpasswd Realm**.<br/>This *realm* does not support persistence of authorization data.
 
 ### Installation
 
@@ -178,7 +218,7 @@ realms: [
 The **LDAP Realm** allows you to integrate authentication and authorization with your LDAP server.
 
 **Note:**<br/>
-You may authenticate and authorize using LDAP-sourced data but *Role definitions* are not currently supported in an **LDAP Realm**.
+You may authenticate and authorize using LDAP-sourced data but *Role definitions* are not currently supported by the **LDAP Realm**.
 
 ### Installation
 
@@ -337,7 +377,7 @@ realms: [
 The **Redis Realm** allows you to integrate authentication and authorization with a Redis server.
 
 **Note:**<br/>
-You may authenticate and authorize using Redis-sourced data but *Role definitions* are not currently supported in a **Redis Realm**.
+You may authenticate and authorize using Redis-sourced data but *Role definitions* are not currently supported by the **Redis Realm**.
 
 ### Installation
 
@@ -383,7 +423,7 @@ realms: [
 The **PAM Realm** allows you to authenticate against the local accounts on a Linux/Unix/OSX machine.
 
 **Note:**<br/>
-You may only *authenticate* against a **PAM Realm**.
+You may only *authenticate* against a **PAM Realm**.<br/>This *realm* does not support persistence of authorization data.
 
 ### Installation
 
@@ -419,7 +459,7 @@ realms: [
 The **Windows Realm** allows you to authenticate against the local accounts on a Windows machine.
 
 **Note:**<br/>
-You may only *authenticate* against a **Windows Realm**.
+You may only *authenticate* against a **Windows Realm**.<br/>This *realm* does not support persistence of authorization data.
 
 ### Installation
 
