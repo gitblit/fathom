@@ -92,7 +92,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                 String defaultContentType = produces.value()[0];
                 context.getResponse().contentType(defaultContentType);
 
-                if (produces.negotiate()) {
+                if (produces.value().length > 1) {
                     context.negotiateContentType();
                 }
             }

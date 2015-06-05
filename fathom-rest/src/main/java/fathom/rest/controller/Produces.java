@@ -32,8 +32,6 @@ import java.lang.annotation.Target;
 public @interface Produces {
     String [] value();
 
-    boolean negotiate() default true;
-
     public static final String XML = HttpConstants.ContentType.APPLICATION_XML;
 
     public static final String JSON = HttpConstants.ContentType.APPLICATION_JSON;
