@@ -2,6 +2,13 @@
 
 **Fathom-Security** provides support for multiple authentication realms and an authorization infrastructure.
 
+A complete authentication and authorization model will include declarations of:
+
+- **Realms**<br/>*Realms* are sources of *Accounts* and potentially *Roles* and *Permissions*.<br/>*Realms* are interrogated during the authentication process.
+- **Accounts**<br/>*Accounts* represent a *username-password* pair.<br/>They may also include additional metadata such as *display name*, *email addresses*, *Roles*, and *Permissions*.
+- **Roles**<br/>*Roles* are a named grouping of specific *Permissions*.
+- **Permissions**<br/>*Permissions* are discrete authorization rules.
+
 ## Installation
 
 Add the **Fathom-Security** artifact.
@@ -27,17 +34,6 @@ YourApp
 
 ## Configuration
 
-A complete authentication and authorization model will include declarations of:
-
-- **Realms**<br/>*Realms* are sources of *Accounts* and potentially *Roles* and *Permissions*.<br/>*Realms* are interrogated during the authentication process.
-- **Accounts**<br/>*Accounts* represent a *username-password* pair.<br/>They may also include additional metadata such as *display name*, *email addresses*, *Roles*, and *Permissions*.
-- **Roles**<br/>*Roles* are a named grouping of specific *Permissions*.
-- **Permissions**<br/>*Permissions* are discrete authorization rules.
-
-*Account* usernames are specified to be *global* across all *Realms*.  **Fathom-Security** will collect and merge *Account* definitions across all defined *Realms* to create an aggregate *Account*.  This is necessary because not all *Realms* are able to provide full *Account* metadata, *Roles*, or *Permissions*.
-
-For example, the *Account* named *james* is assumed to represent the same person across all defined *Realms* so that if *james* authenticates against a **PAM Realm**, his *Account* metadata, *Roles*, and *Permissions* will be collected from the *james* *Account* in the defined **File Realm**.
-
 **Fathom-Security** is configured by the [HOCON] config file `conf/realms.conf`.
 
 ```hocon
@@ -55,6 +51,33 @@ cacheTtl: 0
 cacheMax: 100
 ```
 
+## Usage
+
+**Fathom-Security** provides a singleton instance of a *SecurityManager*.  This object contains all loaded *Realms*, *Accounts*, *Roles*, and *Permissions*.
+
+```java
+@Inject
+SecurityManager securityManager;
+
+public Account login(String username, String password) {
+  StandardCredentials credentials = new StandardCredentials(username, password);
+  Account account = securityManager.authenticate(credentials);
+  return account;
+}
+```
+
+## Accounts
+
+*Account* usernames are specified to be *global* across all *Realms*.  **Fathom-Security** will collect and merge *Account* definitions across all defined *Realms* to create an aggregate *Account*.  This is necessary because not all *Realms* are able to provide full *Account* metadata, *Roles*, or *Permissions*.
+
+For example, the *Account* named *james* is assumed to represent the same person across all defined *Realms* so that if *james* authenticates against a **PAM Realm**, his *Account* metadata, *Roles*, and *Permissions* will be collected from the *james* *Account* defined in the **File Realm**.
+
+## Roles & Permissions
+
+TODO.
+
+## Realms
+
 There are many realm integrations available for Fathom.
 
 | Realm       | Module                                                         |
@@ -68,16 +91,13 @@ There are many realm integrations available for Fathom.
 | PAM         | [com.gitblit.fathom:fathom-security-pam](#pam-realm)           |
 | Windows     | [com.gitblit.fathom:fathom-security-windows](#windows-realm)   |
 
-
-----
-
-## Memory Realm
+### Memory Realm
 
 The **Memory Realm** defines *Accounts* & *Roles* within the `conf/realms.conf` file.
 
 *Accounts* and *Roles* are loaded only once on startup.
 
-### Configuration
+#### Configuration
 
 **conf/realms.conf**
 ```hocon
@@ -121,13 +141,13 @@ realms: [
 
 ----
 
-## File Realm
+### File Realm
 
 The **File Realm** defines *Accounts* & *Roles* in an external [HOCON] file.
 
 This realm will hot-reload on modification to the [HOCON] file.
 
-### Configuration
+#### Configuration
 
 **conf/realms.conf**
 ```hocon
@@ -175,7 +195,7 @@ roles: {
 
 ----
 
-## Htpasswd Realm
+### Htpasswd Realm
 
 The **Htpasswd Realm** defines partial *Accounts* (username & password) in an external [htpasswd] file.
 
@@ -184,7 +204,7 @@ This realm will hot-reload on modification to the [htpasswd] file.
 **Note:**<br/>
 You may only *authenticate* against an **Htpasswd Realm**.<br/>This *realm* does not support persistence of authorization data.
 
-### Installation
+#### Installation
 
 Add the **Fathom-Security-Htpasswd** artifact.
 
@@ -196,7 +216,7 @@ Add the **Fathom-Security-Htpasswd** artifact.
 </dependency>
 ```
 
-### Configuration
+#### Configuration
 
 **conf/realms.conf**
 ```hocon
@@ -213,14 +233,14 @@ realms: [
 
 ----
 
-## LDAP Realm
+### LDAP Realm
 
 The **LDAP Realm** allows you to integrate authentication and authorization with your LDAP server.
 
 **Note:**<br/>
 You may authenticate and authorize using LDAP-sourced data but *Role definitions* are not currently supported by the **LDAP Realm**.
 
-### Installation
+#### Installation
 
 Add the **Fathom-Security-LDAP** artifact.
 
@@ -232,7 +252,7 @@ Add the **Fathom-Security-LDAP** artifact.
 </dependency>
 ```
 
-### Configuration
+#### Configuration
 
 **conf/realms.conf**
 ```hocon
@@ -277,11 +297,11 @@ realms: [
 
 ----
 
-## JDBC Realm
+### JDBC Realm
 
 The **JDBC Realm** allows you to integrate authentication and authorization with an SQL database.
 
-### Installation
+#### Installation
 
 Add the **Fathom-Security-JDBC** artifact.
 
@@ -293,7 +313,7 @@ Add the **Fathom-Security-JDBC** artifact.
 </dependency>
 ```
 
-### Configuration
+#### Configuration
 
 **conf/realms.conf**
 ```hocon
@@ -372,14 +392,14 @@ realms: [
 
 ----
 
-## Redis Realm
+### Redis Realm
 
 The **Redis Realm** allows you to integrate authentication and authorization with a Redis server.
 
 **Note:**<br/>
 You may authenticate and authorize using Redis-sourced data but *Role definitions* are not currently supported by the **Redis Realm**.
 
-### Installation
+#### Installation
 
 Add the **Fathom-Security-Redis** artifact.
 
@@ -391,7 +411,7 @@ Add the **Fathom-Security-Redis** artifact.
 </dependency>
 ```
 
-### Configuration
+#### Configuration
 
 **conf/realms.conf**
 ```hocon
@@ -418,14 +438,14 @@ realms: [
 
 ----
 
-## PAM Realm
+### PAM Realm
 
 The **PAM Realm** allows you to authenticate against the local accounts on a Linux/Unix/OSX machine.
 
 **Note:**<br/>
 You may only *authenticate* against a **PAM Realm**.<br/>This *realm* does not support persistence of authorization data.
 
-### Installation
+#### Installation
 
 Add the **Fathom-Security-PAM** artifact.
 
@@ -437,7 +457,7 @@ Add the **Fathom-Security-PAM** artifact.
 </dependency>
 ```
 
-### Configuration
+#### Configuration
 
 **conf/realms.conf**
 ```hocon
@@ -454,14 +474,14 @@ realms: [
 
 ----
 
-## Windows Realm
+### Windows Realm
 
 The **Windows Realm** allows you to authenticate against the local accounts on a Windows machine.
 
 **Note:**<br/>
 You may only *authenticate* against a **Windows Realm**.<br/>This *realm* does not support persistence of authorization data.
 
-### Installation
+#### Installation
 
 Add the **Fathom-Security-Windows** artifact.
 
@@ -473,7 +493,7 @@ Add the **Fathom-Security-Windows** artifact.
 </dependency>
 ```
 
-### Configuration
+#### Configuration
 
 **conf/realms.conf**
 ```hocon

@@ -67,21 +67,12 @@ This allows you to deploy a complete configuration profile built-into your appli
 ```hocon
 # Application metadata and settings
 application {
-  name = ${project.name}
-  version = ${project.version}
+  name = "My Application"
+  version = "1.0.0"
 
   # You may optionally relocate your conf and controller packages using a custom prefix
   # e.g. application.package=com.gitblit
   package = ""
-}
-
-# Logback configuration file
-# see http://logback.qos.ch/documentation.html
-logback.configurationFile = "classpath:conf/logback-dev.xml"
-
-# Production mode overrides
-prod {
-  logback.configurationFile = "classpath:conf/logback.xml"
 }
 
 # Undertow server settings
