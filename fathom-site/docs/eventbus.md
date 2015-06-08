@@ -20,7 +20,7 @@ None.
 
 ## Usage
 
-Bind your published & subscriber objects.  They can be any objects.
+Bind your publisher & subscriber objects.
 
 ```java
 public class Components extends ComponentsModule {
@@ -34,7 +34,7 @@ public class Components extends ComponentsModule {
 }
 ```
 
-Your *subscriber* object needs to have the Eventbus injected so that it can register itself.
+In this example we inject the Eventbus into our *subscriber* object so that it can register itself.
 
 ```java
 @Singleton
@@ -56,7 +56,7 @@ public class MyEventsSubscriber {
 }
 ```
 
-Your *publisher* object needs the Eventbus injected so that it can publish messages.
+Your *publisher* object requires the Eventbus instance so that it can publish messages.
 
 ```java
 @Singleton

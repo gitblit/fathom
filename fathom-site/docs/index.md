@@ -13,7 +13,7 @@ Fathom is an opinionated, modular, & injectable foundation for building microser
 
 ### Microservice Foundation
 
-Fathom provides a tightly integrated base to quickly bootstrap your microservice project using best-of-breed components.
+Fathom provides a **tightly integrated base** to quickly bootstrap your microservice project using best-of-breed components.
 
 ### Opinionated
 

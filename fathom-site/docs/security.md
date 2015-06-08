@@ -2,10 +2,12 @@
 
 **Fathom-Security** provides support for multiple authentication realms and an authorization infrastructure.
 
+The core authorization design of [Apache Shiro] was harvested & married to the core authentication design of [Gitblit] to form a similar but significantly lighterweight security infrastructure.
+
 A complete authentication and authorization model will include declarations of:
 
 - **Realms**<br/>*Realms* are sources of *Accounts* and potentially *Roles* and *Permissions*.<br/>*Realms* are interrogated during the authentication process.
-- **Accounts**<br/>*Accounts* represent a *username-password* pair.<br/>They may also include additional metadata such as *display name*, *email addresses*, *Roles*, and *Permissions*.
+- **Accounts**<br/>*Accounts* represent a *username-password* pair.<br/>They may also include additional metadata such as display name, email addresses, *Roles*, and *Permissions*.
 - **Roles**<br/>*Roles* are a named grouping of specific *Permissions*.
 - **Permissions**<br/>*Permissions* are discrete authorization rules.
 
@@ -68,13 +70,103 @@ public Account login(String username, String password) {
 
 ## Accounts
 
-*Account* usernames are specified to be *global* across all *Realms*.  **Fathom-Security** will collect and merge *Account* definitions across all defined *Realms* to create an aggregate *Account*.  This is necessary because not all *Realms* are able to provide full *Account* metadata, *Roles*, or *Permissions*.
+*Account* usernames are specified to be **global** across all *realms*.  **Fathom-Security** will collect and merge *account* definitions across all defined *realms* to create an aggregate *account*.  This is necessary because not all *realms* are able to provide full *account* metadata, *roles*, or *permissions*.
 
-For example, the *Account* named *james* is assumed to represent the same person across all defined *Realms* so that if *james* authenticates against a **PAM Realm**, his *Account* metadata, *Roles*, and *Permissions* will be collected from the *james* *Account* defined in the **File Realm**.
+For example, the *account* named `james` is assumed to represent the same person across all defined *realms* so that if `james` authenticates against a **PAM Realm**, his *account* metadata, *roles*, and *permissions* can be collected from the `james` *account* defined in a **File Realm**, **JDBC Realm**, etc.
 
-## Roles & Permissions
+## Permissions
 
-TODO.
+*Permissions* are allowed application actions.  *Permissions* can be specified as a simple action (e.g. *view*) or as a granular, colon-delimited action (e.g. *employees:view:5*).  Granular permissions may be assigned with up to three components: `domain:action:instance`.
+
+Examples:
+
+<pre>
+# Permit viewing employees 5 and 10
+employees:view:5,10
+
+# Permit viewing all employees (these are equivalent)
+employees:view:*
+employees:view
+
+# Permit updating employees 5 and 10
+employees:update:5,10
+
+# Permit all actions on employee 5
+employees:*:5
+
+# Permit adding and deleting any employee (these are equivalent)
+employees:add,delete:*
+employees:add,delete
+
+# Permit all actions on all employees and contractors
+employees,contractors:*</pre>
+
+## Roles
+
+*Roles* may be specified on an *account*.  *Roles* may also be defined to have explicit *permissions*.  The primary value of a *role* is that it allows you to forgo maintaining the same set of *permissions* on multiple *accounts*.  Instead you can maintain a single set of *permissions* in the *role* definition and assign this *role* to multiple *accounts*.
+
+In the example below, the `admin` *account* has two assigned *roles*.  The `administrator` *role* is explicitly defined with the `*` *permission*, while the `tester` *role* has no definition and therefore has no explicit *permissions*.  The `frank` *account* has been assigned the `normal` *role* and is only granted the `secure:view` *permission*.
+
+```hocon
+accounts: [
+  {
+    username: "admin"
+    roles: ["administrator", "tester"]
+    permissions: ["powers:speed,strength,agility"]
+  }
+  {
+    username: "frank"
+    roles: ["normal"]
+  }
+  {
+    username: "joe"
+    roles: ["normal"]
+    disabled: true
+  }
+]
+roles: {
+  administrator: ["*"]
+  normal: ["secure:view"]
+}
+```
+
+## Authorization
+
+*Account* instances have many methods to enforce authorization for a particular action.
+
+```java
+public void update(Employee employee) {
+  Account account = getAccount();
+  if (account.hasRole("administrator") || account.isPermitted("employee:update")) {
+    employeeDao.update(employee);
+  }
+}
+```
+
+You can also enforce authorization with methods that throw an *AuthorizationException* rather than returning a boolean status.
+
+```java
+public void update(Employee employee) {
+  Account account = getAccount();
+  account.checkPermission("employee:update");
+  employeeDao.update(employee);
+}
+```
+
+## Disabling Accounts
+
+In the above example the `joe` *account* is disabled.
+
+```hocon
+accounts: [
+  {
+    username: "joe"
+    disabled: true
+  }
+]
+```
+
+In this case the *SecurityManager* will not allow the `joe` *account* to authenticate.
 
 ## Realms
 
@@ -510,5 +602,7 @@ realms: [
 ]
 ```
 
+[Apache Shiro]: https://shiro.apache.org/
+[Gitblit]: http://gitblit.com
 [HOCON]: https://github.com/typesafehub/config/blob/master/README.md
 [htpasswd]: https://httpd.apache.org/docs/current/programs/htpasswd.html

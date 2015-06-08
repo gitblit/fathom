@@ -98,7 +98,7 @@ In the following non-functional example we are annotating our employee DAO singl
 
 We are also annotating the `get`, `getAll`, `delete`, and `save` methods.  Calling these methods will transparently populate & clear the cache.
 
-This transparent behavior is possible because the **Fathom-JCache** module registers [AOP method interceptors] for the JCache annotations AND [Guice] is being used to instantiate & inject the DAO instance.
+This transparent behavior is possible because the **Fathom-JCache** module registers [AOP method interceptors] for the JCache annotations.
 
 ```java
 @Singleton
