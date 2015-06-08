@@ -78,8 +78,6 @@ For example, the *account* named `james` is assumed to represent the same person
 
 *Permissions* are allowed application actions.  *Permissions* can be specified as a simple action (e.g. *view*) or as a granular, colon-delimited action (e.g. *employees:view:5*).  Granular permissions may be assigned with up to three components: `domain:action:instance`.
 
-Examples:
-
 <pre>
 # Permit viewing employees 5 and 10
 employees:view:5,10
