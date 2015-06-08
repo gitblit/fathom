@@ -140,34 +140,34 @@ public abstract class RoutesModule {
         return getExclusionExpression(resourcePaths);
     }
 
-    protected RouteRegistration addWebjarResourceHandler() {
-        return addWebjarResourceHandler("/webjars");
+    protected RouteRegistration addWebjarsResourceRoute() {
+        return addWebjarsResourceRoute("/webjars");
     }
 
-    protected RouteRegistration addWebjarResourceHandler(String basePath) {
+    protected RouteRegistration addWebjarsResourceRoute(String basePath) {
         resourcePaths.add(StringUtils.removeStart(basePath, "/"));
         return GET(new WebjarsResourceHandler(basePath));
     }
 
-    protected RouteRegistration addPublicResourceHandler() {
-        return addPublicResourceHandler("/public");
+    protected RouteRegistration addPublicResourceRoute() {
+        return addPublicResourceRoute("/public");
     }
 
-    protected RouteRegistration addPublicResourceHandler(String basePath) {
+    protected RouteRegistration addPublicResourceRoute(String basePath) {
         resourcePaths.add(StringUtils.removeStart(basePath, "/"));
         return GET(new PublicResourceHandler(basePath));
     }
 
-    protected RouteRegistration addFileResourceHandler(String basePath, File directory) {
+    protected RouteRegistration addFileResourceRoute(String basePath, File directory) {
         resourcePaths.add(StringUtils.removeStart(basePath, "/"));
         return GET(new FileResourceHandler(basePath, directory));
     }
 
-    protected RouteRegistration addLanguageHandler(boolean allowQueryParameter, boolean setCookie) {
-        return addLanguageHandler(getResourceExclusionExpression(), allowQueryParameter, setCookie);
+    protected RouteRegistration addLanguageFilter(boolean allowQueryParameter, boolean setCookie) {
+        return addLanguageFilter(getResourceExclusionExpression(), allowQueryParameter, setCookie);
     }
 
-    protected RouteRegistration addLanguageHandler(String uriPattern, boolean allowQueryParameter, boolean setCookie) {
+    protected RouteRegistration addLanguageFilter(String uriPattern, boolean allowQueryParameter, boolean setCookie) {
         return GET(uriPattern, new LanguageHandler(languages, allowQueryParameter, setCookie));
     }
 

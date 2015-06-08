@@ -48,8 +48,8 @@ public class Routes extends RoutesModule {
         /*
          * Setup classpath resource handlers
          */
-        addWebjarResourceHandler().named("webjar resource handler");
-        addPublicResourceHandler().named("public resource handler");
+        addWebjarsResourceRoute().named("webjars resource route");
+        addPublicResourceRoute().named("public resource route");
 
         /*
          * Define a resource exclusion regular expression.
@@ -59,12 +59,12 @@ public class Routes extends RoutesModule {
         final String appFilter = getResourceExclusionExpression();
 
         /*
-         * Register a language handler which processes a lang=? query parameter,
+         * Register a language filter which processes a lang=? query parameter,
          * sets the preferred language in the Context, and sets a Response cookie.
          *
-         * This handler only applies to GET requests.
+         * This filter only applies to GET requests.
          */
-        addLanguageHandler(appFilter, true, true).named("language handler");
+        addLanguageFilter(appFilter, true, true).named("language filter");
 
         /*
          * Register a handler that binds some values to use on GET requests
