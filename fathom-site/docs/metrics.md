@@ -1,6 +1,6 @@
 ## About
 
-**Fathom-Metrics** provides your application with [DropWizard Metrics] integration for runtime collection and reporting of and object that is instantiated by Guice.
+**Fathom-Metrics** provides your application with [DropWizard Metrics] integration for runtime collection and reporting of usage & activity.
 
 ## Installation
 
@@ -83,8 +83,6 @@ public class EmployeeDao {
     }
   }
 ```
-
-This transparent behavior is possible because the **Fathom-Metrics** module registers [AOP method interceptors] for the collection annotations AND [Guice] is being used to instantiate & inject your objects.
 
 ----
 

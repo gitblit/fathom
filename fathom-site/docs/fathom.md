@@ -20,10 +20,6 @@ YourApp
 ```java
 package conf;
 
-/**
- * Class which allows you to perform custom actions at the completion
- * of startup and the beginning of shutdown.
- */
 public class Fathom extends Ftm {
 
   @Override

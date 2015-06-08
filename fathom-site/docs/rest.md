@@ -197,6 +197,58 @@ In the above example Controller you may notice that each of the methods is annot
 
 **Fathom-REST** Controllers are a great place to collect metrics data.
 
+#### Requiring Settings (Controller)
+
+Your *controller* class may need one or more settings to function and you may specify them as annotated requirements.
+
+Each required setting must be present in the runtime profile [configuration](configuration.md) and must have a non-empty value.
+
+```java
+@ControllerPath("/secret")
+@RequireSetting("allow.secret")
+public SecretController extends Controller {
+}
+```
+
+#### Requiring Settings (Method)
+
+Your *controller* method may need one or more settings to function and you may specify them as annotated requirements.
+
+Each required setting must be present in the runtime profile [configuration](configuration.md) and must have a non-empty value.
+
+```java
+@GET("/secret")
+@Produces(Produces.HTML)
+@RequireSetting("allow.secret")
+public void secret() {
+  getResponse().render("secret_page");
+}
+```
+
+#### Requiring Modes (Controller)
+
+You might only want to register a *controller* class in a particular runtime *mode*. This is easily accomplished by using one or more of the mode-specific annotations: `@DEV`, `@TEST`, and `@PROD`.
+
+```java
+@ControllerPath("/debug")
+@DEV @TEST
+public DebugController extends Controller {
+}
+```
+
+#### Requiring Modes (Method)
+
+You might only want to register a *controller* method in a particular runtime *mode*. This is easily accomplished by using one or more of the mode-specific annotations: `@DEV`, `@TEST`, and `@PROD`.
+
+```java
+@GET("/debug")
+@Produces(Produces.HTML)
+@DEV @TEST
+public void debug() {
+  getResponse().render("debug_page");
+}
+```
+
 ## Template Engines
 
 All standard [Pippo] template engines are supported.

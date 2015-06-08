@@ -122,6 +122,7 @@ accounts: [
     disabled: true
   }
 ]
+
 roles: {
   administrator: ["*"]
   normal: ["secure:view"]

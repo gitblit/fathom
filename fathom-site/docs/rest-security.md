@@ -87,11 +87,11 @@ public class Routes extends RoutesModule {
 
 ### Form Submission Authorization or Cross-Site Request Forgery Protection
 
-[Cross-Site Request Forgery], or CSRF, is a technique to coerce a user to submit an form which executes an unauthorized action on a server using the user's cookies or current session.  From the perspective of the server, the form submission originated from the user and was intended.  From the perspective of the user, they did not authorize the action even though they did submit the forged form.
+[Cross-Site Request Forgery], or CSRF, is a technique to coerce a user to submit a form which executes an unauthorized action on a server using the user's cookies or current session.  From the perspective of the server, the submitted form originated from the user and was an intended action.  From the perspective of the user, they did not authorize the action even though they did submit the forged form.
 
-To protect the user from this kind of forgery you may insert a *token* into generated forms and require the same *token* to be submitted with the form.  This *token* is only valid for the duration of the user's [Session] and not otherwise accessible from malicious forms.
+To protect the user from this kind of forgery we will insert a temporary *token* into the generated forms and require the same *token* to be in the submitted POST request.  This *token* is only valid for the duration of the user's [Session] and not otherwise accessible from malicious forms.
 
-Guarding against this kind of attack is a two-step operation.  First we must add a guard which will validate submitted forms contain the correct *token* and then we must ensure we are including the *token* in the forms t obe submitted.
+Guarding against this kind of attack is a two-step operation.  First we must add a guard which will validate that submitted forms contain the correct *token* and then we must ensure we are including the *token* in the generated forms to be submitted.
 
 In this example we will guard all the `/employees/` URLs.
 
@@ -100,7 +100,7 @@ CSRFHandler csrfHandler = new CSRFHandler();
 ALL("/employees/.*)", csrfHandler).named("CSRF handler");
 ```
 
-And we must also update our page generation to include a hidden form field named `_csrf_token`.
+And we must also update our page generation to include a hidden form field named `_csrf_token`.  The *csrfToken* value is available to all template engines.
 
 ```html
 <form method="post" action="/employees/rename/5">
@@ -112,7 +112,7 @@ And we must also update our page generation to include a hidden form field named
 
 ### Controller Method Account Argument Extractor
 
-If you want easy access to the *account* associated with a request you may specify `@Auth Account account` as a method parameter and **Fathom-REST** will inject the *account* on execution.
+If you want easy access to the *account* associated with a request you may specify `@Auth Account account` as a method parameter and **Fathom-REST** will inject the *account* on execution.  If the request has no associated *account* then the *Guest account* is supplied to avoid NullPointerExceptions.
 
 ```java
 @ControllerPath("/employees")
@@ -138,7 +138,7 @@ public class EmployeesController extends Controller {
 
 ### Controller Method Authorization
 
-Instead of manually injecting and check the *account* for a specific authorization you may use an annotation to specify the *role* or *permission* or state to enforce.
+Instead of manually injecting and check the *account* for a specific authorization you may use an annotation to specify the *role* or *permission* or state to enforce.  If the request has no associated *account* then the *Guest account* is supplied to avoid NullPointerExceptions.
 
 If the *account* is unauthorized an *AuthorizationException* will be thrown which will be intercepted and an Unauthorized (403) error core will be returned to the client.
 

@@ -30,7 +30,7 @@ The footprint of the **Fathom-Core** foundation is ~7.5MB.
 
 ### Modular & Injectable
 
-Fathom features a formal `Module` spec, `Service` classes, and dependency injection combined with the [Service Locator design](http://martinfowler.com/articles/injection.html#UsingAServiceLocator) that gives _you_ ultimate modularity.
+Fathom features a formal `Module` spec, `Service` classes, and dependency injection combined with [Java service loaders](http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html) gives _you_ ultimate modularity.
 
 Modules & services may be optionally disabled based on runtime mode and/or config settings.
 
