@@ -19,7 +19,7 @@ package controllers;
 import com.google.inject.Inject;
 import dao.CollectionsDao;
 import fathom.metrics.Metered;
-import fathom.rest.controller.ControllerPath;
+import fathom.rest.controller.Path;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.PUT;
@@ -30,9 +30,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * To be discoverable, a controller must be annotated with {@code @ControllerPath}.
+ * To be discoverable, a controller must be annotated with {@code @Path}.
  */
-@ControllerPath("/collections")
+@Path("/collections")
 public class CollectionsController extends Controller {
 
     @Inject

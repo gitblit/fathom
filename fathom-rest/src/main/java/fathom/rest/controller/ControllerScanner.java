@@ -63,7 +63,7 @@ public abstract class ControllerScanner {
      */
     protected Collection<Class<?>> discoverClasses(String... packageNames) {
         log.debug("Discovering annotated controller in package(s) '{}'", Arrays.toString(packageNames));
-        Collection<Class<?>> classes = ClassUtil.getAnnotatedClasses(ControllerPath.class, packageNames);
+        Collection<Class<?>> classes = ClassUtil.getAnnotatedClasses(Path.class, packageNames);
         return classes;
     }
 
@@ -151,7 +151,7 @@ public abstract class ControllerScanner {
         }
 
         Set<String> paths = new LinkedHashSet<>();
-        ControllerPath controllerPath = controllerClass.getAnnotation(ControllerPath.class);
+        Path controllerPath = controllerClass.getAnnotation(Path.class);
 
         if (controllerPath != null) {
             if (parentPaths.isEmpty()) {

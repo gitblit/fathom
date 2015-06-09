@@ -23,8 +23,8 @@ import fathom.metrics.Metered;
 import fathom.realm.Account;
 import fathom.rest.controller.Auth;
 import fathom.rest.controller.Controller;
-import fathom.rest.controller.ControllerPath;
 import fathom.rest.controller.GET;
+import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
 import fathom.rest.security.aop.RequirePermission;
 import models.Item;
@@ -32,9 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * To be discoverable, a controller must be annotated with {@code @ControllerPath}
+ * To be discoverable, a controller must be annotated with {@code @Path}
  */
-@ControllerPath("/secure")
+@Path("/secure")
 public class SecureApiController extends Controller {
 
     private final Logger log = LoggerFactory.getLogger(SecureApiController.class);

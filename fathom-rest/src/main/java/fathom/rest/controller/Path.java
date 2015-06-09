@@ -22,14 +22,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for specifying a method path.
+ * Annotation for specifying a discoverable controller path.
  *
  * @author James Moger
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ControllerPath {
+public @interface Path {
 
     String[] value() default {};
 }

@@ -20,20 +20,19 @@ import com.google.inject.Inject;
 import dao.CollectionsDao;
 import fathom.metrics.Metered;
 import fathom.rest.controller.Body;
-import fathom.rest.controller.ControllerPath;
+import fathom.rest.controller.Path;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.PUT;
 import fathom.rest.controller.Produces;
 import ro.pippo.core.ContentTypeEngines;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * To be discoverable, a controller must be annotated with {@code @ControllerPath}.
+ * To be discoverable, a controller must be annotated with {@code @Path}.
  */
-@ControllerPath("/content")
+@Path("/content")
 public class ContentTypeController extends Controller {
 
     @Inject

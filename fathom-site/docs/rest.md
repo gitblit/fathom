@@ -162,8 +162,8 @@ Controllers in **Fathom-REST** are almost the same as in [Pippo] but Fathom Cont
 ```java
 package controllers;
 
-// To be discoverable, a controller must be annotated with @ControllerPath.
-@ControllerPath("/employees")
+// To be discoverable, a controller must be annotated with @Path.
+@Path("/employees")
 public class MyController extends Controller {
 
   @Inject
@@ -260,7 +260,7 @@ Your *controller* class may need one or more settings to function and you may sp
 Each required setting must be present in the runtime profile [configuration](configuration.md) and must have a non-empty value otherwise the *controller* class will not be registered.
 
 ```java
-@ControllerPath("/secret")
+@Path("/secret")
 @RequireSetting("allow.secret")
 public SecretController extends Controller {
 }
@@ -286,7 +286,7 @@ public void secret() {
 You might only want to register a *controller* class in a particular runtime *mode*. This is easily accomplished by using one or more of the mode-specific annotations: `@DEV`, `@TEST`, and `@PROD`.
 
 ```java
-@ControllerPath("/debug")
+@Path("/debug")
 @DEV @TEST
 public DebugController extends Controller {
 }

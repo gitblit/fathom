@@ -115,7 +115,7 @@ And we must also update our page generation to include a hidden form field named
 If you want easy access to the *account* associated with a request you may specify `@Auth Account account` as a method parameter and **Fathom-REST** will inject the *account* on execution.  If the request has no associated *account* then the *Guest account* is supplied to avoid NullPointerExceptions.
 
 ```java
-@ControllerPath("/employees")
+@Path("/employees")
 public class EmployeesController extends Controller {
 
   @GET("/{id: [0-9]+}")
@@ -153,7 +153,7 @@ If the *account* is unauthorized an *AuthorizationException* will be thrown whic
 In the following examples we are enforcing `employee:view` and `employee:delete` *permissions* on the controller methods.
 
 ```java
-@ControllerPath("/employees")
+@Path("/employees")
 public class EmployeesController extends Controller {
 
   @GET("/{id: [0-9]+}")

@@ -17,11 +17,11 @@ package controllers;
 
 import com.google.common.base.Optional;
 import fathom.metrics.Timed;
-import fathom.rest.controller.ControllerPath;
+import fathom.rest.controller.Path;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
 
-@ControllerPath("/annotated")
+@Path("/annotated")
 public class HelloAnnotatedController extends Controller {
 
     @Timed("hello.annotated")
