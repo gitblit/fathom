@@ -15,95 +15,9 @@
     <artifactId>fathom-parent</artifactId>
     <packaging>pom</packaging>
     <version>0.5.0-SNAPSHOT</version>
+    <name>Fathom Parent</name>
+    <description>Microservice Foundation</description>
     <url>http://fathom.gitblit.com</url>
-
-    <organization>
-        <name>James Moger</name>
-    </organization>
-
-    <modules>
-        <module>fathom-core</module>
-        <module>fathom-eventbus</module>
-        <module>fathom-jcache</module>
-        <module>fathom-metrics</module>
-        <module>fathom-metrics-librato</module>
-        <module>fathom-metrics-influxdb</module>
-        <module>fathom-metrics-graphite</module>
-        <module>fathom-metrics-ganglia</module>
-        <module>fathom-mailer</module>
-        <module>fathom-quartz</module>
-        <module>fathom-rest</module>
-        <module>fathom-rest-security</module>
-        <module>fathom-test-tools</module>
-        <module>fathom-security</module>
-        <module>fathom-security-htpasswd</module>
-        <module>fathom-security-pam</module>
-        <module>fathom-security-windows</module>
-        <module>fathom-security-ldap</module>
-        <module>fathom-security-jdbc</module>
-        <module>fathom-security-redis</module>
-        <module>fathom-rest-shiro</module>
-        <module>fathom-integration-test</module>
-        <module>fathom-archetype-standard</module>
-    </modules>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <pippo.version>0.5.0</pippo.version>
-        <h2.version>1.4.186</h2.version>
-        <mockito.version>1.9.5</mockito.version>
-        <junit.version>4.10</junit.version>
-        <slf4j.version>1.7.12</slf4j.version>
-    </properties>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5</version>
-                    <configuration>
-                        <!-- bump submodule versions automatically -->
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <!-- install next final version in local repo, so that tests on archetypes
-                            work -->
-                        <preparationGoals>clean install</preparationGoals>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
-                    <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <configuration>
-                        <additionalparam>-Xdoclint:none</additionalparam>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.7</version>
-                </plugin>
-
-                <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.4</version>
-                </plugin>
-
-            </plugins>
-        </pluginManagement>
-    </build>
 
     <scm>
         <url>https://github.com/gitblit/fathom</url>
@@ -124,6 +38,123 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <name>James Moger</name>
+            <email>james.moger@gmail.com</email>
+            <organization>gitblit.com</organization>
+            <organizationUrl>https://github.com/gitblit</organizationUrl>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <pippo.version>0.5.0</pippo.version>
+        <h2.version>1.4.186</h2.version>
+        <mockito.version>1.9.5</mockito.version>
+        <junit.version>4.10</junit.version>
+        <slf4j.version>1.7.12</slf4j.version>
+    </properties>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <!-- Java Compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <!-- Release plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <!-- install next final version in local repo, so that tests on archetypes work -->
+                    <preparationGoals>clean install</preparationGoals>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy</goals>
+                    <tagNameFormat>release-@{project.version}</tagNameFormat>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Java Source plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- JavaDoc plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <additionalparam>-Xdoclint:none</additionalparam>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- GPG plugin to sign the artifacts -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
@@ -153,5 +184,31 @@
 
         </dependencies>
     </dependencyManagement>
+
+    <modules>
+        <module>fathom-core</module>
+        <module>fathom-eventbus</module>
+        <module>fathom-jcache</module>
+        <module>fathom-metrics</module>
+        <module>fathom-metrics-librato</module>
+        <module>fathom-metrics-influxdb</module>
+        <module>fathom-metrics-graphite</module>
+        <module>fathom-metrics-ganglia</module>
+        <module>fathom-mailer</module>
+        <module>fathom-quartz</module>
+        <module>fathom-rest</module>
+        <module>fathom-rest-security</module>
+        <module>fathom-test-tools</module>
+        <module>fathom-security</module>
+        <module>fathom-security-htpasswd</module>
+        <module>fathom-security-pam</module>
+        <module>fathom-security-windows</module>
+        <module>fathom-security-ldap</module>
+        <module>fathom-security-jdbc</module>
+        <module>fathom-security-redis</module>
+        <module>fathom-rest-shiro</module>
+        <module>fathom-integration-test</module>
+        <module>fathom-archetype-standard</module>
+    </modules>
 
 </project>
