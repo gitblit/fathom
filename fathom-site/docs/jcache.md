@@ -35,14 +35,11 @@ YourApp
 
 ## Configuration
 
-```hocon
-# Set the preferred JCache provider.
-# If unspecified, the first provider discovered will be used.
-# You may specify a full provider classname or you may specify
-# a nickname for an already registered JCache implementation
-# such as: ehcache, infinispan, hazelcast
-jcache.preferredProvider = ""
+You don't have to configure your JCache provider to use it.  Each provider ships with default settings which allows you to get up-and-running very quickly.
 
+If you need to specify a provider-specific configuration you may do so.
+
+```hocon
 # Ehcache configuration file
 # see http://ehcache.org/documentation
 # specify 'jcache' to default to the Jcache default configuration
@@ -61,6 +58,19 @@ infinispan.configurationFile = "jcache"
 # hazelcast.configurationFile = "classpath:conf/hazelcast.xml"
 hazelcast.configurationFile = "jcache"
 ```
+### Multiple Providers on the classpath
+
+In the event that you have multiple providers on the classpath at the same time, Fathom will pick the first one loaded by the JVM **unless** you specify a preference.
+
+```hocon
+# Set the preferred JCache provider.
+# If unspecified, the first provider discovered will be used.
+# You may specify a full provider classname or you may specify
+# a nickname for an already registered JCache implementation
+# such as: ehcache, infinispan, hazelcast
+jcache.preferredProvider = ""
+```
+One scenario where you might have multiple providers is using one for `DEV` mode and a different one for `PROD` mode.  This would be the caching analog of using an SQL db like SQLite or H2 for development and PostgreSQL for production.
 
 ## Usage
 
