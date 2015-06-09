@@ -6,6 +6,8 @@ You are not required to use or even have this class in your classpath.
 
 ### Layout
 
+This *class* depends on the value of the `application.package` setting.  If you have specified an application package then your Fathom class must be `${package}/conf/Fathom.java`.
+
 ```
 YourApp
 └── src

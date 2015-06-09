@@ -24,6 +24,8 @@ Add the **Fathom-JCache** artifact...
 
 ## Layout
 
+This *module* depends on the value of the `application.package` setting.  If you have specified an application package then your Caches class must be `${package}/conf/Caches.java`.
+
 ```
 YourApp
 └── src

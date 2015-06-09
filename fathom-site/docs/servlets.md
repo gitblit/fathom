@@ -8,6 +8,8 @@ You are not required to use or even have this class in your classpath.  For exam
 
 ### Layout
 
+This *class* depends on the value of the `application.package` setting.  If you have specified an application package then your Servlets class must be `${package}/conf/Servlets.java`.
+
 ```
 YourApp
 └── src

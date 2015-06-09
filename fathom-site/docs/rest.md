@@ -18,6 +18,8 @@ Add the **Fathom-REST** artifact.
 
 ## Layout
 
+This *module* depends on the value of the `application.package` setting.  If you have specified an application package then your Routes class must be `${package}/conf/Routes.java`.
+
 ```
 YourApp
 └── src
@@ -67,9 +69,6 @@ application {
   # e.g. application.languages=en,de,es,fr,ru
   languages = [en, de, es, fr, ro, ru]
 }
-
-# You can optionally relocate templates from the default classpath location
-template.pathPrefix = ""
 ```
 
 ### Changing the Basepath

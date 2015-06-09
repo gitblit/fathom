@@ -8,6 +8,8 @@ You are not required to use or even have this class in your classpath - but it's
 
 ### Layout
 
+This *class* depends on the value of the `application.package` setting.  If you have specified an application package then your Components class must be `${package}/conf/Components.java`.
+
 ```
 YourApp
 └── src
@@ -31,6 +33,6 @@ public class Components extends Module {
         bind(EmployeeDao.class);
 
     }
-    
+
 }
 ```

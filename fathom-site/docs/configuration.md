@@ -4,6 +4,9 @@ Your Fathom application is configured by a [HOCON] file named `conf/default.conf
 
 Some modules require settings and these will all be stored in your configuration file.
 
+**Note:**<br/>
+Specification of an *application.package* is irrelevant to loading of configuration files.  Configuration files will always be loaded from the `conf` directory of the classpath.  The *application.package* setting affects Java classes, not configuration files.
+
 ### Profiles
 
 Your application may have several configuration profiles.  Each profile must have a corresponding configuration file.  The default configuration profile specifies the `conf/default.conf` configuration file.
@@ -69,10 +72,6 @@ This allows you to deploy a complete configuration profile built-into your appli
 application {
   name = "My Application"
   version = "1.0.0"
-
-  # You may optionally relocate your conf and controller packages using a custom prefix
-  # e.g. application.package=com.gitblit
-  package = ""
 }
 
 # Undertow server settings
