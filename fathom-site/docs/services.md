@@ -19,7 +19,7 @@ You must define your *Service*...
 class EmployeeService implements Service {
 
   Logger log = LoggerFactory.getLogger(EmployeeService.class);
-  
+
   @Override
   public int getPreferredStartOrder() {
     return 100;
@@ -29,12 +29,12 @@ class EmployeeService implements Service {
   public void start() {
     log.info("Employee Service started!");
   }
-  
+
   @Override
   public void stop() {
     log.info("Employee Service stopped!");
   }
-  
+
 }
 ```
 
@@ -45,12 +45,12 @@ public class Components extends Module {
 
   @Override
   protected void setup() {
-  
+
     bind(EmployeeService.class);
     bind(EmployeeDao.class);
-    
+
   }
-  
+
 }
 ```
 
@@ -73,7 +73,7 @@ For reference, here are the start orders of several Fathom modules. This may be 
 
 Your *service* may need one or more settings to function and you may specify them as annotated requirements.
 
-Each required setting must be present in the runtime profile [configuration](configuration.md) and must have a non-empty value.
+Each required setting must be present in the runtime profile [configuration](configuration.md) and must have a non-empty value otherwise the *service* will not be registered.
 
 ```java
 @RequireSetting("employeeService.url")
@@ -83,7 +83,7 @@ Each required setting must be present in the runtime profile [configuration](con
 class EmployeeService implements Service {
 
   Logger log = LoggerFactory.getLogger(EmployeeService.class);
-  
+
   @Override
   public int getPreferredStartOrder() {
     return 100;
@@ -93,12 +93,12 @@ class EmployeeService implements Service {
   public void start() {
     log.info("Employee Service started!");
   }
-  
+
   @Override
   public void stop() {
     log.info("Employee Service stopped!");
   }
-  
+
 }
 ```
 
@@ -112,7 +112,7 @@ You might only want to load your *service* in a particular runtime *mode*. This 
 class DebugService implements Service {
 
   Logger log = LoggerFactory.getLogger(DebugService.class);
-  
+
   @Override
   public int getPreferredStartOrder() {
     return 100;
@@ -122,12 +122,12 @@ class DebugService implements Service {
   public void start() {
     log.info("Debug Service started!");
   }
-  
+
   @Override
   public void stop() {
     log.info("Debug Service stopped!");
   }
-  
+
 }
 ```
 

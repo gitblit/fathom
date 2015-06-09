@@ -138,9 +138,9 @@ public class EmployeesController extends Controller {
 
 ### Controller Method Authorization
 
-Instead of manually injecting and check the *account* for a specific authorization you may use an annotation to specify the *role* or *permission* or state to enforce.  If the request has no associated *account* then the *Guest account* is supplied to avoid NullPointerExceptions.
+Instead of manually injecting and checking the *account* for a specific permission, you may use an annotation to specify the *role* or *permission* to require.  If the request has no associated *account* then the *Guest account* is supplied to avoid NullPointerExceptions.
 
-If the *account* is unauthorized an *AuthorizationException* will be thrown which will be intercepted and an Unauthorized (403) error core will be returned to the client.
+If the *account* is unauthorized an *AuthorizationException* will be thrown which will be intercepted and an Unauthorized (403) error code will be returned to the client.
 
 | Annotation                         | Use-Case                                                       |
 |------------------------------------|----------------------------------------------------------------|

@@ -21,15 +21,15 @@ com.package.MyModule
 
 ```java
 public class MyModule extends Module {
-  
+
   @Override
   protected void setup() {
-  
+
     // register MyService
     bind(MyService.class);
-    
+
   }
-  
+
 }
 ```
 
@@ -52,21 +52,21 @@ com.package.MyServletsModule
 public class MyServletsModule extends ServletsModule {
 
   @Override
-  protected void setup() {   
-  
+  protected void setup() {
+
     // serve all requests with MyServlet
-    serve("/*").with(MyServlet.class);    
-    
+    serve("/*").with(MyServlet.class);
+
     // add a debug filter for dev mode
     if (getSettings().isDev()) {
       filter("/*").through(MyFilter.class);
     }
-    
+
     // register MyService
     bind(MyService.class);
-    
+
   }
-  
+
 }
 ```
 
@@ -76,7 +76,7 @@ public class MyServletsModule extends ServletsModule {
 
 Your *module* may need one or more settings to function and you may specify them as annotated requirements.
 
-Each required setting must be present in the runtime profile [configuration](configuration.md) and must have a non-empty value.
+Each required setting must be present in the runtime profile [configuration](configuration.md) and must have a non-empty value otherwise the *module* will not be loaded.
 
 ```java
 @RequireSetting("myService.url")
@@ -86,12 +86,12 @@ public class MyModule extends Module {
 
   @Override
   protected void init() {
-  
+
     // register MyService
     bind(MyService.class);
 
   }
-  
+
 }
 ```
 
@@ -105,12 +105,12 @@ public class DebugModule extends Module {
 
   @Override
   protected void init() {
-  
+
     // register DebugService
     bind(DebugService.class);
 
   }
-  
+
 }
 ```
 
