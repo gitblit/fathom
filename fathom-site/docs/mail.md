@@ -1,6 +1,6 @@
 ## About
 
-**Fathom-Mailer** provides your application with a thread-safe, singleton instance of a mail service.
+**Fathom-Mailer** provides your application with a thread-safe, singleton instance of a mail [service](services.md).
 
 **Fathom-Mailer** is based on [Sisu-Mailer](https://github.com/sonatype/sisu-mailer), depends on [Fathom-REST](rest.md), and is integrated
 with your chosen [Pippo Template Engine](rest/#template-engines).

@@ -30,9 +30,7 @@ The footprint of the **Fathom-Core** foundation is ~7.5MB.
 
 ### Modular & Injectable
 
-Fathom features a formal `Module` spec, `Service` classes, and dependency injection combined with [Java service loaders](http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html) gives _you_ ultimate modularity.
-
-Modules & services may be optionally disabled based on runtime mode and/or config settings.
+Fathom features a formal [Module](modules.md) specification, [Service](services.md) infrastructure, and dependency injection all combined with [Java ServiceLoader](http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html) to give _you_ ultimate modularity.
 
 ### License
 
@@ -45,4 +43,3 @@ Distributed under the Apache Software License 2.0.
 [Logback]: http://logback.qos.ch
 [SLF4J]: http://www.slf4j.org
 [Args4j]: http://args4j.kohsuke.org
-[Commons-Daemon]: http://commons.apache.org/proper/commons-daemon

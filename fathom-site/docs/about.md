@@ -1,19 +1,18 @@
 ## What Fathom-Core Is
 
-**Fathom-Core** is an injectable module bootstrapper integrated with a high-performance webserver and tied together by a structured configuration file.
+**Fathom-Core** is an injectable module loader integrated with a high-performance webserver and tied together by a structured configuration file.
 
 **Fathom-Core** provides a structure for your microservice by specifying:
 
 - a conventional directory structure
 - a command-line arguments parser
-- a highly configurable logging framework
-- a structured configuration file with runtime specification of alternate configs
+- a highly configurable [logging framework](logging.md)
+- a structured [configuration file](configuration.md) with runtime specification of alternate configs
 - several runtime modes (PROD, TEST, DEV)
 - an http/https engine
 - a dependency injection mechanism
-- an universally available rich `Settings` object
-- a formal `Module` definition which can be configured via `Settings`
-- a formal `Service` defintion which can be configured via `Settings`
+- a flexible [module](modules.md) loader
+- a [service](services.md) infrastructure
 
 ## What Fathom-Core Is Not
 

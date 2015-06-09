@@ -55,7 +55,7 @@ cacheMax: 100
 
 ## Usage
 
-**Fathom-Security** provides a singleton instance of a *SecurityManager*.  This object contains all loaded *Realms*, *Accounts*, *Roles*, and *Permissions*.
+**Fathom-Security** provides a singleton instance of a *SecurityManager* [service](services.md).  This service contains all loaded *Realms*, *Accounts*, *Roles*, and *Permissions*.
 
 ```java
 @Inject

@@ -9,6 +9,7 @@ Many of the optional Fathom modules include services such as:
 - [Fathom-Metrics](metrics.md)
 - [Fathom-Quartz](quartz.md)
 - [Fathom-REST](rest.md)
+- [Fathom-Security](security.md)
 
 ## Configuration
 

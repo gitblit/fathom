@@ -19,37 +19,37 @@ Fathom provides a **tightly integrated base** to quickly bootstrap your microser
 
 ### Opinionated
 
-* [Undertow][1] is *the* development &amp; deployment engine
-* [Guice][2] is *the* dependency injection mechanism
-* [Guava][3] is *the* standard library
-* [Config][4] is *the* configuration file parser
-* [Args4j][5] is *the* command-line parsing framework
-* [Logback][6] is *the* logging framework
-* [SLF4J][7] is *the* logging interface
+* [Undertow] is *the* development &amp; deployment engine
+* [Guice] is *the* dependency injection mechanism
+* [Guava] is *the* standard library
+* [Config] is *the* configuration file parser
+* [Args4j] is *the* command-line parsing framework
+* [Logback] is *the* logging framework
+* [SLF4J] is *the* logging interface
 * **Java 8** is the baseline JVM
 
 ### Modular
 
-Fathom features a formal `Module` spec, `Service` classes, and dependency injection combined with [Java service loaders](http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html) that gives _you_ ultimate modularity.
-
-### Similar alternatives
-
-* [Restlet](http://restlet.com)
-* [Ratpack](http://ratpack.io)
-* [SparkJava](http://sparkjava.com)
-* [Spring Boot](http://projects.spring.io/spring-boot)
-* [Ninja](http://www.ninjaframework.org)
-* [Play](https://playframework.com)
-* [DropWizard](http://dropwizard.github.io/dropwizard)
+Fathom features a formal [Module](http://fathom.gitblit.com/modules/) specification, [Service](http://fathom.gitblit.com/services/) infrastructure, and dependency injection all combined with [Java ServiceLoader](http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html) to give _you_ ultimate modularity.
 
 ### License
 
 Distributed under the Apache Software License 2.0.
 
-[1]: http://undertow.io
-[2]: https://github.com/google/guice
-[3]: https://code.google.com/p/guava-libraries
-[4]: https://github.com/typesafehub/config
-[5]: http://logback.qos.ch
-[6]: http://args4j.kohsuke.org
-[7]: http://www.slf4j.org
+[Undertow]: http://undertow.io
+[Guice]: https://github.com/google/guice
+[Guava]: https://github.com/google/guava
+[Config]: https://github.com/typesafehub/config
+[Logback]: http://logback.qos.ch
+[SLF4J]: http://www.slf4j.org
+[Args4j]: http://args4j.kohsuke.org
+
+### Similar alternatives
+
+* [Restlet](http://restlet.com)
+* [Spring Boot](http://projects.spring.io/spring-boot)
+* [DropWizard](http://dropwizard.github.io/dropwizard)
+* [Ratpack](http://ratpack.io)
+* [SparkJava](http://sparkjava.com)
+* [Ninja](http://www.ninjaframework.org)
+* [Play](https://playframework.com)

@@ -2,15 +2,15 @@
 
 There are two kinds of *modules* in Fathom, `fathom.Module` and `fathom.ServletsModule`.
 
-All Fathom *modules* are indentified by a [Java service loader].
+Fathom *modules* are discovered by a [Java ServiceLoader].
 
 ## fathom.Module
 
-Use this *module* type to provide injectable *Services* & components to your Fathom application.
+Subclass this *module* type to provide injectable [services](services.md) & components to your Fathom application.
 
 ### Configuration
 
-Create a service definition file for your *module*...
+Create a [Java ServiceLoader] definition file for your *module*...
 
 **META-INF/services/fathom.Module**
 ```
@@ -35,11 +35,11 @@ public class MyModule extends Module {
 
 ## fathom.ServletsModule
 
-Use this *module* type to provide injectable *Services* & components, Filters, and Servlets.
+Subclass this *module* type to provide injectable [services](services.md) & components, Filters, and Servlets.
 
 ### Configuration
 
-Create a service definition file for your *module*...
+Create a [Java ServiceLoader] definition file for your *module*...
 
 **META-INF/services/fathom.ServletsModule**
 ```
@@ -118,4 +118,4 @@ public class DebugModule extends Module {
 
 Add your *module* to the classpath of your Fathom application.
 
-[Java service loader]: http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html
+[Java ServiceLoader]: http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html

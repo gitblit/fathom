@@ -1,6 +1,6 @@
 ## About
 
-**Fathom-Metrics** provides your application with [DropWizard Metrics] integration for runtime collection and reporting of usage & activity.
+**Fathom-Metrics** provides your application with a [DropWizard Metrics] [service](services.md) for runtime collection and reporting of usage & activity.
 
 ## Installation
 
@@ -38,7 +38,7 @@ metrics {
 
 ## Usage
 
-The most elegant way to use Fathom's Metrics integration is with annotations.
+The most elegant way to use Fathom's [DropWizard Metrics] integration is with annotations.
 
 | Annotation | Description                                                                                |
 |------------|--------------------------------------------------------------------------------------------|
@@ -84,6 +84,21 @@ public class EmployeeDao {
   }
 ```
 
+You may also inject the Fathom *Metrics* service or the *MetricRegistry* to manually manage your metrics.
+
+```java
+@Singleton
+public class ItemDao {
+
+  @Inject
+  Metrics metricsService;
+
+  @Inject
+  MetricRegistry metricRegistry;
+
+}
+```
+
 ----
 
 ## VisualVM or JConsole
@@ -91,7 +106,7 @@ public class EmployeeDao {
 As long as `metrics.mbeans = true` in your runtime configuration, your metrics will be visible to [VisualVM] or [JConsole].
 
 **Note:**<br/>
-VisualVM does not ship with an MBeans viewer however there is an MBeans plugin that can be installed **from within** VisualVM to enable display of MBeans.
+VisualVM does not ship with an [MBeans] viewer however there is an [MBeans] plugin that can be installed **from within** VisualVM to enable display of [MBeans].
 
 ----
 
@@ -229,5 +244,6 @@ metrics {
 [Guice]: https://github.com/google/guice
 [AOP method interceptors]: https://github.com/google/guice/wiki/AOP
 
+[MBeans]: https://en.wikipedia.org/wiki/Java_Management_Extensions
 [VisualVM]: https://visualvm.java.net/
 [JConsole]: http://openjdk.java.net/tools/svc/jconsole
