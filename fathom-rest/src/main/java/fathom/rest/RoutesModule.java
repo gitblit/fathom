@@ -30,6 +30,7 @@ import fathom.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.Languages;
+import ro.pippo.core.route.ClasspathResourceHandler;
 import ro.pippo.core.route.FileResourceHandler;
 import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.Route;
@@ -162,6 +163,12 @@ public abstract class RoutesModule {
         resourcePaths.add(StringUtils.removeStart(basePath, "/"));
         return GET(new FileResourceHandler(basePath, directory));
     }
+
+    protected RouteRegistration addClasspathResourceRoute(String basePath, String classpathDirectory) {
+        resourcePaths.add(StringUtils.removeStart(basePath, "/"));
+        return GET(new ClasspathResourceHandler(basePath, classpathDirectory));
+    }
+
 
     protected RouteRegistration addLanguageFilter(boolean allowQueryParameter, boolean setCookie) {
         return addLanguageFilter(getResourceExclusionExpression(), allowQueryParameter, setCookie);
