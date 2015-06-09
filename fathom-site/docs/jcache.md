@@ -83,9 +83,6 @@ Create a `conf/Caches.java` class.
 ```java
 package conf;
 
-/**
- * This class is used to conveniently define your JCaches.
- */
 public class Caches extends CachesModule {
 
     public static final String EMPLOYEE_CACHE = "employeeCache";
@@ -108,9 +105,7 @@ The most elegant way to use Fathom's JCache integration is with annotations.
 
 In the following non-functional example we are annotating our employee DAO singleton to specify that all methods in this DAO access the *EMPLOYEE_CACHE* defined in our `conf/Caches.java` class.
 
-We are also annotating the `get`, `getAll`, `delete`, and `save` methods.  Calling these methods will transparently populate & clear the cache.
-
-This transparent behavior is possible because the **Fathom-JCache** module registers [AOP method interceptors] for the JCache annotations.
+We are also annotating the `get`, `getAll`, `delete`, and `save` methods.  Calling these methods will transparently manage the cache.
 
 ```java
 @Singleton
@@ -149,12 +144,18 @@ public class EmployeeDao {
   }
 ```
 
+### Viewing and Managing your Caches
+
+Fathom does not provide a mechansim to view & manage your caches, however, several JCache providers register [MBeans] which view and manage caches via [JConsole] or [VisualVM].
+
 [Hazelcast]: http://hazelcast.org
 [Infinispan]: http://infinispan.org
 [Ehcache]: http://ehcache.org
 
 [Guice]: https://github.com/google/guice
-[AOP method interceptors]: https://github.com/google/guice/wiki/AOP
 [com.hazelcast:hazelcast]: http://search.maven.org/#search|ga|1|g:"com.hazelcast"%20AND%20a:"hazelcast"
 [org.infinispan:infinispan-jcache]: http://search.maven.org/#search|ga|1|g:"org.infinispan"%20AND%20a:"infinispan-jcache"
 [org.ehcache:jcache]: http://search.maven.org/#search|ga|1|g:"org.ehcache"%20AND%20a:"jcache"
+[MBeans]: https://en.wikipedia.org/wiki/Java_Management_Extensions
+[VisualVM]: https://visualvm.java.net/
+[JConsole]: http://openjdk.java.net/tools/svc/jconsole

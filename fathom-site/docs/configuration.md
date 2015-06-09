@@ -5,7 +5,7 @@ Your Fathom application is configured by a [HOCON] file named `conf/default.conf
 Some modules require settings and these will all be stored in your configuration file.
 
 **Note:**<br/>
-Specification of an *application.package* is irrelevant to loading of configuration files.  Configuration files will always be loaded from the `conf` directory of the classpath.  The *application.package* setting affects Java classes, not configuration files.
+Specification of an *application.package* does not affect configuration file loading.  Configuration files will always be loaded from the `conf` directory of the classpath.
 
 ### Profiles
 
@@ -55,7 +55,7 @@ dev.mail {
 test.mail.port = 2465
 ```
 
-In this example, the *port* 1564 will be used when the application is run in the DEV mode, *port* 2465 when the application is run in the TEST mode, and *port* 465 for all other modes.
+In this example, the *port 1564* will be used when the application is run in the DEV mode, *port 2465* when the application is run in the TEST mode, and *port 465* for all other modes.
 
 ### Overriding Settings
 

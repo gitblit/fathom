@@ -2,7 +2,7 @@
 
 *Services* are singleton components that are *started* when your Fathom application starts and *stopped* when your Fathom application stops.
 
-Many of the optional Fathom modules include services such as:
+Many of the available Fathom modules include services such as:
 
 - [Fathom-JCache](jcache.md)
 - [Fathom-Mailer](mail.md)

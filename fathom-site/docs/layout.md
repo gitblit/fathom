@@ -4,9 +4,6 @@ Fathom applications use a directory structure popularized by Play; this director
 
 By default, your *application package* is Java's *default package*.  This may seem strange at first.  In **Fathom-Core** only the `conf` package is based on configuration.  All other packages (e.g. *dao* & *models* in the example below) are convention and have no real meaning.
 
-**Note:**<br/>
-Some `Module` instances also depend on your *application package*.
-
 ```
 YourApp
 ├── pom.xml
@@ -33,7 +30,7 @@ YourApp
 
 ### Configuration of Application Package
 
-It's easy to change the package for your application BUT you must be aware of how that may affect each *module*.  The affect of *application.package*, if any, is documented in the **Layout** section of each *module* documentation.
+It's easy to change the package for your application BUT you must be aware of how that may affect each *module* that you use.  The effect of *application.package*, if any, is documented in the **Layout** section of each *module* documentation.
 
 ```hocon
 application {

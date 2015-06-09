@@ -4,7 +4,7 @@ The `conf/Servlets.java` class is an implicit [ServletsModule](/modules/#fathoms
 
 This class does not support `@RequireSetting` or mode-specific (`@DEV`, `@TEST`, & `@PROD`) annotations, however the same functionality can be achieved using `getSettings().isDev()`, etc.
 
-You are not required to use or even have this class in your classpath.  For example, you might decide to use a `Module` that provides an alternative way to specify URL mappings like [Fathom-REST](rest.md).
+You are not required to use or even have this class in your classpath.
 
 ### Layout
 
