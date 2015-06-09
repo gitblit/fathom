@@ -16,8 +16,14 @@
 
 package conf;
 
+import com.google.inject.Inject;
+import dao.ItemDao;
+import fathom.conf.DEV;
+import fathom.conf.PROD;
+import fathom.conf.TEST;
 import fathom.quartz.JobsModule;
 import fathom.quartz.Scheduled;
+import models.Item;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -34,32 +40,41 @@ public class Jobs extends JobsModule {
     @Override
     protected void schedule() {
 
-        if (getSettings().isProd()) {
-            scheduleJob(ProdJob.class).withCronExpression("0/60 * * * * ?");
-        } else {
-            scheduleJob(DevJob.class);
-        }
+        scheduleJob(ProdJob.class);
+        scheduleJob(DevJob.class);
 
     }
 
+    @Scheduled(jobName = "PROD Job", cronExpression = "0/60 * * * * ?")
+    @PROD
+    @TEST
     private static class ProdJob implements Job {
 
         final Logger log = LoggerFactory.getLogger(ProdJob.class);
 
+        @Inject
+        ItemDao itemDao;
+
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
-            log.debug("My PROD job triggered");
+            Item item = itemDao.get(2);
+            log.debug("My PROD job triggered, got item {} (#{})", item.getName(), item.getId());
         }
     }
 
     @Scheduled(jobName = "DEV Job", cronExpression = "0/30 * * * * ?")
+    @DEV
     private static class DevJob implements Job {
 
         final Logger log = LoggerFactory.getLogger(DevJob.class);
 
+        @Inject
+        ItemDao itemDao;
+
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
-            log.debug("My DEV job triggered");
+            Item item = itemDao.get(1);
+            log.debug("My DEV job triggered, got item {} (#{})", item.getName(), item.getId());
         }
     }
 }

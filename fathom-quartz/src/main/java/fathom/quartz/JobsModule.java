@@ -20,6 +20,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import fathom.Module;
+import fathom.utils.RequireUtil;
 import fathom.utils.Util;
 import org.quartz.Job;
 import org.quartz.JobListener;
@@ -173,10 +174,14 @@ public abstract class JobsModule extends Module {
      * and related {@code Trigger} values will be extracted from it.
      *
      * @param jobClass The {@code Job} has to be scheduled
-     * @return The {@code Job} builder
+     * @return The {@code Job} builder or null if the job class may not be registered
      */
     protected final JobSchedulerBuilder scheduleJob(Class<? extends Job> jobClass) {
         checkNotNull(jobClass, "Argument 'jobClass' must be not null.");
+
+        if (!RequireUtil.allowClass(getSettings(), jobClass)) {
+            return null;
+        }
 
         JobSchedulerBuilder builder = new JobSchedulerBuilder(jobClass);
 

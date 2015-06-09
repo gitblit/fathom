@@ -33,52 +33,86 @@ By default, this module will try to configure Quartz from a `conf/quartz.propert
 
 ## Usage
 
-Create a `conf/Jobs.java` class.
+Create a `conf/Jobs.java` class.  Jobs can be manually scheduled in the `conf/Jobs.java` class or they can be annotated on each `Job` class.
 
 ```java
 package conf;
 
-/**
- * This class is used to conveniently schedule your Quartz jobs.
- */
 public class Jobs extends JobsModule {
 
-    @Override
-    protected void schedule() {
+  @Override
+  protected void schedule() {
 
-        if (getSettings().isProd()) {
-            scheduleJob(ProdJob.class).withCronExpression("0/60 * * * * ?");
-        } else {
-            scheduleJob(DevJob.class);
-        }
+    scheduleJob(MyJob.class);
+    scheduleJob(OtherJob.class).withCronExpression("0/60 * * * * ?");
 
-    }
+  }
+
+}
 ```
 
-Then create some `Job` classes.  Jobs can be manually scheduled in the `conf/Jobs.java` class or they can be annotated on each `Job` class.
+Then create some `Job` classes.  `Job` classes support injection.
 
 ```java
-public class ProdJob implements Job {
+@Scheduled(jobName = "My Job", cronExpression = "0/60 * * * * ?")
+public class MyJob implements Job {
 
-    final Logger log = LoggerFactory.getLogger(ProdJob.class);
+  final Logger log = LoggerFactory.getLogger(MyJob`.class);
 
-    @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        log.debug("My PROD job triggered");
-    }
+  @Inject
+  EmployeeDao employeeDao;
+
+  @Override
+  public void execute(JobExecutionContext context) throws JobExecutionException {
+    int count = employeeDao.getAll().size();
+    log.debug("My job triggered, {} employees in system", count);
+  }
+
 }
 ```
 
-```Java
+### Requiring Settings
+
+Your *job* may need one or more settings to function and you may specify them as annotated requirements.
+
+Each required setting must be present in the runtime profile [configuration](configuration.md) and must have a non-empty value otherwise the *job* will not be registered.
+
+```java
+@RequireSetting("myjob.url")
+@Scheduled(jobName = "My Job", cronExpression = "0/60 * * * * ?")
+public class MyJob implements Job {
+
+  final Logger log = LoggerFactory.getLogger(MyJob.class);
+
+  @Inject
+  Settings settings;
+
+  @Override
+  public void execute(JobExecutionContext context) throws JobExecutionException {
+    String url = settings.getString("myjob.url");
+    log.debug("My job triggered {}", url);
+  }
+
+}
+```
+
+### Requiring Modes
+
+You might only want to load your *job* in a particular runtime *mode*. This is easily accomplished by using one or more of the mode-specific annotations: `@DEV`, `@TEST`, and `@PROD`.
+
+```java
 @Scheduled(jobName = "DEV Job", cronExpression = "0/30 * * * * ?")
+@DEV
 public class DevJob implements Job {
 
-    final Logger log = LoggerFactory.getLogger(DevJob.class);
+  final Logger log = LoggerFactory.getLogger(DevJob.class);
 
-    @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        log.debug("My DEV job triggered");
-    }
+  @Override
+  public void execute(JobExecutionContext context) throws JobExecutionException {
+    log.debug("My DEV job triggered");
+  }
+
 }
 ```
+
 [Quartz Scheduler]: http://quartz-scheduler.org/documentation/quartz-2.2.x/quick-start
