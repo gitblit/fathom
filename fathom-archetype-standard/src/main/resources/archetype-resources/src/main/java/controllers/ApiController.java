@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
  * To be discoverable, a controller must be annotated with {@code @Path}.
  */
 @Path("/api")
+@Produces({Produces.JSON, Produces.XML})
 public class ApiController extends Controller {
 
     private final Logger log = LoggerFactory.getLogger(ApiController.class);
@@ -57,7 +58,6 @@ public class ApiController extends Controller {
      * @return Reply
      */
     @GET("/{id: [0-9]+}")
-    @Produces({Produces.JSON, Produces.XML})
     @Metered
     public void get(int id, @Auth Account account) {
 

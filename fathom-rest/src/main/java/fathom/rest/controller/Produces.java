@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  *
  * @author James Moger
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Produces {
     String [] value();

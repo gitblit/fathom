@@ -88,7 +88,17 @@ public class ControllerHandler implements RouteHandler<Context> {
             controller.setContext(context);
 
             if (method.isAnnotationPresent(Produces.class)) {
+                // controller method specifies Produces
                 Produces produces = method.getAnnotation(Produces.class);
+                String defaultContentType = produces.value()[0];
+                context.getResponse().contentType(defaultContentType);
+
+                if (produces.value().length > 1) {
+                    context.negotiateContentType();
+                }
+            } else if (method.getDeclaringClass().isAnnotationPresent(Produces.class)) {
+                // controller class specifies Produces
+                Produces produces = method.getDeclaringClass().getAnnotation(Produces.class);
                 String defaultContentType = produces.value()[0];
                 context.getResponse().contentType(defaultContentType);
 
