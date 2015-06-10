@@ -7,7 +7,7 @@ domain: "${groupId}"
 display_name: "${artifactId}"
 short_description: "${groupId}:${artifactId}"
 type: DAEMON
-main_class: "fathom.Boot"
+main_class: "${package}.App"
 platforms: [ WINDOWS, LINUX, MAC_OSX ]
 min_java_version: "1.8"
 min_java_memory: 1024

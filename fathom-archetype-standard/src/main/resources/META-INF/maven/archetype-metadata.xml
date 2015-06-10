@@ -20,21 +20,56 @@
         xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
         xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
         name="fathom-standard">
+    <requiredProperties>
+        <requiredProperty key="groupId">
+            <defaultValue>com.gitblit.example</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="artifactId"/>
+        <requiredProperty key="version">
+            <defaultValue>1.0.0-SNAPSHOT</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="package">
+            <defaultValue>com.gitblit.example</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="name">
+            <defaultValue>Fathom App</defaultValue>
+        </requiredProperty>
+    </requiredProperties>
     <fileSets>
-        <fileSet filtered="true" encoding="UTF-8">
+        <!-- Copy repackaged compile-scope sources -->
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
             <directory>src/main/java</directory>
             <includes>
                 <include>**/*</include>
             </includes>
         </fileSet>
-        <fileSet filtered="false" encoding="UTF-8">
+        <!-- Copy unfiltered resources -->
+        <fileSet filtered="false" packaged="false" encoding="UTF-8">
             <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*.xml</include>
+                <include>**/*.properties</include>
+                <include>**/*.css</include>
+                <include>**/*.ftl</include>
+            </includes>
+        </fileSet>
+        <!-- Copy filtered default.conf -->
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*.conf</include>
+            </includes>
+        </fileSet>
+        <!-- Copy filtered Stork launchers -->
+        <fileSet filtered="true" packaged="false" encoding="UTF-8">
+            <directory>src/main/launchers</directory>
             <includes>
                 <include>**/*</include>
             </includes>
         </fileSet>
-        <fileSet filtered="true" encoding="UTF-8">
-            <directory>src/test</directory>
+        <!-- Copy repackaged test-scope sources -->
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>src/test/java</directory>
             <includes>
                 <include>**/*</include>
             </includes>

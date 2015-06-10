@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package conf;
+package ${package}.conf;
 
-import dao.ItemDao;
+import ${package}.dao.ItemDao;
 import fathom.Module;
 
 /**

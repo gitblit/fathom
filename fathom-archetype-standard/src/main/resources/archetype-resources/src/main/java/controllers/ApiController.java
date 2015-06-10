@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package controllers;
+package ${package}.controllers;
+
+import ${package}.dao.ItemDao;
+import ${package}.models.Item;
 
 import com.google.inject.Inject;
-import dao.ItemDao;
 import fathom.metrics.Metered;
 import fathom.realm.Account;
 import fathom.rest.controller.Auth;
@@ -25,7 +27,6 @@ import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
-import models.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

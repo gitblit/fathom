@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package dao;
+package ${package}.dao;
+
+import ${package}.conf.Caches;
+import ${package}.models.Item;
 
 import com.google.inject.Singleton;
-import conf.Caches;
-import models.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

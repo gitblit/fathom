@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package conf;
+package ${package}.conf;
 
 import fathom.conf.Settings;
 import fathom.jcache.CachesModule;

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package conf;
+package ${package}.conf;
+
+import ${package}.dao.ItemDao;
 
 import com.google.inject.Inject;
-import dao.ItemDao;
 import fathom.conf.Fathom;
 import fathom.exception.FathomException;
 import fathom.realm.Account;

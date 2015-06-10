@@ -1,4 +1,4 @@
-package controllers;
+package ${package}.controllers;
 
 import fathom.test.FathomTest;
 import org.junit.Test;

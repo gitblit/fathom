@@ -6,6 +6,7 @@
     <artifactId>${artifactId}</artifactId>
     <groupId>${groupId}</groupId>
     <version>${version}</version>
+    <name>${name}</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -50,23 +51,11 @@
             <version>${fathom.version}</version>
         </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>org.ehcache</groupId>-->
-        <!--<artifactId>jcache</artifactId>-->
-        <!--<version>1.0.1</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-jcache</artifactId>
             <version>7.2.1.Final</version>
         </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>com.hazelcast</groupId>-->
-        <!--<artifactId>hazelcast</artifactId>-->
-        <!--<version>3.4.2</version>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>ro.pippo</groupId>
@@ -113,6 +102,14 @@
                     <compilerArguments>
                         <parameters/>
                     </compilerArguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <mainClass>${package}.App</mainClass>
                 </configuration>
             </plugin>
             <plugin>

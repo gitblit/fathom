@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package conf;
+package ${package}.conf;
 
 import fathom.quartz.JobsModule;
 import fathom.quartz.Scheduled;

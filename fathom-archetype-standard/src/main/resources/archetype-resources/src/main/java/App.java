@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+package ${package};
+
+import com.google.common.base.Throwables;
 import fathom.Boot;
 
 /**
@@ -25,7 +28,13 @@ import fathom.Boot;
 public class App {
 
     public static void main(String... args) {
-        Boot boot = new Boot(args);
-        boot.addShutdownHook().start();
+        try {
+            Boot boot = new Boot(args);
+            boot.addShutdownHook().start();
+        } catch (Exception e) {
+            Exception root = (Exception) Throwables.getRootCause(e);
+            root.printStackTrace();
+            System.exit(1);
+        }
     }
 }

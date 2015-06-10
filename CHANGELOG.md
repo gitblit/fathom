@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Fixed
 - [fathom-rest] Fixed discovery of controllers when *application.package* is specified
+- [fathom-archetype-standard] Honor specified package during project generation
 #### Changed
 #### Added
 #### Removed
@@ -36,6 +37,7 @@ Initial release.
 - Added [fathom-security-redis]
 - Added [fathom-security-windows]
 - Added [fathom-test-tools]
+- Added [fathom-archetype-standard]
 
 [unreleased]: https://github.com/gitblit/fathom/compare/release-0.5.0...HEAD
 
@@ -60,3 +62,4 @@ Initial release.
 [fathom-security-redis]: https://github.com/gitblit/fathom/tree/master/fathom-security-redis
 [fathom-security-windows]: https://github.com/gitblit/fathom/tree/master/fathom-security-windows
 [fathom-test-tools]: https://github.com/gitblit/fathom/tree/master/fathom-test-tools
+[fathom-archetype-standard]: https://github.com/gitblit/fathom/tree/master/fathom-archetype-standard
