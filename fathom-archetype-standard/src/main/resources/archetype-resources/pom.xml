@@ -131,6 +131,23 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.github.chrischristo</groupId>
+                <artifactId>capsule-maven-plugin</artifactId>
+                <version>0.10.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <appClass>${package}.App</appClass>
+                            <chmod>true</chmod>
+                            <trampoline>false</trampoline>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <resources>
             <resource>
