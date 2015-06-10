@@ -208,7 +208,14 @@
                     </compilerArguments>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <mainClass>Demo</mainClass>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>com.fizzed</groupId>
                 <artifactId>fizzed-stork-maven-plugin</artifactId>
