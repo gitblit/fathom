@@ -6,10 +6,19 @@ The core authorization design of [Apache Shiro] was harvested & married to the c
 
 A complete authentication and authorization model will include declarations of:
 
-- **Realms**<br/>*Realms* are sources of *Accounts* and potentially *Roles* and *Permissions*.<br/>*Realms* are interrogated during the authentication process.
-- **Accounts**<br/>*Accounts* represent a *username-password* pair.<br/>They may also include additional metadata such as display name, email addresses, *Roles*, and *Permissions*.
-- **Roles**<br/>*Roles* are a named grouping of specific *Permissions*.
-- **Permissions**<br/>*Permissions* are discrete authorization rules.
+Realms
+:   *Realms* are sources of *Accounts* and potentially *Roles* and *Permissions*.
+    *Realms* are interrogated during the authentication process.
+
+Accounts
+:   *Accounts* represent a *username-password* pair.
+    They may also include additional metadata such as display name, email addresses, *Roles*, and *Permissions*.
+
+Roles
+:   *Roles* are a named grouping of specific *Permissions*.
+
+Permissions
+:   *Permissions* are allowed application actions.
 
 ## Installation
 
@@ -292,8 +301,9 @@ The **Htpasswd Realm** defines partial *Accounts* (username & password) in an ex
 
 This realm will hot-reload on modification to the [htpasswd] file.
 
-**Note:**<br/>
-You may only *authenticate* against an **Htpasswd Realm**.<br/>This *realm* does not support persistence of authorization data.
+!!! Note
+    You may only *authenticate* against an **Htpasswd Realm**.
+    This *realm* does not support persistence of authorization data.
 
 #### Installation
 
@@ -328,8 +338,8 @@ realms: [
 
 The **LDAP Realm** allows you to integrate authentication and authorization with your LDAP server.
 
-**Note:**<br/>
-You may authenticate and authorize using LDAP-sourced data but *Role definitions* are not currently supported by the **LDAP Realm**.
+!!! Note
+    You may authenticate and authorize using LDAP-sourced data but *Role definitions* are not currently supported by the **LDAP Realm**.
 
 #### Installation
 
@@ -487,8 +497,8 @@ realms: [
 
 The **Redis Realm** allows you to integrate authentication and authorization with a Redis server.
 
-**Note:**<br/>
-You may authenticate and authorize using Redis-sourced data but *Role definitions* are not currently supported by the **Redis Realm**.
+!!! Note
+    You may authenticate and authorize using Redis-sourced data but *Role definitions* are not currently supported by the **Redis Realm**.
 
 #### Installation
 
@@ -533,8 +543,9 @@ realms: [
 
 The **PAM Realm** allows you to authenticate against the local accounts on a Linux/Unix/OSX machine.
 
-**Note:**<br/>
-You may only *authenticate* against a **PAM Realm**.<br/>This *realm* does not support persistence of authorization data.
+!!! Note
+    You may only *authenticate* against a **PAM Realm**.
+    This *realm* does not support persistence of authorization data.
 
 #### Installation
 
@@ -569,8 +580,9 @@ realms: [
 
 The **Windows Realm** allows you to authenticate against the local accounts on a Windows machine.
 
-**Note:**<br/>
-You may only *authenticate* against a **Windows Realm**.<br/>This *realm* does not support persistence of authorization data.
+!!! Note
+    You may only *authenticate* against a **Windows Realm**.
+    This *realm* does not support persistence of authorization data.
 
 #### Installation
 

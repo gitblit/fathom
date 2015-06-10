@@ -38,5 +38,5 @@ application {
 }
 ```
 
-**Note:**<br/>
-The *application.package* setting affects Java classes but not configuration files.  These will still be loaded from the `conf` directory of your classpath.
+!!! Note
+    The *application.package* setting affects Java classes but not configuration files.  These will still be loaded from the `conf` directory of your classpath.

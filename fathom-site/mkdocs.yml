@@ -11,9 +11,12 @@ markdown_extensions:
     - toc:
         permalink: True
     - sane_lists
+    - admonition
+    - nl2br
+    - def_list
 pages:
-  - Fathom:
-      - Introduction: 'index.md'
+  - 'index.md'
+  - Core:
       - About: 'about.md'
       - Layout: 'layout.md'
       - Configuration: 'configuration.md'

@@ -105,8 +105,8 @@ public class ItemDao {
 
 As long as `metrics.mbeans = true` in your runtime configuration, your metrics will be visible to [VisualVM] or [JConsole].
 
-**Note:**<br/>
-VisualVM does not ship with an [MBeans] viewer however there is an [MBeans] plugin that can be installed **from within** VisualVM to enable display of [MBeans].
+!!! Note
+    VisualVM does not ship with an [MBeans] viewer however there is an [MBeans] plugin that can be installed **from within** VisualVM to enable display of [MBeans].
 
 ----
 

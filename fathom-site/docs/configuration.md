@@ -4,8 +4,8 @@ Your Fathom application is configured by a [HOCON] file named `conf/default.conf
 
 Some modules require settings and these will all be stored in your configuration file.
 
-**Note:**<br/>
-Specification of an *application.package* does not affect configuration file loading.  Configuration files will always be loaded from the `conf` directory of the classpath.
+!!! Note
+    Specification of an *application.package* does not affect configuration file loading.  Configuration files will always be loaded from the `conf` directory of the classpath.
 
 ### Profiles
 

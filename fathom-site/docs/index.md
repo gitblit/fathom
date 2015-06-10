@@ -11,8 +11,7 @@ Fathom is an opinionated, modular, & injectable foundation for building microser
      '
 </pre>
 
-[![Maven Central](http://img.shields.io/maven-central/v/com.gitblit.fathom/fathom-core.svg)](http://search.maven.org/#search|ga|1|com.gitblit.fathom)
-[![Maven Central](https://img.shields.io/github/license/gitblit/fathom.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+[![Maven Central](http://img.shields.io/maven-central/v/com.gitblit.fathom/fathom-core.svg)](http://search.maven.org/#search|ga|1|com.gitblit.fathom) [![Maven Central](https://img.shields.io/github/license/gitblit/fathom.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 ### Microservice Foundation
 
