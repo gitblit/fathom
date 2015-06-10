@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 
 #### Fixed
-
+- [fathom-rest] Fixed discovery of controllers when *application.package* is specified
 #### Changed
 #### Added
 #### Removed

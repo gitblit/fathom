@@ -16,6 +16,7 @@
 package fathom.rest;
 
 import com.codahale.metrics.MetricRegistry;
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -179,7 +180,9 @@ public abstract class RoutesModule {
     }
 
     protected void addAnnotatedControllers() {
-        String controllersPackage = settings.getString(Settings.Setting.application_controllersPackage, "controllers");
+        String applicationPackage = Optional.fromNullable(settings.getApplicationPackage()).or("");
+        String controllerPackage = StringUtils.removeStart(applicationPackage + ".controllers", ".");
+        String controllersPackage = settings.getString(Settings.Setting.application_controllersPackage, controllerPackage);
         addAnnotatedControllers(controllersPackage);
     }
 
