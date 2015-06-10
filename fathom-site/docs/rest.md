@@ -26,30 +26,30 @@ YourApp
     ├── main
     │   ├── java
     │   │   ├── conf
-    │   │   │   ├── Routes.java
-    │   │   │   ├── messages.properties
-    │   │   │   ├── messages_en.properties
-    │   │   │   └── messages_ro.properties
-    │   │   ├── controllers
-    │   │   │   ├── EmployeeController.java
-    │   │   │   └── ItemController.java
-    │   │   └── templates
-    │   │       ├── base.ftl
-    │   │       ├── employee.ftl
-    │   │       ├── employees.ftl
-    │   │       ├── index.ftl
-    │   │       └── login.ftl
+    │   │   │   └── Routes.java
+    │   │   └── controllers
+    │   │       ├── EmployeeController.java
+    │   │       └── ItemController.java
     │   └── resources
-    │       └── public
-    │           └── css
-    │               └── custom.css
+    │       ├── conf
+    │       │   ├── messages.properties
+    │       │   ├── messages_en.properties
+    │       │   └── messages_ro.properties
+    │       ├── public
+    │       │   └── css
+    │       │       └── custom.css
+    │       └── templates
+    │           ├── base.ftl
+    │           ├── employee.ftl
+    │           ├── employees.ftl
+    │           ├── index.ftl
+    │           └── login.ftl
     └── test
-        ├── java
-        │   ├── conf
-        │   │   └── RoutesTest.java
-        │   └── controllers
-        │       └── ApiControllerTest.java
-        └── resources
+        └── java
+            ├── conf
+            │   └── RoutesTest.java
+            └── controllers
+                └── ApiControllerTest.java
 ```
 
 ## Configuration
