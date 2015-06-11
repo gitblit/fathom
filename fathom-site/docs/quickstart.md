@@ -25,8 +25,10 @@ mvn archetype:generate -DarchetypeGroupId=com.gitblit.fathom -DarchetypeArtifact
 
 ### About your Generated App
 
-The project you created from the Fathom Standard Archetype is not a barebones project.  The archetype starts you off with with a completely functional, but small, webapp based on:
+The project you created from the Fathom Standard Archetype is not a barebones project.  The archetype starts you off with with a completely functional webapp based on:
 
+- [Fathom-Core](about.md)
+- [Fathom-Eventbus](eventbus.md) for decoupled event passing
 - [Fathom-REST](rest.md) + [pippo-freemarker] + [pippo-gson] for XML/JSON RESTful routing and HTML page generation
 - [Fathom-Security](security.md) + [Fathom-REST-Security](rest-security.md) for a complete authentication & authorization infrastructure
 - [Fathom-JCache](jcache.md) + [Infinispan] for seamless caching
