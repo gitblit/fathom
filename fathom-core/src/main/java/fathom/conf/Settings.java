@@ -87,11 +87,17 @@ public class Settings {
         Config runtimeConfig = ConfigFactory.empty();
 
         // merge the classpath config file
-        URL url = ClassUtil.getResource(String.format("conf/%s.conf", profile));
-        Config classpathConfig = loadConfig(url);
-        if (classpathConfig != null) {
-            runtimeConfig = classpathConfig.withFallback(runtimeConfig);
-            log.debug("Loaded config '{}'", url);
+        URL configFileUrl = ClassUtil.getResource(String.format("conf/%s.conf", profile));
+        if (configFileUrl == null) {
+            log.warn("Failed to find Fathom config '{}'", String.format("conf/%s.conf", profile));
+        } else {
+            Config classpathConfig = loadConfig(configFileUrl);
+            if (classpathConfig.isEmpty()) {
+                log.warn("Empty config '{}'", configFileUrl);
+            } else {
+                runtimeConfig = classpathConfig.withFallback(runtimeConfig);
+                log.debug("Loaded config '{}'", configFileUrl);
+            }
         }
 
         // merge an external config file

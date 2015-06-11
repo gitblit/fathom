@@ -78,11 +78,17 @@ public class SecurityManager implements Service {
         // configure the SecurityManager
         URL configFileUrl = settings.getFileUrl("security.configurationFile", "classpath:conf/realms.conf");
 
+        if (configFileUrl == null) {
+            throw new FathomException("Failed to find Security Realms file '{}'",
+                    settings.getString("security.configurationFile", "classpath:conf/realms.conf"));
+        }
+
         Config config;
         try (InputStreamReader reader = new InputStreamReader(configFileUrl.openStream())) {
             config = ConfigFactory.parseReader(reader);
+            log.info("Configured Security Realms from '{}'", configFileUrl);
         } catch (IOException e) {
-            throw new FathomException(e, "Failed to parse config file '{}'", configFileUrl);
+            throw new FathomException(e, "Failed to parse Security Realms file '{}'", configFileUrl);
         }
 
         allRealms = parseDefinedRealms(config);

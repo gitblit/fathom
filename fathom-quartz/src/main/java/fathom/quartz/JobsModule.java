@@ -16,21 +16,22 @@
 
 package fathom.quartz;
 
-import com.google.common.base.Strings;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import fathom.Module;
 import fathom.utils.RequireUtil;
-import fathom.utils.Util;
 import org.quartz.Job;
 import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerListener;
 import org.quartz.TriggerListener;
 import org.quartz.spi.JobFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 import java.util.TimeZone;
 
@@ -38,6 +39,8 @@ import java.util.TimeZone;
  * Quartz (http://www.quartz-scheduler.org/) JobsModule as Fathom extension.
  */
 public abstract class JobsModule extends Module {
+
+    private final Logger log = LoggerFactory.getLogger(JobsModule.class);
 
     private Multibinder<JobListener> jobListeners;
 
@@ -74,14 +77,18 @@ public abstract class JobsModule extends Module {
         schedulerListeners = Multibinder.newSetBinder(binder(), SchedulerListener.class);
         schedulerConfiguration = new SchedulerConfiguration();
 
-        // load the quartz config, if present
+        // load the quartz config
         if (getSettings() != null) {
-            String file = getSettings().getString("quartz.configurationFile", "classpath:conf/quartz.properties");
-            if (!Strings.isNullOrEmpty(file)) {
-                try (InputStream is = Util.getInputStreamForPath(file)) {
+            URL configFileUrl = getSettings().getFileUrl("quartz.configurationFile", "classpath:conf/quartz.properties");
+            if (configFileUrl == null) {
+                log.debug("Failed to find Quartz Scheduler config file '{}'",
+                        getSettings().getString("quartz.configurationFile", "classpath:conf/quartz.properties"));
+            } else {
+                try (InputStream is = configFileUrl.openStream()) {
                     Properties properties = new Properties();
                     properties.load(is);
                     schedulerConfiguration.withProperties(properties);
+                    log.info("Configured Quartz Scheduler from '{}'", configFileUrl);
                 } catch (IOException e) {
                 }
             }

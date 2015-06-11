@@ -20,10 +20,9 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import fathom.conf.Settings;
-import fathom.utils.Util;
+import fathom.exception.FathomException;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.slf4j.Logger;
@@ -31,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -252,20 +252,21 @@ public class Boot implements Daemon {
         }
 
         // Check for a logback configuration file declared in Fathom settings
-        String configFile = settings.getString(LOGBACK_CONFIGURATION_FILE_PROPERTY, "classpath:conf/logback.xml");
+        URL configFileUrl = settings.getFileUrl(LOGBACK_CONFIGURATION_FILE_PROPERTY, "classpath:conf/logback.xml");
 
-        if (Strings.isNullOrEmpty(configFile)) {
-            return;
+        if (configFileUrl == null) {
+            throw new FathomException("Failed to find Logback config file '{}'",
+                    settings.getString(LOGBACK_CONFIGURATION_FILE_PROPERTY, "classpath:conf/logback.xml"));
         }
 
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-        try (InputStream is = Util.getInputStreamForPath(configFile)) {
+        try (InputStream is = configFileUrl.openStream()) {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(context);
             context.reset();
             configurator.doConfigure(is);
-            log.info("Configured Logback from {}", configFile);
+            log.info("Configured Logback from '{}'", configFileUrl);
         } catch (IOException | JoranException je) {
             // StatusPrinter will handle this
         }

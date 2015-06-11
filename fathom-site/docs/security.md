@@ -62,6 +62,14 @@ cacheTtl: 0
 cacheMax: 100
 ```
 
+### Specifying an Alternate Realms Config File
+
+You can specify a different resource config file for your realms in `conf/default.conf`.
+
+```hocon
+security.configurationFile = "classpath:conf/test-realms.conf"
+```
+
 ## Usage
 
 **Fathom-Security** provides a singleton instance of a *SecurityManager* [service](services.md).  This service contains all loaded *Realms*, *Accounts*, *Roles*, and *Permissions*.
