@@ -9,23 +9,26 @@ YourApp
 ├── pom.xml
 └── src
     └── main
-        └── java
-            ├── Launcher.java
-            ├── conf
-            │   ├── Components.java
-            │   ├── Fathom.java
-            │   ├── Servlets.java
-            │   ├── default.conf
-            │   ├── logback.xml
-            │   ├── logback-dev.xml
-            │   ├── master.conf
-            │   └── slave.conf
-            ├── dao
-            │   ├── EmployeeDao.java
-            │   └── ItemDao.java
-            └── models
-                ├── Employee.java
-                └── Item.java
+        ├── java
+        │   ├── App.java
+        │   ├── conf
+        │   │   ├── Components.java
+        │   │   ├── Fathom.java
+        │   │   └── Servlets.java
+        │   ├── dao
+        │   │   ├── EmployeeDao.java
+        │   │   └── ItemDao.java
+        │   └── models
+        │       ├── Employee.java
+        │       └── Item.java
+        └── resources
+            └── conf
+                ├── default.conf
+                ├── logback.xml
+                ├── logback-dev.xml
+                ├── master.conf
+                └── slave.conf
+
 ```
 
 ### Configuration of Application Package
