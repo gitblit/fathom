@@ -1,22 +1,34 @@
-## Change Log
+## Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 
 #### Fixed
+
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [0.5.1] - 2015-06-11
+
+#### Fixed
+
 - [fathom-rest] Fixed discovery of controllers when *application.package* is specified
 - [fathom-archetype-standard] Honor specified package during project generation
+
 #### Changed
+
 - [fathom-archetype-standard] Updated to Infinispan 7.2.2
-#### Added
-#### Removed
 
 ### [0.5.0] - 2015-06-09
 
 Initial release.
 
 #### Added
+
 - Added [fathom-core]
 - Added [fathom-eventbus]
 - Added [fathom-jcache]
@@ -40,7 +52,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.5.0...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.5.1...HEAD
+[0.5.1]: https://github.com/gitblit/fathom/compare/release-0.5.0...release-0.5.1
 
 [fathom-core]: https://github.com/gitblit/fathom/tree/master/fathom-core
 [fathom-eventbus]: https://github.com/gitblit/fathom/tree/master/fathom-eventbus
