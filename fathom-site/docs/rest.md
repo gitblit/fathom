@@ -202,9 +202,10 @@ You may also declare *Produces* on the *controller* class and it will apply, by 
 
 #### Transparent Parameter Names
 
-**Fathom-REST** *controllers* make use of the `-parameters` flag of the Java 8 javac compiler.  This flag embeds the names of method parameters in the generated *.class* files.  By default Java 8 does not compile with this flag set so you must specify the `-parameters` compiler argument for your build system and your IDE.
+**Fathom-REST** *controllers* make use of the `-parameters` flag of the Java 8 javac compiler.  This flag embeds the names of method parameters in the generated *.class* files.  By default Java 8 does not compile with this flag set so you must specify the `-parameters` compiler argument for your [build system](maven.md) and your IDE.
 
-You are not required to use this feature.  But if you choose to skip specifying the `-parameters` flag then you **must** annotate each *controller* method parameter with `@Param("name")`.  Obviously this will make your *controller* method signatures more verbose and you will also be double-maintaining parameter name mappings.
+!!! Note
+    You are not required to use this feature.  However, if you choose to skip specifying the `-parameters` flag then you **must** annotate each *controller* method parameter with `@Param("name")`.  Obviously this will make your *controller* method signatures more verbose and you will also be double-maintaining parameter name mappings so use of the `-parameters` compiler flag is recommended.
 
 #### Standard Argument Extractors
 

@@ -1,6 +1,6 @@
 ## Layout
 
-Fathom applications use a directory structure popularized by [Play]; this directory structure is a combination of convention & configuration.
+Fathom applications use a directory structure similar to the one popularized by [Play](https://www.playframework.com/); this directory structure is a combination of convention & configuration.
 
 ```
 YourApp

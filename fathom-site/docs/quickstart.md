@@ -63,7 +63,7 @@ From your project directory...
 mvn compile exec:java
 ```
 
-... and then browse to [http://localhost:8080]().
+... and then browse to [http://localhost:8080](http://localhost:8080).
 
 ### Packaging your Application
 

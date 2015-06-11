@@ -64,10 +64,12 @@ cacheMax: 100
 
 ### Specifying an Alternate Realms Config File
 
-You can specify a different resource config file for your realms in `conf/default.conf`.
+You may specify alternate realms config files in your `conf/default.conf` resource config file.
 
 ```hocon
-security.configurationFile = "classpath:conf/test-realms.conf"
+security.configurationFile = "classpath:conf/realms.conf"
+dev.security.configurationFile = "classpath:conf/realms-dev.conf"
+test.security.configurationFile = "classpath:conf/realms-test.conf"
 ```
 
 ## Usage
