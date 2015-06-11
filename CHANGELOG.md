@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest] Fixed discovery of controllers when *application.package* is specified
 - [fathom-archetype-standard] Honor specified package during project generation
 #### Changed
+- [fathom-archetype-standard] Updated to Infinispan 7.2.2
 #### Added
 #### Removed
 
