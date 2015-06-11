@@ -16,6 +16,8 @@ markdown_extensions:
     - def_list
 pages:
   - 'index.md'
+  - Getting Started:
+      - Quickstart: 'quickstart.md'
   - Core:
       - About: 'about.md'
       - Layout: 'layout.md'

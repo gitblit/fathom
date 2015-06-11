@@ -24,8 +24,6 @@ Add the **Fathom-JCache** artifact...
 
 ## Layout
 
-This *module* depends on the value of the `application.package` setting.  If you have specified an application package then your Caches class must be `${package}/conf/Caches.java`.
-
 ```
 YourApp
 └── src
@@ -34,6 +32,8 @@ YourApp
             └── conf
                 └── Caches.java
 ```
+!!! Note
+    This *module* depends on the value of the `application.package` setting.  If you have specified an application package then your Caches class must be `${package}/conf/Caches.java`.
 
 ## Configuration
 
@@ -146,7 +146,7 @@ public class EmployeeDao {
 
 ### Viewing and Managing your Caches
 
-Fathom does not provide a mechansim to view & manage your caches, however, several JCache providers register [MBeans] which view and manage caches via [JConsole] or [VisualVM].
+Fathom does not provide a mechansim to view & manage your caches, however, several JCache providers register [MBeans] which allow cache viewing and management via [JConsole] or [VisualVM].
 
 [Hazelcast]: http://hazelcast.org
 [Infinispan]: http://infinispan.org

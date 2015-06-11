@@ -45,7 +45,7 @@ YourApp
 
 ## Configuration
 
-**Fathom-Security** is configured by the [HOCON] config file `conf/realms.conf`.
+**Fathom-Security** is configured by the [HOCON] resource config file `conf/realms.conf`.
 
 ```hocon
 # Configured Realms.
@@ -193,7 +193,7 @@ There are many realm integrations available for Fathom.
 
 ### Memory Realm
 
-The **Memory Realm** defines *Accounts* & *Roles* within the `conf/realms.conf` file.
+The **Memory Realm** defines *Accounts* & *Roles* within the `conf/realms.conf` resource file.
 
 *Accounts* and *Roles* are loaded only once on startup.
 
@@ -297,7 +297,7 @@ roles: {
 
 ### Htpasswd Realm
 
-The **Htpasswd Realm** defines partial *Accounts* (username & password) in an external [htpasswd] file.
+The **Htpasswd Realm** defines partial *Accounts* (username & password) in an [htpasswd] file.
 
 This realm will hot-reload on modification to the [htpasswd] file.
 

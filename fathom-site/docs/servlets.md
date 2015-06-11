@@ -4,11 +4,10 @@ The `conf/Servlets.java` class is an implicit [ServletsModule](/modules/#fathoms
 
 This class does not support `@RequireSetting` or mode-specific (`@DEV`, `@TEST`, & `@PROD`) annotations, however the same functionality can be achieved using `getSettings().isDev()`, etc.
 
-You are not required to use or even have this class in your classpath.
+!!! Warning "Not Required"
+    You are not required to have this class on your classpath.
 
 ### Layout
-
-This *class* depends on the value of the `application.package` setting.  If you have specified an application package then your Servlets class must be `${package}/conf/Servlets.java`.
 
 ```
 YourApp
@@ -18,6 +17,8 @@ YourApp
             └── conf
                 └── Servlets.java
 ```
+!!! Note
+    This *class* depends on the value of the `application.package` setting.  If you have specified an application package then your Servlets class must be `${package}/conf/Servlets.java`.
 
 ### Configuration
 

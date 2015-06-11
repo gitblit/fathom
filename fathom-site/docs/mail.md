@@ -77,7 +77,7 @@ mailer.send(request);
 
 ### Sending a Text Template Email
 
-Templates are loaded from the `templates` base directory on the classpath.  All specified template names are relative to this directory.
+Templates are loaded from the `templates` resource directory on the classpath.  All specified template names are relative to this directory.
 
 ```java
 String subject = "Hi ${username}";
@@ -94,7 +94,7 @@ mailer.send(request);
 
 ### Sending an HTML Template Email
 
-Templates are loaded from the `templates` base directory on the classpath.  All specified template names are relative to this directory.
+Templates are loaded from the `templates` resource directory on the classpath.  All specified template names are relative to this directory.
 
 ```java
 String subject = "Hi ${username}";

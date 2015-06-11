@@ -2,7 +2,7 @@
 
 **Fathom-REST-Shiro** integrates [Fathom-REST](rest.md) with [Apache Shiro] to provide your Routes and Controllers with flexible authentication and authorization.
 
-!!! Note
+!!! Danger "Note"
     The [Apache Shiro] integration is NOT designed to be used with [Fathom-Security](security.md) nor [Fathom-REST-Security](rest-security.md).
 
 ## Installation
@@ -30,7 +30,7 @@ YourApp
 
 ## Configuration
 
-**Fathom-REST-Shiro** supports [INI file configuration](http://shiro.apache.org/configuration.html) with `conf/shiro.ini`.
+**Fathom-REST-Shiro** supports [INI file configuration](http://shiro.apache.org/configuration.html) with the `conf/shiro.ini` resource file.
 
 ## Usage
 

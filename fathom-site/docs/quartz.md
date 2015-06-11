@@ -18,8 +18,6 @@ Add the **Fathom-Quartz** artifact.
 
 ## Layout
 
-This *module* depends on the value of the `application.package` setting.  If you have specified an application package then your Jobs class must be `${package}/conf/Jobs.java`.
-
 ```
 YourApp
 └── src
@@ -29,10 +27,12 @@ YourApp
                 ├── Jobs.java
                 └── quartz.properties
 ```
+!!! Note
+    This *module* depends on the value of the `application.package` setting.  If you have specified an application package then your Jobs class must be `${package}/conf/Jobs.java`.
 
 ## Configuration
 
-By default, this module will try to configure Quartz from a `conf/quartz.properties` file, if it exists.
+By default, this module will try to configure Quartz from a `conf/quartz.properties` resource file.
 
 ## Usage
 

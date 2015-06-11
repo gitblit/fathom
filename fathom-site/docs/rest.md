@@ -18,8 +18,6 @@ Add the **Fathom-REST** artifact.
 
 ## Layout
 
-This *module* depends on the value of the `application.package` setting.  If you have specified an application package then your Routes class must be `${package}/conf/Routes.java`.
-
 ```
 YourApp
 └── src
@@ -51,10 +49,12 @@ YourApp
             └── controllers
                 └── ApiControllerTest.java
 ```
+!!! Note
+    This *module* depends on the value of the `application.package` setting.  If you have specified an application package then your Routes class must be `${package}/conf/Routes.java`.
 
 ## Configuration
 
-The standard Pippo settings are directly configured through your `conf/default.conf` file.
+The standard Pippo settings are directly configured through your `conf/default.conf` resource file.
 
 ```hocon
 application {
@@ -69,7 +69,7 @@ application {
 
 ### Changing the Basepath
 
-By default, **Fathom-REST** will serve all requests to `/`.  You may specify a different basepath in your `conf/default.conf` file.
+By default, **Fathom-REST** will serve all requests to `/`.  You may specify a different basepath in your `conf/default.conf` resource file.
 
 ```hocon
 servlets {

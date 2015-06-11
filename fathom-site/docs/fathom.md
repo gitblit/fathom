@@ -2,11 +2,10 @@
 
 The `conf/Fathom.java` class allows you to customize the final startup of your application.
 
-You are not required to use or even have this class in your classpath.
+!!! Warning "Not Required"
+    You are not required to have this class on your classpath.
 
 ### Layout
-
-This *class* depends on the value of the `application.package` setting.  If you have specified an application package then your Fathom class must be `${package}/conf/Fathom.java`.
 
 ```
 YourApp
@@ -16,6 +15,9 @@ YourApp
             └── conf
                 └── Fathom.java
 ```
+!!! Note
+    This *class* depends on the value of the `application.package` setting.  If you have specified an application package then your Fathom class must be `${package}/conf/Fathom.java`.
+
 
 ### Configuration
 

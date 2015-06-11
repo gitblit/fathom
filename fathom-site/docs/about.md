@@ -8,9 +8,9 @@
 - a command-line arguments parser
 - a highly configurable [logging framework](logging.md)
 - a structured [configuration file](configuration.md) with runtime specification of alternate configs
-- several runtime modes (PROD, TEST, DEV)
+- separate production, test, and development runtime modes
 - an http/https engine
-- a dependency injection mechanism
+- a dependency injection container
 - a flexible [module](modules.md) loader
 - a [service](services.md) infrastructure
 
