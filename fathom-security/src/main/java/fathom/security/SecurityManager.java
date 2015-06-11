@@ -75,6 +75,8 @@ public class SecurityManager implements Service {
 
     @Override
     public void start() {
+        allRealms = Collections.emptyList();
+
         // configure the SecurityManager
         URL configFileUrl = settings.getFileUrl("security.configurationFile", "classpath:conf/realms.conf");
 

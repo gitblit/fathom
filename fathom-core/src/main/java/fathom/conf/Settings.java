@@ -89,7 +89,7 @@ public class Settings {
         // merge the classpath config file
         URL configFileUrl = ClassUtil.getResource(String.format("conf/%s.conf", profile));
         if (configFileUrl == null) {
-            log.warn("Failed to find Fathom config '{}'", String.format("conf/%s.conf", profile));
+            log.warn("Failed to find Fathom config 'classpath:conf/{}.conf'", profile);
         } else {
             Config classpathConfig = loadConfig(configFileUrl);
             if (classpathConfig.isEmpty()) {
@@ -110,6 +110,8 @@ public class Settings {
                     runtimeConfig = externalConfig.withFallback(runtimeConfig);
                     log.debug("Loaded config '{}'", externalUrl);
                 }
+            } else {
+                log.debug("Failed to find working directory config file '{}'", path);
             }
         } catch (MalformedURLException e) {
             log.error("Failed to parse working directory config file!", e);
