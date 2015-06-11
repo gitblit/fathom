@@ -1,9 +1,6 @@
 ## Layout
 
-Fathom applications use a directory structure popularized by Play; this directory structure is a combination of convention & configuration.
-
-!!! Note
-    By default, your *application package* is Java's *default package*.  In **Fathom-Core** only the `conf` package is based on configuration.  All other packages (e.g. *dao* & *models* in the example below) are convention and have no real meaning.
+Fathom applications use a directory structure popularized by [Play]; this directory structure is a combination of convention & configuration.
 
 ```
 YourApp
@@ -29,8 +26,9 @@ YourApp
                 ├── logback-dev.xml
                 ├── master.conf
                 └── slave.conf
-
 ```
+!!! Note
+    By default, your *application package* is Java's *default package*.  In **Fathom-Core** only the `conf` package is based on configuration.  All other packages (e.g. *dao* & *models*) are convention and have no real meaning.
 
 ### Configuration of Application Package
 
@@ -42,5 +40,5 @@ application {
 }
 ```
 
-!!! Note
-    The *application.package* setting affects Java classes but not configuration files.  These will still be loaded from the `conf` resource directory of your classpath.
+!!! Warning "Note"
+    The *application.package* setting affects Java classes, not configuration files.  These will still be loaded from the `conf` resource directory of your classpath.
