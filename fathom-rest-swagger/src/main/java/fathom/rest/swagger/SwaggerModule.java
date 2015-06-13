@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fathom.rest.controller;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package fathom.rest.swagger;
+
+import fathom.Module;
 
 /**
- * Specifies HTTP PUT method.
- *
+ * Module that registers the Fathom SwaggerService.
  * @author James Moger
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-@HttpMethod(HttpMethod.PUT)
-public @interface PUT {
-    String[] value() default {};
+public class SwaggerModule extends Module {
+
+    @Override
+    protected void setup() {
+        bind(SwaggerService.class);
+    }
 }

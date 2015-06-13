@@ -10,6 +10,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Added
 
+- Added [fathom-rest-swagger]
+
 #### Removed
 
 ### [0.5.1] - 2015-06-11
@@ -68,6 +70,7 @@ Initial release.
 [fathom-rest]: https://github.com/gitblit/fathom/tree/master/fathom-rest
 [fathom-rest-security]: https://github.com/gitblit/fathom/tree/master/fathom-rest-security
 [fathom-rest-shiro]: https://github.com/gitblit/fathom/tree/master/fathom-rest-shiro
+[fathom-rest-swagger]: https://github.com/gitblit/fathom/tree/master/fathom-rest-swagger
 [fathom-security]: https://github.com/gitblit/fathom/tree/master/fathom-security
 [fathom-security-htpasswd]: https://github.com/gitblit/fathom/tree/master/fathom-security-htpasswd
 [fathom-security-jdbc]: https://github.com/gitblit/fathom/tree/master/fathom-security-jdbc

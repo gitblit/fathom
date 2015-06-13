@@ -16,7 +16,6 @@
 package fathom.rest.controller;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fathom.conf.Settings;
@@ -119,8 +118,6 @@ public class ControllerRegistrar extends ControllerScanner {
             String httpMethod = httpMethodAnnotation.annotationType().getAnnotation(HttpMethod.class).value();
             String[] methodPaths = ClassUtil.executeDeclaredMethod(httpMethodAnnotation, "value");
 
-            Preconditions.checkNotNull(methodPaths, "");
-
             Set<String> controllerPaths = controllers.get(controllerClass);
             if (controllerPaths.isEmpty()) {
                 // add an empty string to allow controllerPaths iteration
@@ -129,13 +126,22 @@ public class ControllerRegistrar extends ControllerScanner {
 
             for (String controllerPath : controllerPaths) {
 
-                for (String methodPath : methodPaths) {
-                    String path = Joiner.on("/").join(StringUtils.removeEnd(controllerPath, "/"), StringUtils.removeStart(methodPath, "/"));
-                    String fullPath = StringUtils.addStart(StringUtils.removeEnd(path, "/"), "/");
-
+                if (methodPaths.length == 0) {
+                    // method does not specify a path, inherit from controller
+                    String fullPath = StringUtils.addStart(StringUtils.removeEnd(controllerPath, "/"), "/");
                     ControllerHandler handler = new ControllerHandler(injector, controllerClass, method.getName());
                     RouteRegistration registration = new RouteRegistration(httpMethod, fullPath, handler);
                     routeRegistrations.add(registration);
+                } else {
+                    // method specifies one or more paths, concatenate with controller paths
+                    for (String methodPath : methodPaths) {
+                        String path = Joiner.on("/").skipNulls().join(StringUtils.removeEnd(controllerPath, "/"), StringUtils.removeStart(methodPath, "/"));
+                        String fullPath = StringUtils.addStart(StringUtils.removeEnd(path, "/"), "/");
+
+                        ControllerHandler handler = new ControllerHandler(injector, controllerClass, method.getName());
+                        RouteRegistration registration = new RouteRegistration(httpMethod, fullPath, handler);
+                        routeRegistrations.add(registration);
+                    }
                 }
 
             }

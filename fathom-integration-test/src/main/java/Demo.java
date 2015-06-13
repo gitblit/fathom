@@ -24,7 +24,7 @@ public class Demo {
             Boot boot = new Boot(args);
             boot.addShutdownHook().start();
         } catch (Exception e) {
-            Exception root = (Exception) Throwables.getRootCause(e);
+            Throwable root = Throwables.getRootCause(e);
             root.printStackTrace();
             System.exit(1);
         }

@@ -20,8 +20,6 @@ import fathom.rest.Context;
 import fathom.rest.controller.Param;
 import ro.pippo.core.ParameterValue;
 
-import java.util.Collection;
-
 /**
  * @author James Moger
  */

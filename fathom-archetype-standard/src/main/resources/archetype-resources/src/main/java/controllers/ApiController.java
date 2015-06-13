@@ -56,7 +56,6 @@ public class ApiController extends Controller {
      *
      * @param id
      * @param account
-     * @return Reply
      */
     @GET("/{id: [0-9]+}")
     @Metered

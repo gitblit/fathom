@@ -22,7 +22,7 @@ import org.junit.Test;
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-public class ApiControllerTest extends FathomTest {
+public class ApiControllerTestV2 extends FathomTest {
 
     @Test
     public void testGetJSON() {
@@ -34,7 +34,7 @@ public class ApiControllerTest extends FathomTest {
         //   "name" : "Item 1"
         // }
 
-        given().accept(JSON).when().get("/api/v1/items/{id}", 1).then().body("id", equalTo(1));
+        given().accept(JSON).when().get("/api/v2/items/{id}", 1).then().body("id", equalTo(1));
 
     }
 
@@ -47,7 +47,7 @@ public class ApiControllerTest extends FathomTest {
         //   <name>Item 1</name>
         // </item>
 
-        given().accept(XML).when().get("/api/v1/items/{id}", 1).then().body("item.@id", equalTo("1"));
+        given().accept(XML).when().get("/api/v2/items/{id}", 1).then().body("item.@id", equalTo("1"));
 
     }
 }

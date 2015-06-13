@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @HttpMethod(HttpMethod.DELETE)
 public @interface DELETE {
-    String[] value();
+    String[] value() default {};
 }

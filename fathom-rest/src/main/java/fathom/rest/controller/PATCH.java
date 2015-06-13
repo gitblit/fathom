@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @HttpMethod(HttpMethod.PATCH)
 public @interface PATCH {
-    String[] value();
+    String[] value() default {};
 }

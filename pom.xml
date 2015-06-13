@@ -197,6 +197,7 @@
         <module>fathom-quartz</module>
         <module>fathom-rest</module>
         <module>fathom-rest-security</module>
+        <module>fathom-rest-swagger</module>
         <module>fathom-test-tools</module>
         <module>fathom-security</module>
         <module>fathom-security-htpasswd</module>

@@ -12,7 +12,7 @@
 
         <p>These routes are NOT GUARDED.</p>
         <#list items as item>
-            <li><a href="${appPath}/api/${item.id}">${item.name}</a></li>
+            <li><a href="${appPath}/api/v1/items/${item.id}">${item.name}</a></li>
         </#list>
     </div>
     <div class="large-6 columns">
@@ -35,6 +35,7 @@
             <li><a href="${appPath}/secure/employees">${i18n('fathom.employees')}</a></li>
             <li><a href="${appPath}/collections">Collections (forms)</a></li>
             <li><a href="${appPath}/content">JSON Content (forms)</a></li>
+            <li><a href="${appPath}/api">Swagger UI for API Routes</a></li>
         </ul>
     </div>
     <div class="large-6 columns">

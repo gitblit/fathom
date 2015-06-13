@@ -48,6 +48,12 @@
 
         <dependency>
             <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-rest-swagger</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
             <artifactId>fathom-rest-security</artifactId>
             <version>${project.version}</version>
         </dependency>

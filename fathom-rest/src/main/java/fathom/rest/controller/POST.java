@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @HttpMethod(HttpMethod.POST)
 public @interface POST {
-    String[] value();
+    String[] value() default {};
 }

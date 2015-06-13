@@ -61,7 +61,6 @@ public class SecureApiController extends Controller {
      *
      * @param id
      * @param account
-     * @return Reply
      */
     @GET("/{id: [0-9]+}")
     @Produces({Produces.JSON, Produces.XML})

@@ -21,10 +21,19 @@ import dao.ItemDao;
 import fathom.metrics.Metered;
 import fathom.realm.Account;
 import fathom.rest.controller.Auth;
+import fathom.rest.controller.Body;
 import fathom.rest.controller.Controller;
+import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
+import fathom.rest.controller.PATCH;
+import fathom.rest.controller.POST;
+import fathom.rest.controller.PUT;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
+import fathom.rest.swagger.Desc;
+import fathom.rest.swagger.Notes;
+import fathom.rest.swagger.Summary;
+import fathom.rest.swagger.Tag;
 import models.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,18 +41,18 @@ import org.slf4j.LoggerFactory;
 /**
  * To be discoverable, a controller must be annotated with {@code @Path}.
  */
-@Path("/api/v1/items")
+@Path("/api/v2/items")
 @Produces({Produces.JSON, Produces.XML})
-@Deprecated
-public class ApiController extends Controller {
+@Tag(description = "Example Item API v2")
+public class ApiControllerV2 extends Controller {
 
-    private final Logger log = LoggerFactory.getLogger(ApiController.class);
+    private final Logger log = LoggerFactory.getLogger(ApiControllerV2.class);
 
     @Inject
     ItemDao dao;
 
     /**
-     * Responds to a GET request of an integer id like "/api/v1/1".
+     * Responds to a GET request of an integer id like "/api/v2/1".
      * <p>
      * Notice that the <code>id</code> parameter is specified in the
      * <code>@GET</code> annotation but not in the method signature.
@@ -61,11 +70,11 @@ public class ApiController extends Controller {
      *
      * @param id
      * @param account
-     * @return Reply
      */
     @GET("{id: [0-9]+}")
     @Metered
-    public void get(int id, @Auth Account account) {
+    @Summary("Get an item")
+    public void get(@Desc("item id") int id, @Auth Account account) {
 
         log.debug("GET item #{} for '{}'", id, account);
         Item item = dao.get(id);
@@ -74,6 +83,49 @@ public class ApiController extends Controller {
         } else {
             getResponse().ok().send(item);
         }
+    }
+
+    @POST
+    @Metered
+    @Summary("Create an item")
+    @Notes
+    public void post(@Desc("new item to create") @Body Item item, @Auth Account account) {
+        int id = 0;
+        log.debug("POST item #{} for '{}'", id, account);
+        getResponse().ok();
+    }
+
+    @PUT("{id: [0-9]+}")
+    @Metered
+    @Summary("Update an item")
+    public void put(
+            @Desc("item id") int id,
+            @Desc("revised item to update") @Body Item item,
+            @Auth Account account) {
+
+        log.debug("PUT item #{} for '{}'", id, account);
+        getResponse().ok();
+    }
+
+    @PATCH("{id: [0-9]+}")
+    @Metered
+    @Summary("Rename an item")
+    public void patch(
+            @Desc("item id") int id,
+            @Desc("new name of item") String name,
+            @Auth Account account) {
+
+        log.debug("PATCH item #{} for '{}'", id, account);
+        getResponse().ok();
+    }
+
+    @DELETE("{id: [0-9]+}")
+    @Metered
+    @Summary("Delete an item")
+    @Notes
+    public void delete(@Desc("item id") int id, @Auth Account account) {
+        log.debug("DELETE item #{} for '{}'", id, account);
+        getResponse().ok();
     }
 
 }

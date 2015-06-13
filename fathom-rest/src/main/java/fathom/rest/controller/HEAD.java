@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @HttpMethod(HttpMethod.HEAD)
 public @interface HEAD {
-    String[] value();
+    String[] value() default {};
 }
