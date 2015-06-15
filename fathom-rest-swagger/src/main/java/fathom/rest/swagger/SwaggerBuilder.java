@@ -43,6 +43,7 @@ import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
 import io.swagger.models.parameters.AbstractSerializableParameter;
 import io.swagger.models.parameters.BodyParameter;
+import io.swagger.models.parameters.FormParameter;
 import io.swagger.models.parameters.HeaderParameter;
 import io.swagger.models.parameters.PathParameter;
 import io.swagger.models.parameters.QueryParameter;
@@ -382,9 +383,19 @@ public class SwaggerBuilder {
 
                 operation.addParameter(headerParameter);
 
-            } else {
-                // QUERY & FORM
+            } else if (methodParameter.isAnnotationPresent(Form.class)) {
 
+                // FORM
+                FormParameter formParameter = new FormParameter();
+                formParameter.setName(methodParameterName);
+                formParameter.setDescription(getDescription(methodParameter));
+                setPropertyType(formParameter, method);
+
+                operation.addParameter(formParameter);
+
+            } else {
+
+                // QUERY
                 QueryParameter queryParameter = new QueryParameter();
                 queryParameter.setName(methodParameterName);
                 queryParameter.setDescription(getDescription(methodParameter));
