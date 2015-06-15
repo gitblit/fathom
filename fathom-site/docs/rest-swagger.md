@@ -36,6 +36,10 @@ swagger {
     # The default is your {application.version}.
     version = "1.0.0"
 
+    # The base path of your API.
+    # All specified routes will be relative to this path.
+    path = "/api"
+
     # API Contact Information
     contact {
       name = "API Support"
@@ -53,10 +57,10 @@ swagger {
   # Swagger UI and Specification Serving
   ui {
     # Path for serving Swagger UI and Swagger specifications
-    #  - Swagger UI served on /{swagger.ui.url}
-    #  - JSON specification served on /{swagger.ui.url}/swagger.json
-    #  - YAML specification served on /{swagger.ui.url}/swagger.yaml
-    url = "/api"
+    #  - Swagger UI served on /{swagger.ui.path}
+    #  - JSON specification served on /{swagger.ui.path}/swagger.json
+    #  - YAML specification served on /{swagger.ui.path}/swagger.yaml
+    path = "/api"
 
     # Text to display in the banner of the Swagger UI
     bannerText = "swagger"

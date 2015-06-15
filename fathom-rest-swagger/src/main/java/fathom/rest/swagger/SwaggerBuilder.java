@@ -65,6 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Router;
+import ro.pippo.core.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -171,10 +172,11 @@ public class SwaggerBuilder {
         }
         swagger.setSchemes(schemes);
 
-        String contextPath = settings.getString(Settings.Setting.undertow_contextPath, "/");
-        String servletPath = settings.getString(RestServlet.SETTING_URL, null);
-        String applicationPath = Joiner.on("/").skipNulls().join(contextPath, servletPath);
-        swagger.setBasePath(applicationPath);
+        String contextPath = StringUtils.removeStart(Strings.emptyToNull(settings.getString(Settings.Setting.undertow_contextPath, null)), "/");
+        String servletPath = StringUtils.removeStart(Strings.emptyToNull(settings.getString(RestServlet.SETTING_URL, null)), "/");
+        String apiPath = StringUtils.removeStart(Strings.emptyToNull(settings.getString("swagger.api.path", null)), "/");
+        String applicationApiPath = Joiner.on("/").skipNulls().join(contextPath, servletPath, apiPath);
+        swagger.setBasePath(applicationApiPath);
 
         // register each valid RESTful route
         for (Route route : routes) {
@@ -279,15 +281,15 @@ public class SwaggerBuilder {
             operation.addTag(tag.getName());
         }
 
-        String swaggerUri = registerParameters(operation, route, method);
-        if (swagger.getPath(swaggerUri) == null) {
-            swagger.path(swaggerUri, new Path());
+        String operationPath = StringUtils.removeStart(registerParameters(operation, route, method), swagger.getBasePath());
+        if (swagger.getPath(operationPath) == null) {
+            swagger.path(operationPath, new Path());
         }
 
-        Path path = swagger.getPath(swaggerUri);
+        Path path = swagger.getPath(operationPath);
         path.set(route.getRequestMethod().toLowerCase(), operation);
         log.debug("Add {} {} => {}",
-                route.getRequestMethod(), swaggerUri, Util.toString(method));
+                route.getRequestMethod(), operationPath, Util.toString(method));
     }
 
     protected void registerResponses(Operation operation, Method method) {

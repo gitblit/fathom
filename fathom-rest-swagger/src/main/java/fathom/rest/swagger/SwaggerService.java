@@ -118,7 +118,7 @@ public class SwaggerService implements Service {
      */
     protected void registerRoutes() {
 
-        String swaggerPath = settings.getString("swagger.ui.url", "/api");
+        String swaggerPath = settings.getString("swagger.ui.path", "/api");
         boolean showApiKey = settings.getBoolean("swagger.ui.showApiKey", false);
 
         // Swagger UI route
