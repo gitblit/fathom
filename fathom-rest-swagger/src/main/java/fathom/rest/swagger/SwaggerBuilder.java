@@ -45,6 +45,7 @@ import io.swagger.models.parameters.AbstractSerializableParameter;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.HeaderParameter;
 import io.swagger.models.parameters.PathParameter;
+import io.swagger.models.parameters.QueryParameter;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
@@ -361,7 +362,14 @@ public class SwaggerBuilder {
                 operation.addParameter(headerParameter);
 
             } else {
-                // TODO Query Parameter?
+                // QUERY & FORM
+
+                QueryParameter queryParameter = new QueryParameter();
+                queryParameter.setName(methodParameterName);
+                queryParameter.setDescription(getDescription(methodParameter));
+                setPropertyType(queryParameter, method);
+
+                operation.addParameter(queryParameter);
             }
 
         }
