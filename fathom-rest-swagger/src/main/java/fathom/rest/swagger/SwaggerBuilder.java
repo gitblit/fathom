@@ -34,10 +34,10 @@ import io.swagger.models.ArrayModel;
 import io.swagger.models.Contact;
 import io.swagger.models.Info;
 import io.swagger.models.License;
-import io.swagger.models.Model;
 import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.RefModel;
+import io.swagger.models.Response;
 import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
@@ -267,6 +267,8 @@ public class SwaggerBuilder {
         operation.setDeprecated(method.isAnnotationPresent(Deprecated.class)
                 || controller.isAnnotationPresent(Deprecated.class));
 
+        registerResponses(operation, method);
+
         Tag tag = getTag(controller);
         if (tag == null) {
             operation.addTag(controller.getSimpleName());
@@ -284,6 +286,24 @@ public class SwaggerBuilder {
         path.set(route.getRequestMethod().toLowerCase(), operation);
         log.debug("Add {} {} => {}",
                 route.getRequestMethod(), swaggerUri, Util.toString(method));
+    }
+
+    protected void registerResponses(Operation operation, Method method) {
+        if (method.isAnnotationPresent(ResponseCodes.class)) {
+            ResponseCodes responseCodes = method.getAnnotation(ResponseCodes.class);
+            for (ResponseCode responseCode : responseCodes.value()) {
+                registerResponse(operation, responseCode);
+            }
+        } else if (method.isAnnotationPresent(ResponseCode.class)) {
+            ResponseCode responseCode = method.getAnnotation(ResponseCode.class);
+            registerResponse(operation, responseCode);
+        }
+    }
+
+    protected void registerResponse(Operation operation, ResponseCode responseCode) {
+        Response response = new Response();
+        response.setDescription(responseCode.message());
+        operation.response(responseCode.code(), response);
     }
 
     protected String registerParameters(Operation operation, Route route, Method method) {

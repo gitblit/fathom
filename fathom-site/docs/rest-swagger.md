@@ -182,4 +182,21 @@ public void getEmployee(@Desc("employee id") int id) {
 }
 ```
 
+#### @ResponseCode
+
+You may use the `@ResponseCode` annotation to briefly describe a response message.
+
+```java
+@GET("/{id}")
+@ResponseCode(code=404, message="Employee not found")
+public void getEmployee(@Desc("employee id") int id) {
+  Employee employee = employeeDao.get(id);
+  if (employee != null) {
+    getResponse().ok().send(employee);
+  } else {
+    getResponse().notFound();
+  }
+}
+```
+
 [Swagger]: http://swagger.io
