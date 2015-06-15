@@ -496,6 +496,17 @@ public class SwaggerBuilder {
         if (byte.class == parameterClass || Byte.class == parameterClass) {
             // STRING
             swaggerProperty = new StringProperty("byte");
+        } else if (char.class == parameterClass || Character.class == parameterClass) {
+            // CHAR is STRING LEN 1
+            StringProperty property = new StringProperty();
+            property.setMaxLength(1);
+            swaggerProperty = property;
+        } else if (short.class == parameterClass || Short.class == parameterClass) {
+            // SHORT is INTEGER with 16-bit max & min
+            IntegerProperty property = new IntegerProperty();
+            property.setMinimum((double) Short.MIN_VALUE);
+            property.setMaximum((double) Short.MAX_VALUE);
+            swaggerProperty = property;
         } else if (int.class == parameterClass || Integer.class == parameterClass) {
             // INTEGER
             swaggerProperty = new IntegerProperty();
@@ -528,6 +539,15 @@ public class SwaggerBuilder {
         } else if (UUID.class == parameterClass) {
             // UUID
             swaggerProperty = new UUIDProperty();
+        } else if (parameterClass.isEnum()) {
+            // ENUM
+            StringProperty property = new StringProperty();
+            List<String> enumValues = new ArrayList<>();
+            for (Object enumValue : parameterClass.getEnumConstants()) {
+                enumValues.add(((Enum) enumValue).name());
+            }
+            property.setEnum(enumValues);
+            swaggerProperty = property;
         } else {
             swaggerProperty = new RefProperty(parameterClass.getName());
         }
