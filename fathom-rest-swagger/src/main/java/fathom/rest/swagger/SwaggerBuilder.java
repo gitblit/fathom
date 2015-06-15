@@ -356,8 +356,6 @@ public class SwaggerBuilder {
                 }
 
                 headerParameter.setDescription(getDescription(methodParameter));
-                headerParameter.setFormat(header.pattern());
-
                 setPropertyType(headerParameter, method);
 
                 operation.addParameter(headerParameter);
