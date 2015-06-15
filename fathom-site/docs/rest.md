@@ -222,6 +222,22 @@ Argument Extractors allow you to specify an annotation which instructs **Fathom-
 | `@Param`   | Extract an url parameter, query parameter, or form field to a standard Java type    |
 | `@Session` | Extract a value stored within the Session                                           |
 
+#### Argument Validation
+
+**Fathom-REST** supports implied and explicit argument validation.
+
+1. Implied validation by specifying parameter RegEx
+2. Implied `@NotNull` validation when specifying **primitive numeric and boolean types**
+3. Implied `@NotNull` validation for body parameters
+4. Explicit `@NotNull` validation for all other argument types
+
+```java
+@POST("/{id: [0-9]+}")
+public void renameEmployee(int id, @NotNull String name) {
+}
+```
+
+
 #### Ordering
 
 If you are using annotated *controller* discovery with `@Path` annotations then you are at the mercy of the JVM for registration order of your *controller* methods.

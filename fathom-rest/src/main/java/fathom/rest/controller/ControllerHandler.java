@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteHandler;
 
+import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -211,43 +212,63 @@ public class ControllerHandler implements RouteHandler<Context> {
     }
 
     protected Object[] prepareMethodArgs(Context context) {
-        Class<?>[] types = method.getParameterTypes();
+        Parameter[] parameters = method.getParameters();
 
-        if (types.length == 0) {
+        if (parameters.length == 0) {
             return new Object[]{};
         }
 
-        Object[] args = new Object[types.length];
+        Object[] args = new Object[parameters.length];
         for (int i = 0; i < args.length; i++) {
-            final Class<?> type = types[i];
+            Parameter parameter = parameters[i];
+            Class<?> type = parameter.getType();
+
             ArgumentExtractor extractor = extractors[i];
             Object value = extractor.extract(context);
+
+            validateParameterValue(parameter, value);
+
             if (value == null || ClassUtil.isAssignable(value, type)) {
                 args[i] = value;
             } else {
-                String parameter = getParameterName(method, i);
+                String parameterName = getParameterName(method, i);
                 throw new FathomException("Type for '{}' is actually '{}' but was specified as '{}'!",
-                        parameter, value.getClass().getName(), type.getName());
+                        parameterName, value.getClass().getName(), type.getName());
             }
         }
 
         return args;
     }
 
+    protected void validateParameterValue(Parameter parameter, Object value) {
+        if ((value == null && parameter.isAnnotationPresent(NotNull.class))
+                || (value == null && parameter.getType().isPrimitive())) {
+            throw new FathomException("'{}' is a required parameter!", getParameterName(parameter));
+        }
+    }
+
     protected String getParameterName(Method method, int i) {
-        Annotation annotation = getAnnotation(method, i, Param.class);
+        Parameter parameter = method.getParameters()[i];
+        return getParameterName(parameter);
+    }
+
+    protected String getParameterName(Parameter parameter) {
+        String name = null;
+        Annotation annotation = parameter.getAnnotation(Param.class);
         if (annotation != null) {
-            Param parameter = (Param) annotation;
-            return parameter.value();
-        } else {
+            Param param = (Param) annotation;
+            name = param.value();
+        }
+
+        if (Strings.isNullOrEmpty(name)) {
             // parameter is not named via annotation
             // try looking for the parameter name in the compiled .class file
-            Parameter parameter = method.getParameters()[i];
             if (parameter.isNamePresent()) {
-                return parameter.getName();
+                name = parameter.getName();
             }
         }
-        return null;
+
+        return name;
     }
 
     protected Class<?> getParameterGenericType(Method method, int i) {

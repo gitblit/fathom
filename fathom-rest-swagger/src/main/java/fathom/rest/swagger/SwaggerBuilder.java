@@ -65,6 +65,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Router;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
@@ -487,6 +488,7 @@ public class SwaggerBuilder {
 
                 if (swaggerProperty != null) {
                     swaggerParameter.setDescription(getDescription(methodParameter));
+                    swaggerParameter.setRequired(isRequired(methodParameter));
                     swaggerParameter.setProperty(swaggerProperty);
                     break;
                 }
@@ -509,6 +511,11 @@ public class SwaggerBuilder {
             throw new FathomException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
                     method.getParameterTypes()[i].getName(), i, Util.toString(method));
         }
+    }
+
+    protected boolean isRequired(Parameter parameter) {
+        return parameter.isAnnotationPresent(Body.class)
+                || parameter.isAnnotationPresent(NotNull.class);
     }
 
     protected Property getSwaggerProperty(Class<?> parameterClass) {

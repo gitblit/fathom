@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 
 - Added [fathom-rest-swagger]
+- Added basic validation of controller arguments
 
 #### Removed
 
