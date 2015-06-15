@@ -443,9 +443,18 @@ public class SwaggerBuilder {
 
     protected String getNotes(Method method) {
         if (method.isAnnotationPresent(Notes.class)) {
+            Notes notes = method.getAnnotation(Notes.class);
             String resource = "classpath:swagger/" + method.getDeclaringClass().getName().replace('.', '/')
                     + "/" + method.getName() + ".md";
+            if (!Strings.isNullOrEmpty(notes.value())) {
+                resource = notes.value();
+            }
+
             String content = loadStringResource(resource);
+            if (Strings.isNullOrEmpty(content)) {
+                log.error("'{}' specifies @{} but '{}' was not found!",
+                        Util.toString(method), Notes.class.getSimpleName(), resource);
+            }
             return content;
         }
         return null;
