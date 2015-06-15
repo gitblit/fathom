@@ -321,6 +321,7 @@ public class SwaggerBuilder {
 
                 // BODY
                 BodyParameter bodyParameter = new BodyParameter();
+                bodyParameter.setName(methodParameterName);
                 bodyParameter.setDescription(getDescription(methodParameter));
                 bodyParameter.setRequired(true);
 
