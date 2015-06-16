@@ -146,7 +146,7 @@ public class SwaggerBuilder {
         Info info = new Info();
         info.setTitle(settings.getString("swagger.info.title", settings.getApplicationName()));
         info.setVersion(settings.getString("swagger.info.version", settings.getApplicationVersion()));
-        info.setDescription(loadStringResource(settings.getFileUrl("swagger.info.description", "classpath:swagger/api.md")));
+        info.setDescription(loadStringResource(settings.getFileUrl("swagger.info.description", "classpath:swagger/info.md")));
 
         // api support contact
         Contact contact = new Contact();

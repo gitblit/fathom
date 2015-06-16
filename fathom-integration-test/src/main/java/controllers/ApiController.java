@@ -32,10 +32,9 @@ import org.slf4j.LoggerFactory;
 /**
  * To be discoverable, a controller must be annotated with {@code @Path}.
  */
-@Path("/api/v1/items")
+@Path("/items")
 @Produces({Produces.JSON, Produces.XML})
-@Deprecated
-public class ApiController extends Controller {
+public class ApiController extends ApiV1 {
 
     private final Logger log = LoggerFactory.getLogger(ApiController.class);
 

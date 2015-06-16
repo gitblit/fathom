@@ -1,0 +1,1 @@
+For valid response try integer IDs with value <= 5. Anything above 5 or non-integers will generate API errors.

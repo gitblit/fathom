@@ -34,7 +34,7 @@ swagger {
     title = "Example API"
 
     # Markdown API description resource to load and insert into the generated specification
-    description = "classpath:swagger/api.md"
+    description = "classpath:swagger/info.md"
 
     # API version to display in your generated specifications
     # The default is your {application.version}.
