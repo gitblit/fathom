@@ -2,9 +2,9 @@
 <html>
 <head>
     <title>${apiTitle}</title>
-    <link href="${webjarsAt('swagger-ui/2.1.0/images/favicon-32x32.png')}" sizes="32x32" rel="icon" type="image/png" />
-    <link href="${webjarsAt('swagger-ui/2.1.0/images/favicon-16x16.png')}" sizes="16x16" rel="icon" type="image/png" />
-    <link href='${webjarsAt('swagger-ui/2.1.0/css/typography.css')}" media='screen' rel='stylesheet' type='text/css'/>
+    <link href="${webjarsAt('swagger-ui/2.1.0/images/favicon-32x32.png')}" sizes="32x32" rel="icon" type="image/png">
+    <link href="${webjarsAt('swagger-ui/2.1.0/images/favicon-16x16.png')}" sizes="16x16" rel="icon" type="image/png">
+    <link href="${webjarsAt('swagger-ui/2.1.0/css/typography.css')}" media='screen' rel="stylesheet" type='text/css'>
     <link href="${webjarsAt('swagger-ui/2.1.0/css/reset.css')}" media='screen' rel='stylesheet'>
     <link href="${webjarsAt('swagger-ui/2.1.0/css/screen.css')}" media='screen' rel='stylesheet'>
     <link href="${webjarsAt('swagger-ui/2.1.0/css/reset.css')}" media='print' rel='stylesheet'>
