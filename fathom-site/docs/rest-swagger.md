@@ -24,8 +24,12 @@ Add the **Fathom-REST-Swagger** artifact.
 ```hocon
 swagger {
 
+  # The base path of your API.
+  # All specified routes will be relative to this path.
+  basePath = "/api"
+
   # Swagger API Specification
-  api {
+  info {
     # Title of your API
     title = "Example API"
 
@@ -35,10 +39,6 @@ swagger {
     # API version to display in your generated specifications
     # The default is your {application.version}.
     version = "1.0.0"
-
-    # The base path of your API.
-    # All specified routes will be relative to this path.
-    path = "/api"
 
     # API Contact Information
     contact {
@@ -52,6 +52,12 @@ swagger {
       name = "The Apache Software License, Version 2.0"
       url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
     }
+  }
+
+  # External documentation link
+  externalDocs {
+    url = "http://swagger.io"
+    description = "More about Swagger"
   }
 
   # Swagger UI and Specification Serving

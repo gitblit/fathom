@@ -141,15 +141,15 @@ public class SwaggerBuilder {
 
         // application metadata
         Info info = new Info();
-        info.setTitle(settings.getString("swagger.api.title", settings.getApplicationName()));
-        info.setVersion(settings.getString("swagger.api.version", settings.getApplicationVersion()));
-        info.setDescription(loadStringResource(settings.getFileUrl("swagger.api.description", "classpath:swagger/api.md")));
+        info.setTitle(settings.getString("swagger.info.title", settings.getApplicationName()));
+        info.setVersion(settings.getString("swagger.info.version", settings.getApplicationVersion()));
+        info.setDescription(loadStringResource(settings.getFileUrl("swagger.info.description", "classpath:swagger/api.md")));
 
         // api support contact
         Contact contact = new Contact();
-        contact.setName(settings.getString("swagger.api.contact.name", null));
-        contact.setUrl(settings.getString("swagger.api.contact.url", null));
-        contact.setEmail(settings.getString("swagger.api.contact.email", null));
+        contact.setName(settings.getString("swagger.info.contact.name", null));
+        contact.setUrl(settings.getString("swagger.info.contact.url", null));
+        contact.setEmail(settings.getString("swagger.info.contact.email", null));
         if (Strings.isNullOrEmpty(contact.getName())
                 && Strings.isNullOrEmpty(contact.getUrl())
                 && Strings.isNullOrEmpty(contact.getEmail())) {
@@ -160,8 +160,8 @@ public class SwaggerBuilder {
 
         // License
         License license = new License();
-        license.setName(settings.getString("swagger.api.license.name", null));
-        license.setUrl(settings.getString("swagger.api.license.url", null));
+        license.setName(settings.getString("swagger.info.license.name", null));
+        license.setUrl(settings.getString("swagger.info.license.url", null));
         if (Strings.isNullOrEmpty(license.getName())
                 && Strings.isNullOrEmpty(license.getUrl())) {
             // no license
@@ -194,7 +194,7 @@ public class SwaggerBuilder {
 
         String contextPath = StringUtils.removeStart(Strings.emptyToNull(settings.getString(Settings.Setting.undertow_contextPath, null)), "/");
         String servletPath = StringUtils.removeStart(Strings.emptyToNull(settings.getString(RestServlet.SETTING_URL, null)), "/");
-        String apiPath = StringUtils.removeStart(Strings.emptyToNull(settings.getString("swagger.api.path", null)), "/");
+        String apiPath = StringUtils.removeStart(Strings.emptyToNull(settings.getString("swagger.basePath", null)), "/");
         String applicationApiPath = Joiner.on("/").skipNulls().join(contextPath, servletPath, apiPath);
         swagger.setBasePath(applicationApiPath);
 
