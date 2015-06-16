@@ -628,6 +628,13 @@ public class SwaggerBuilder {
                     swaggerParameter.setDescription(getDescription(methodParameter));
                     swaggerParameter.setRequired(isRequired(methodParameter));
                     swaggerParameter.setProperty(swaggerProperty);
+
+                    if (swaggerProperty instanceof StringProperty) {
+                        StringProperty property = (StringProperty) swaggerProperty;
+                        if (methodParameter.isAnnotationPresent(Password.class)) {
+                            property.setFormat("password");
+                        }
+                    }
                     break;
                 }
             }
