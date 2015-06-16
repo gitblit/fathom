@@ -23,11 +23,14 @@ import com.google.common.io.CharStreams;
 import fathom.conf.Settings;
 import fathom.exception.FathomException;
 import fathom.rest.RestServlet;
+import fathom.rest.controller.Auth;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.ControllerHandler;
 import fathom.rest.controller.Header;
+import fathom.rest.controller.Local;
 import fathom.rest.controller.Param;
 import fathom.rest.controller.Produces;
+import fathom.rest.controller.Session;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
 import io.swagger.models.ArrayModel;
@@ -426,6 +429,18 @@ public class SwaggerBuilder {
 
             if (pathParameterPlaceholders.containsKey(methodParameterName)) {
                 // path parameter already accounted for
+                continue;
+            }
+
+            if (methodParameter.isAnnotationPresent(Local.class)) {
+                continue;
+            }
+
+            if (methodParameter.isAnnotationPresent(Session.class)) {
+                continue;
+            }
+
+            if (methodParameter.isAnnotationPresent(Auth.class)) {
                 continue;
             }
 
