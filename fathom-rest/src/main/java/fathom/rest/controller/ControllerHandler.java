@@ -25,8 +25,8 @@ import fathom.rest.Context;
 import fathom.rest.controller.extractors.ArgumentExtractor;
 import fathom.rest.controller.extractors.CollectionExtractor;
 import fathom.rest.controller.extractors.ConfigurableExtractor;
-import fathom.rest.controller.extractors.ContextExtractor;
 import fathom.rest.controller.extractors.ExtractWith;
+import fathom.rest.controller.extractors.FileItemExtractor;
 import fathom.rest.controller.extractors.NamedExtractor;
 import fathom.rest.controller.extractors.ParamExtractor;
 import fathom.rest.controller.extractors.TypedExtractor;
@@ -34,6 +34,7 @@ import fathom.utils.ClassUtil;
 import fathom.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.FileItem;
 import ro.pippo.core.route.RouteHandler;
 
 import javax.validation.constraints.NotNull;
@@ -149,8 +150,8 @@ public class ControllerHandler implements RouteHandler<Context> {
 
                         // determine the appropriate extractor
                         Class<? extends ArgumentExtractor> extractorType;
-                        if (Context.class == objectType) {
-                            extractorType = ContextExtractor.class;
+                        if (FileItem.class == objectType) {
+                            extractorType = FileItemExtractor.class;
                         } else {
                             extractorType = getArgumentExtractor(controllerMethod, i);
                         }

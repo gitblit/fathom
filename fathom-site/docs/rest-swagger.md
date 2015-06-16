@@ -203,4 +203,18 @@ public void getEmployee(@Desc("employee id") int id) {
 }
 ```
 
+#### @Form
+
+Specify the `@Form` annotation to indicate that a method argument is sourced from a form.
+
+```java
+@POST("/{id}/uploadAvatar")
+public void uploadAvatar(
+    @Desc("employee id") int id
+    @Desc("nickname") @Form String nickname,
+    @Desc("avatar to upload") @Form FileItem avatar) {
+
+}
+```
+
 [Swagger]: http://swagger.io

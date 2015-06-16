@@ -18,19 +18,33 @@ package fathom.rest.controller.extractors;
 
 import com.google.common.base.Preconditions;
 import fathom.rest.Context;
+import ro.pippo.core.FileItem;
 
 /**
  * @author James Moger
  */
-public class ContextExtractor implements TypedExtractor, ArgumentExtractor {
+public class FileItemExtractor implements NamedExtractor, TypedExtractor, ArgumentExtractor {
+
+    private String name;
 
     @Override
     public void setObjectType(Class<?> objectType) {
-        Preconditions.checkArgument(Context.class == objectType, "'{}' is not a valid target type", objectType.getName());
+        Preconditions.checkArgument(FileItem.class == objectType, "'{}' is not a valid target type", objectType.getName());
     }
 
     @Override
-    public Context extract(Context context) {
-        return context;
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public FileItem extract(Context context) {
+        FileItem fileItem = context.getRequest().getFile(name);
+        return fileItem;
     }
 }

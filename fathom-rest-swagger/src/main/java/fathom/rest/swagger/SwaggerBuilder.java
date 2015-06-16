@@ -57,6 +57,7 @@ import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.DateTimeProperty;
 import io.swagger.models.properties.DecimalProperty;
 import io.swagger.models.properties.DoubleProperty;
+import io.swagger.models.properties.FileProperty;
 import io.swagger.models.properties.FloatProperty;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.LongProperty;
@@ -67,6 +68,7 @@ import io.swagger.models.properties.UUIDProperty;
 import io.swagger.util.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.FileItem;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Router;
@@ -491,7 +493,7 @@ public class SwaggerBuilder {
 
                 operation.addParameter(headerParameter);
 
-            } else if (methodParameter.isAnnotationPresent(Form.class)) {
+            } else if (methodParameter.isAnnotationPresent(Form.class) || FileItem.class == methodParameter.getType()) {
 
                 // FORM
                 FormParameter formParameter = new FormParameter();
@@ -501,7 +503,13 @@ public class SwaggerBuilder {
 
                 operation.addParameter(formParameter);
 
-                operation.setConsumes(Arrays.asList(HttpConstants.ContentType.APPLICATION_FORM_URLENCODED));
+                if (FileItem.class == methodParameter.getType()) {
+                    // if we see a FileItem, then this MUST be a multipart POST
+                    operation.setConsumes(Arrays.asList(HttpConstants.ContentType.MULTIPART_FORM_DATA));
+                } else if (!operation.getConsumes().contains(HttpConstants.ContentType.MULTIPART_FORM_DATA)) {
+                    // only override consumes if this is NOT a multipart POST
+                    operation.setConsumes(Arrays.asList(HttpConstants.ContentType.APPLICATION_FORM_URLENCODED));
+                }
 
             } else {
 
@@ -704,6 +712,10 @@ public class SwaggerBuilder {
                 enumValues.add(((Enum) enumValue).name());
             }
             property.setEnum(enumValues);
+            swaggerProperty = property;
+        } else if (FileItem.class == parameterClass) {
+            // FILE UPLOAD
+            FileProperty property = new FileProperty();
             swaggerProperty = property;
         } else {
             // Register a Model class
