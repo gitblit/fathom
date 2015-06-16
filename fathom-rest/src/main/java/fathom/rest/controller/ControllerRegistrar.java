@@ -131,6 +131,7 @@ public class ControllerRegistrar extends ControllerScanner {
                     String fullPath = StringUtils.addStart(StringUtils.removeEnd(controllerPath, "/"), "/");
                     ControllerHandler handler = new ControllerHandler(injector, controllerClass, method.getName());
                     RouteRegistration registration = new RouteRegistration(httpMethod, fullPath, handler);
+                    configureRegistration(registration, method);
                     routeRegistrations.add(registration);
                 } else {
                     // method specifies one or more paths, concatenate with controller paths
@@ -140,12 +141,20 @@ public class ControllerRegistrar extends ControllerScanner {
 
                         ControllerHandler handler = new ControllerHandler(injector, controllerClass, method.getName());
                         RouteRegistration registration = new RouteRegistration(httpMethod, fullPath, handler);
+                        configureRegistration(registration, method);
                         routeRegistrations.add(registration);
                     }
                 }
 
             }
 
+        }
+    }
+
+    private void configureRegistration(RouteRegistration registration, Method method) {
+        if (method.isAnnotationPresent(Named.class)) {
+            Named named = method.getAnnotation(Named.class);
+            registration.setName(named.value());
         }
     }
 

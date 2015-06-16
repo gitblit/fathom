@@ -138,13 +138,13 @@ public class EmployeeController extends Controller {
 }
 ```
 
-#### @Summary
+#### @Named
 
-You may use the `@Summary` annotation to briefly describe a controller method.
+You may use the `@Named` annotation to briefly describe a controller method.
 
 ```java
 @GET("/{id}")
-@Summary("Get an employee")
+@Named("Get an employee")
 public void getEmployee(int id) {
   Employee employee = employeeDao.get(id);
   if (employee != null) {
@@ -163,7 +163,7 @@ By default, the resource file `classpath:swagger/com/package/controller/method.m
 
 ```java
 @GET("/{id}")
-@Summary("Get an employee")
+@Named("Get an employee")
 @Notes
 public void getEmployee(int id) {
   Employee employee = employeeDao.get(id);
@@ -181,7 +181,7 @@ You may use the `@Desc` annotation to briefly describe a controller method param
 
 ```java
 @GET("/{id}")
-@Summary("Get an employee")
+@Named("Get an employee")
 @Notes
 public void getEmployee(@Desc("employee id") int id) {
   Employee employee = employeeDao.get(id);

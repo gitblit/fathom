@@ -20,6 +20,7 @@ import fathom.rest.controller.Body;
 import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Header;
+import fathom.rest.controller.Named;
 import fathom.rest.controller.POST;
 import fathom.rest.controller.PUT;
 import fathom.rest.controller.Path;
@@ -28,7 +29,6 @@ import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Form;
 import fathom.rest.swagger.Notes;
 import fathom.rest.swagger.ResponseCode;
-import fathom.rest.swagger.Summary;
 import fathom.rest.swagger.Tag;
 import models.petstore.Pet;
 import models.petstore.PetStatus;
@@ -47,7 +47,7 @@ import javax.validation.constraints.NotNull;
 public class PetController extends ApiV2 {
 
     @PUT
-    @Summary("Update an existing pet")
+    @Named("Update an existing pet")
     @ResponseCode(code = 400, message = "Invalid ID supplied")
     @ResponseCode(code = 404, message = "Pet not found")
     @ResponseCode(code = 405, message = "Validation exception")
@@ -56,14 +56,14 @@ public class PetController extends ApiV2 {
     }
 
     @POST
-    @Summary("Add a new pet to the store")
+    @Named("Add a new pet to the store")
     @ResponseCode(code = 405, message = "Invalid input")
     public void addPet(@Desc("Pet object that needs to be added to the store") @Body Pet pet) {
         getResponse().ok();
     }
 
     @GET("/findByStatus")
-    @Summary("Finds pets by status")
+    @Named("Finds pets by status")
     @Notes
     @ResponseCode(code = 200, message = "Successful operation", returns = Pet[].class)
     @ResponseCode(code = 400, message = "Invalid status value")
@@ -72,7 +72,7 @@ public class PetController extends ApiV2 {
     }
 
     @GET("/findByTags")
-    @Summary("Finds pets by tags")
+    @Named("Finds pets by tags")
     @Notes
     @ResponseCode(code = 200, message = "Successful operation", returns = Pet[].class)
     @ResponseCode(code = 400, message = "Invalid tag value")
@@ -81,7 +81,7 @@ public class PetController extends ApiV2 {
     }
 
     @POST("/{petId}")
-    @Summary("Updates a pet in the store with form data")
+    @Named("Updates a pet in the store with form data")
     @ResponseCode(code = 405, message = "Invalid input")
     public void updatePetWithForm(
             @Desc("ID of pet that needs to be updated") long petId,
@@ -91,14 +91,14 @@ public class PetController extends ApiV2 {
     }
 
     @DELETE("/{petId}")
-    @Summary("Deletes a pet")
+    @Named("Deletes a pet")
     @ResponseCode(code = 400, message = "Invalid pet value")
     public void deletePet(@Desc("Pet id to delete") long petId, @Header String api_key) {
         getResponse().ok();
     }
 
     @GET("/{petId}")
-    @Summary("Finds pet by ID")
+    @Named("Finds pet by ID")
     @Notes
     @ResponseCode(code = 200, message = "Successful operation", returns = Pet.class)
     @ResponseCode(code = 400, message = "Invalid ID supplied value")
@@ -108,7 +108,7 @@ public class PetController extends ApiV2 {
     }
 
     @POST("/{petId}/uploadImage")
-    @Summary("uploads an image")
+    @Named("uploads an image")
     @Produces(Produces.JSON)
     public void uploadFile(
             @Desc("ID of pet to update") long petId,

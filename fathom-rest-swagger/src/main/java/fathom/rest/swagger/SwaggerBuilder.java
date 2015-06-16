@@ -52,6 +52,7 @@ import io.swagger.models.parameters.FormParameter;
 import io.swagger.models.parameters.HeaderParameter;
 import io.swagger.models.parameters.PathParameter;
 import io.swagger.models.parameters.QueryParameter;
+import io.swagger.models.properties.AbstractNumericProperty;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
@@ -75,6 +76,8 @@ import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -98,6 +101,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ *
+ * SwaggerBuilder builds a Swagger specification from your registered Controller Routes.
+ *
  * @author James Moger
  */
 public class SwaggerBuilder {
@@ -294,7 +300,12 @@ public class SwaggerBuilder {
         List<String> produces = getProduces(handler);
 
         Operation operation = new Operation();
-        operation.setSummary(getSummary(method));
+        if (Strings.isNullOrEmpty(route.getName())) {
+            operation.setSummary(Util.toString(method));
+        } else {
+            operation.setSummary(route.getName());
+        }
+
         operation.setDescription(getNotes(method));
         operation.setOperationId(Util.toString(method));
         operation.setConsumes(produces);
@@ -573,14 +584,6 @@ public class SwaggerBuilder {
         return null;
     }
 
-    protected String getSummary(Method method) {
-        if (method.isAnnotationPresent(Summary.class)) {
-            Summary annotation = method.getAnnotation(Summary.class);
-            return annotation.value();
-        }
-        return Util.toString(method);
-    }
-
     protected String getDescription(Parameter parameter) {
         if (parameter.isAnnotationPresent(Desc.class)) {
             Desc annotation = parameter.getAnnotation(Desc.class);
@@ -663,6 +666,18 @@ public class SwaggerBuilder {
                         StringProperty property = (StringProperty) swaggerProperty;
                         if (methodParameter.isAnnotationPresent(Password.class)) {
                             property.setFormat("password");
+                        }
+                    }
+
+                    if (swaggerProperty instanceof AbstractNumericProperty) {
+                        AbstractNumericProperty numericProperty = (AbstractNumericProperty) swaggerProperty;
+                        if (methodParameter.isAnnotationPresent(Min.class)) {
+                            Min min = methodParameter.getAnnotation(Min.class);
+                            numericProperty.setMinimum((double) min.value());
+                        }
+                        if (methodParameter.isAnnotationPresent(Max.class)) {
+                            Max max= methodParameter.getAnnotation(Max.class);
+                            numericProperty.setMaximum((double) max.value());
                         }
                     }
                     break;

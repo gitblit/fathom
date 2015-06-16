@@ -16,8 +16,6 @@
 
 package fathom.rest.swagger;
 
-import fathom.conf.RequireSettings;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -30,7 +28,7 @@ import java.lang.annotation.Target;
  * This can be used to describe possible success and error codes from your REST
  * API call. You may or may not use this to describe the return type of the
  * operation (normally a successful code), but the successful response should be
- * described as well using the {@link Summary}.
+ * described as well using the {@link Named}.
  * <p/>
  * If your API has uses a different response class for these responses, you can
  * describe them here by associating a response class with a response code.

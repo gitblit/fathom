@@ -19,6 +19,7 @@ package controllers;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
+import fathom.rest.controller.Named;
 import fathom.rest.controller.POST;
 import fathom.rest.controller.PUT;
 import fathom.rest.controller.Path;
@@ -27,7 +28,6 @@ import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Notes;
 import fathom.rest.swagger.Password;
 import fathom.rest.swagger.ResponseCode;
-import fathom.rest.swagger.Summary;
 import fathom.rest.swagger.Tag;
 import models.petstore.User;
 
@@ -45,19 +45,19 @@ import java.util.List;
 public class UserController extends ApiV2 {
 
     @POST("/createWithArray")
-    @Summary("Create list of users with given input array")
+    @Named("Create list of users with given input array")
     public void createUsersWithArrayInput(@Desc("List of User object") @Body User[] users) {
         getResponse().ok();
     }
 
     @POST("/createWithList")
-    @Summary("Create list of users with given input array")
+    @Named("Create list of users with given input array")
     public void createUsersWithListInput(@Desc("List of User object") @Body List<User> users) {
         getResponse().ok();
     }
 
     @PUT("/{username}")
-    @Summary("Update user")
+    @Named("Update user")
     @Notes("classpath:swagger/controllers/UserController/note.md")
     @ResponseCode(code = 400, message = "Invalid username supplied")
     @ResponseCode(code = 404, message = "User not found")
@@ -67,7 +67,7 @@ public class UserController extends ApiV2 {
     }
 
     @DELETE("/{username}")
-    @Summary("Delete user")
+    @Named("Delete user")
     @Notes("classpath:swagger/controllers/UserController/note.md")
     @ResponseCode(code = 400, message = "Invalid username supplied")
     @ResponseCode(code = 404, message = "User not found")
@@ -76,7 +76,7 @@ public class UserController extends ApiV2 {
     }
 
     @GET("/{username}")
-    @Summary("Get user by username")
+    @Named("Get user by username")
     @ResponseCode(code = 200, message = "User", returns = User.class)
     @ResponseCode(code = 400, message = "Invalid username supplied")
     @ResponseCode(code = 404, message = "User not found")
@@ -85,7 +85,7 @@ public class UserController extends ApiV2 {
     }
 
     @GET("/login")
-    @Summary("Logs user into the system")
+    @Named("Logs user into the system")
     @ResponseCode(code = 200, message = "Invalid username and password combination", returns = String.class)
     @ResponseCode(code = 400, message = "Invalid username and password combination")
     public void loginUser(@Desc("The Username for login") @NotNull String username,
@@ -94,13 +94,13 @@ public class UserController extends ApiV2 {
     }
 
     @GET("/logout")
-    @Summary("Logs out current logged in user session")
+    @Named("Logs out current logged in user session")
     public void logoutUser() {
         getResponse().ok();
     }
 
     @POST("/")
-    @Summary("Create user")
+    @Named("Create user")
     @Notes("classpath:swagger/controllers/UserController/note.md")
     @ResponseCode(code = 400, message = "Invalid username supplied")
     @ResponseCode(code = 404, message = "User not found")

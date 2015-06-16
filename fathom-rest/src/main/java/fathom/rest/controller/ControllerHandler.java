@@ -36,7 +36,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.FileItem;
 import ro.pippo.core.route.RouteHandler;
+import ro.pippo.core.util.StringUtils;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -245,6 +248,23 @@ public class ControllerHandler implements RouteHandler<Context> {
         if ((value == null && parameter.isAnnotationPresent(NotNull.class))
                 || (value == null && parameter.getType().isPrimitive())) {
             throw new FathomException("'{}' is a required parameter!", getParameterName(parameter));
+        }
+        if (value != null && value instanceof Number) {
+            Number number = (Number) value;
+
+            if (parameter.isAnnotationPresent(Min.class)) {
+                // validate required minimum value
+                Min min = parameter.getAnnotation(Min.class);
+                Preconditions.checkArgument(number.longValue() >= min.value(),
+                        StringUtils.format("'{}' must be >= {}", getParameterName(parameter), min.value()));
+            }
+
+            if (parameter.isAnnotationPresent(Max.class)) {
+                // validate required maximum value
+                Max max = parameter.getAnnotation(Max.class);
+                Preconditions.checkArgument(number.longValue() <= max.value(),
+                        StringUtils.format("'{}' must be <= {}", getParameterName(parameter), max.value()));
+            }
         }
     }
 

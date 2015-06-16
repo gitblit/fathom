@@ -19,15 +19,18 @@ package controllers;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
+import fathom.rest.controller.Named;
 import fathom.rest.controller.POST;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Notes;
 import fathom.rest.swagger.ResponseCode;
-import fathom.rest.swagger.Summary;
 import fathom.rest.swagger.Tag;
 import models.petstore.Order;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 /**
  * Implementation of the Swagger Petstore /store API.
@@ -40,26 +43,26 @@ import models.petstore.Order;
 public class StoreController extends ApiV2 {
 
     @DELETE("/order/{orderId}")
-    @Summary("Delete purchase order by ID")
+    @Named("Delete purchase order by ID")
     @Notes
     @ResponseCode(code = 400, message = "Invalid ID supplied")
     @ResponseCode(code = 404, message = "Order not found")
-    public void deleteOrder(@Desc("ID of the order that needs to be deleted") long orderId) {
+    public void deleteOrder(@Desc("ID of the order that needs to be deleted") @Min(1) long orderId) {
         getResponse().ok();
     }
 
     @GET("/order/{orderId}")
-    @Summary("Find purchase order by ID")
+    @Named("Find purchase order by ID")
     @Notes
     @ResponseCode(code = 200, message = "Valid order", returns = Order.class)
     @ResponseCode(code = 400, message = "Invalid ID supplied")
     @ResponseCode(code = 404, message = "Order not found")
-    public void getOrderById(@Desc("ID of the order that needs to be fetched") long orderId) {
+    public void getOrderById(@Desc("ID of the order that needs to be fetched") @Max(5) @Min(1) long orderId) {
         getResponse().ok();
     }
 
     @POST("/order")
-    @Summary("Place an order for a pet")
+    @Named("Place an order for a pet")
     @ResponseCode(code = 400, message = "Invalid order")
     public void placeOrder(@Desc("Order placed for purchasing the pet") @Body Order order) {
         getResponse().ok();
