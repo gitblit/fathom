@@ -21,11 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that identifies that an annotation, type, field, method, or parameter should not be documented.
+ * Annotation for a parameter or field example.
  *
  * @author James Moger
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
-public @interface Undocumented {
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+public @interface Example {
+    String value();
 }

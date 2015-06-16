@@ -34,6 +34,7 @@ import io.swagger.models.ArrayModel;
 import io.swagger.models.Contact;
 import io.swagger.models.Info;
 import io.swagger.models.License;
+import io.swagger.models.ModelImpl;
 import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.RefModel;
@@ -63,6 +64,7 @@ import io.swagger.models.properties.UUIDProperty;
 import io.swagger.util.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.HttpConstants;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
@@ -70,6 +72,7 @@ import ro.pippo.core.util.StringUtils;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
@@ -271,7 +274,7 @@ public class SwaggerBuilder {
         operation.setDeprecated(method.isAnnotationPresent(Deprecated.class)
                 || controller.isAnnotationPresent(Deprecated.class));
 
-        registerResponses(operation, method);
+        registerResponses(swagger, operation, method);
 
         Tag tag = getTag(controller);
         if (tag == null) {
@@ -281,7 +284,7 @@ public class SwaggerBuilder {
             operation.addTag(tag.getName());
         }
 
-        String operationPath = StringUtils.removeStart(registerParameters(operation, route, method), swagger.getBasePath());
+        String operationPath = StringUtils.removeStart(registerParameters(swagger, operation, route, method), swagger.getBasePath());
         if (swagger.getPath(operationPath) == null) {
             swagger.path(operationPath, new Path());
         }
@@ -292,31 +295,115 @@ public class SwaggerBuilder {
                 route.getRequestMethod(), operationPath, Util.toString(method));
     }
 
-    protected void registerResponses(Operation operation, Method method) {
+    protected void registerResponses(Swagger swagger, Operation operation, Method method) {
         if (method.isAnnotationPresent(ResponseCodes.class)) {
             ResponseCodes responseCodes = method.getAnnotation(ResponseCodes.class);
             for (ResponseCode responseCode : responseCodes.value()) {
-                registerResponse(operation, responseCode);
+                registerResponse(swagger, operation, responseCode);
             }
         } else if (method.isAnnotationPresent(ResponseCode.class)) {
             ResponseCode responseCode = method.getAnnotation(ResponseCode.class);
-            registerResponse(operation, responseCode);
+            registerResponse(swagger, operation, responseCode);
         }
     }
 
-    protected void registerResponse(Operation operation, ResponseCode responseCode) {
+    protected void registerResponse(Swagger swagger, Operation operation, ResponseCode responseCode) {
         Response response = new Response();
         response.setDescription(responseCode.message());
+
+        if (responseCode.returns() != Void.class) {
+            // Return type
+            if (responseCode.returns().isArray()) {
+                // ARRAY[]
+                Class<?> componentClass = responseCode.returns().getComponentType();
+                ArrayProperty arrayProperty = new ArrayProperty();
+                Property componentProperty = getSwaggerProperty(swagger, componentClass);
+                arrayProperty.setItems(componentProperty);
+                response.setSchema(arrayProperty);
+            } else {
+                // Object
+                Property returnProperty = getSwaggerProperty(swagger, responseCode.returns());
+                response.setSchema(returnProperty);
+            }
+        }
+
         operation.response(responseCode.code(), response);
     }
 
-    protected String registerParameters(Operation operation, Route route, Method method) {
+    protected String registerModel(Swagger swagger, Class<?> modelClass) {
+        final Tag modelTag = getModelRef(modelClass);
+        final String ref = modelTag.getName();
+
+        if (swagger.getDefinitions() != null && swagger.getDefinitions().containsKey(ref)) {
+            // model already registered
+            return ref;
+        }
+
+        ModelImpl model = new ModelImpl();
+        swagger.addDefinition(modelTag.getName(), model);
+
+        if (!Strings.isNullOrEmpty(modelTag.getDescription())) {
+            model.setDescription(modelTag.getDescription());
+        }
+
+        // document any exposed model properties
+        for (Field field : modelClass.getDeclaredFields()) {
+
+            if (field.isAnnotationPresent(Undocumented.class)) {
+                // undocumented field, skip
+                continue;
+            }
+
+            Property property;
+            Class<?> fieldType = field.getType();
+            if (fieldType.isArray()) {
+                Class<?> componentType = fieldType.getComponentType();
+                Property componentProperty = getSwaggerProperty(swagger, componentType);
+                ArrayProperty arrayProperty = new ArrayProperty();
+                arrayProperty.setItems(componentProperty);
+                property = arrayProperty;
+            } else {
+                property = getSwaggerProperty(swagger, fieldType);
+            }
+            property.setRequired(field.isAnnotationPresent(NotNull.class));
+
+            if (field.isAnnotationPresent(Desc.class)) {
+                Desc desc = field.getAnnotation(Desc.class);
+                property.setDescription(desc.value());
+            }
+
+            if (field.isAnnotationPresent(Example.class)) {
+                Example example = field.getAnnotation(Example.class);
+                property.setExample(example.value());
+            }
+
+            model.addProperty(field.getName(), property);
+
+        }
+
+        return ref;
+    }
+
+    protected Tag getModelRef(Class<?> modelClass) {
+        if (modelClass.isAnnotationPresent(fathom.rest.swagger.Tag.class)) {
+            fathom.rest.swagger.Tag annotation = modelClass.getAnnotation(fathom.rest.swagger.Tag.class);
+            Tag tag = new Tag();
+            tag.setName(Optional.fromNullable(Strings.emptyToNull(annotation.name())).or(modelClass.getSimpleName()));
+            tag.setDescription(annotation.description());
+            return tag;
+        }
+        Tag tag = new Tag();
+        tag.setName(modelClass.getName());
+        return tag;
+    }
+
+    protected String registerParameters(Swagger swagger, Operation operation, Route route, Method method) {
         Map<String, Object> pathParameterPlaceholders = new HashMap<>();
         for (String uriParameterName : getUriParameterNames(route.getUriPattern())) {
             // path parameters are required
             PathParameter pathParameter = new PathParameter();
             pathParameter.setName(uriParameterName);
-            setPropertyType(pathParameter, method);
+            setPropertyType(swagger, pathParameter, method);
             pathParameter.setRequired(true);
 
             operation.addParameter(pathParameter);
@@ -352,13 +439,13 @@ public class SwaggerBuilder {
 
                 if (methodParameter.getType().isArray()) {
                     // ARRAY []
-                    Property property = getSwaggerProperty(methodParameter.getType().getComponentType());
+                    Property property = getSwaggerProperty(swagger, methodParameter.getType().getComponentType());
                     ArrayModel arrayModel = new ArrayModel();
                     arrayModel.setItems(property);
                     bodyParameter.setSchema(arrayModel);
                 } else if (Collection.class.isAssignableFrom(methodParameter.getType())) {
                     // COLLECTION
-                    Property property = getSwaggerProperty(getParameterGenericType(method, i));
+                    Property property = getSwaggerProperty(swagger, getParameterGenericType(method, i));
                     ArrayModel arrayModel = new ArrayModel();
                     arrayModel.setItems(property);
                     bodyParameter.setSchema(arrayModel);
@@ -381,7 +468,7 @@ public class SwaggerBuilder {
                 }
 
                 headerParameter.setDescription(getDescription(methodParameter));
-                setPropertyType(headerParameter, method);
+                setPropertyType(swagger, headerParameter, method);
 
                 operation.addParameter(headerParameter);
 
@@ -391,9 +478,11 @@ public class SwaggerBuilder {
                 FormParameter formParameter = new FormParameter();
                 formParameter.setName(methodParameterName);
                 formParameter.setDescription(getDescription(methodParameter));
-                setPropertyType(formParameter, method);
+                setPropertyType(swagger, formParameter, method);
 
                 operation.addParameter(formParameter);
+
+                operation.setConsumes(Arrays.asList(HttpConstants.ContentType.APPLICATION_FORM_URLENCODED));
 
             } else {
 
@@ -401,7 +490,7 @@ public class SwaggerBuilder {
                 QueryParameter queryParameter = new QueryParameter();
                 queryParameter.setName(methodParameterName);
                 queryParameter.setDescription(getDescription(methodParameter));
-                setPropertyType(queryParameter, method);
+                setPropertyType(swagger, queryParameter, method);
 
                 operation.addParameter(queryParameter);
             }
@@ -473,7 +562,7 @@ public class SwaggerBuilder {
         return list;
     }
 
-    protected void setPropertyType(AbstractSerializableParameter swaggerParameter, Method method) {
+    protected void setPropertyType(Swagger swagger, AbstractSerializableParameter swaggerParameter, Method method) {
 
         for (int i = 0; i < method.getParameterCount(); i++) {
             Parameter methodParameter = method.getParameters()[i];
@@ -493,19 +582,19 @@ public class SwaggerBuilder {
                 Class parameterClass = methodParameter.getType();
                 if (parameterClass.isArray()) {
                     // ARRAYS
-                    Property componentProperty = getSwaggerProperty(parameterClass.getComponentType());
+                    Property componentProperty = getSwaggerProperty(swagger, parameterClass.getComponentType());
                     ArrayProperty arrayProperty = new ArrayProperty(componentProperty);
                     arrayProperty.setUniqueItems(false);
                     swaggerProperty = arrayProperty;
                 } else if (Collection.class.isAssignableFrom(parameterClass)) {
                     // COLLECTIONS
-                    Property componentProperty = getSwaggerProperty(getParameterGenericType(method, i));
+                    Property componentProperty = getSwaggerProperty(swagger, getParameterGenericType(method, i));
                     ArrayProperty arrayProperty = new ArrayProperty(componentProperty);
                     arrayProperty.setUniqueItems(Set.class.isAssignableFrom(parameterClass));
                     swaggerProperty = arrayProperty;
                 } else {
                     // TYPES
-                    swaggerProperty = getSwaggerProperty(parameterClass);
+                    swaggerProperty = getSwaggerProperty(swagger, parameterClass);
                 }
 
                 if (swaggerProperty != null) {
@@ -540,7 +629,7 @@ public class SwaggerBuilder {
                 || parameter.isAnnotationPresent(NotNull.class);
     }
 
-    protected Property getSwaggerProperty(Class<?> parameterClass) {
+    protected Property getSwaggerProperty(Swagger swagger, Class<?> parameterClass) {
         Property swaggerProperty = null;
         if (byte.class == parameterClass || Byte.class == parameterClass) {
             // STRING
@@ -598,7 +687,9 @@ public class SwaggerBuilder {
             property.setEnum(enumValues);
             swaggerProperty = property;
         } else {
-            swaggerProperty = new RefProperty(parameterClass.getName());
+            // Register a Model class
+            String modelRef = registerModel(swagger, parameterClass);
+            swaggerProperty = new RefProperty(modelRef);
         }
         return swaggerProperty;
     }
