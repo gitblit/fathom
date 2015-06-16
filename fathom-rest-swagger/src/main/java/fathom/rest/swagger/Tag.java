@@ -30,4 +30,5 @@ import java.lang.annotation.Target;
 public @interface Tag {
     String name() default "";
     String description();
+    String externalDocs() default "";
 }

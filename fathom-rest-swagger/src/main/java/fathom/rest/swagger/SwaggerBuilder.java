@@ -35,6 +35,7 @@ import fathom.utils.ClassUtil;
 import fathom.utils.Util;
 import io.swagger.models.ArrayModel;
 import io.swagger.models.Contact;
+import io.swagger.models.ExternalDocs;
 import io.swagger.models.Info;
 import io.swagger.models.License;
 import io.swagger.models.ModelImpl;
@@ -169,6 +170,17 @@ public class SwaggerBuilder {
         }
 
         swagger.setInfo(info);
+
+
+        // External docs
+        ExternalDocs externalDocs = new ExternalDocs();
+        externalDocs.setUrl(settings.getString("swagger.externalDocs.url", null));
+        externalDocs.setDescription(settings.getString("swagger.externalDocs.description", null));
+        if (Strings.isNullOrEmpty(externalDocs.getUrl())) {
+            // no external docs
+        } else {
+            swagger.setExternalDocs(externalDocs);
+        }
 
         // transport and base url details
         List<Scheme> schemes = new ArrayList<>();
@@ -536,6 +548,13 @@ public class SwaggerBuilder {
             Tag tag = new Tag();
             tag.setName(Optional.fromNullable(Strings.emptyToNull(annotation.name())).or(controllerClass.getSimpleName()));
             tag.setDescription(annotation.description());
+
+            if (!Strings.isNullOrEmpty(annotation.externalDocs())) {
+                ExternalDocs docs = new ExternalDocs();
+                docs.setUrl(annotation.externalDocs());
+                tag.setExternalDocs(docs);
+            }
+
             if (!Strings.isNullOrEmpty(tag.getDescription())) {
                 return tag;
             }
