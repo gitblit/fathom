@@ -451,7 +451,11 @@ public class SwaggerBuilder {
                     bodyParameter.setSchema(arrayModel);
                 } else {
                     // OBJECT
-                    bodyParameter.setSchema(new RefModel(methodParameter.getType().getName()));
+                    Property property = getSwaggerProperty(swagger, methodParameter.getType());
+                    if (property instanceof RefProperty) {
+                        RefProperty ref = (RefProperty) property;
+                        bodyParameter.setSchema(new RefModel(ref.getSimpleRef()));
+                    }
                 }
 
                 operation.addParameter(bodyParameter);
