@@ -89,11 +89,12 @@ swagger {
 
 [Swagger] is a specification for describing a RESTful API.  Generally, a RESTful API is a collection of http/https urls paired with http methods which generate `application/json`, `application/xml`, and/or `application/x-yaml`.
 
-In order for your Fathom controller route to be registered in your Swagger specification it...
+In order for your Fathom controller route to be registered in your Swagger specification...
 
-1. must declare that it `@Produces` one or more RESTful *content-types*
-2. must specify one of the following http methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`
-3. must NOT be annotated with `@Undocumented`
+1. the route must declare that it `@Produces` one or more RESTful *content-types*
+2. the route must specify one of the following http methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`
+3. the route must NOT be annotated with `@Undocumented`
+4. the uri pattern must begin with the configured `swagger.basePath`
 
 ```java
 // Controller API Method, registered in Swagger specification

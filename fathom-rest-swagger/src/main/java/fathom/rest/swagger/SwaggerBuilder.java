@@ -108,13 +108,16 @@ public class SwaggerBuilder {
 
     private static final List<String> METHODS = Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
 
-    private Settings settings;
+    private final Settings settings;
 
-    private Router router;
+    private final Router router;
+
+    private final String relativeSwaggerBasePath;
 
     public SwaggerBuilder(Settings settings, Router router) {
         this.settings = settings;
         this.router = router;
+        this.relativeSwaggerBasePath = Optional.fromNullable(Strings.emptyToNull(settings.getString("swagger.basePath", null))).or("/");
     }
 
     /**
@@ -219,6 +222,7 @@ public class SwaggerBuilder {
      * @return true if the controller handler can be registered in the Swagger specification
      */
     protected boolean canRegister(Route route, ControllerHandler handler) {
+
         if (!METHODS.contains(route.getRequestMethod().toUpperCase())) {
             log.debug("Skip {} {}, {} Swagger does not support specified HTTP method",
                     route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()));
@@ -245,6 +249,13 @@ public class SwaggerBuilder {
                 || handler.getControllerMethod().getDeclaringClass().isAnnotationPresent(Undocumented.class)) {
             log.debug("Skip {} {}, {} is annotated as Undocumented",
                     route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()));
+            return false;
+        }
+
+        if (!route.getUriPattern().startsWith(relativeSwaggerBasePath)) {
+            log.debug("Skip {} {}, {} route is not within Swagger basePath '{}'",
+                    route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()),
+                    relativeSwaggerBasePath);
             return false;
         }
 
