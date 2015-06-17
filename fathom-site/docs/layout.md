@@ -8,7 +8,7 @@ YourApp
 └── src
     └── main
         ├── java
-        │   ├── App.java
+        │   ├── Launcher.java
         │   ├── conf
         │   │   ├── Components.java
         │   │   ├── Fathom.java

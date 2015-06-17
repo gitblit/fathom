@@ -115,7 +115,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.4.0</version>
                 <configuration>
-                    <mainClass>${package}.App</mainClass>
+                    <mainClass>${package}.Launcher</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -147,7 +147,7 @@
                             <goal>build</goal>
                         </goals>
                         <configuration>
-                            <appClass>${package}.App</appClass>
+                            <appClass>${package}.Launcher</appClass>
                             <chmod>true</chmod>
                             <trampoline>false</trampoline>
                         </configuration>

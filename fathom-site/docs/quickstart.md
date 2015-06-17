@@ -2,26 +2,31 @@
 
 The fastest way to get started building an application or microservice based on Fathom is to use a [Maven archetype].  An archetype is a project templating toolkit which is used to generate a new project based on a few input parameters.
 
-You'll need to install [Maven] for your operating system and have it available on your $PATH in order to use the following instructions.  If you are creating your project from an IDE then the required steps will be different.
+You'll need to install [Maven] for your operating system and have it available on your $PATH in order to use the following instructions.  You may also create your app using the archetype from an IDE.
 
 ### Creating Your App with Maven & the Fathom Standard Archetype
 
-Fathom's Standard Archetype requires input of five values which are prompted for by Maven during interactive project generation.  The required values are:
-
-1. *groupId*
-2. *artifactId*
-3. *version*
-4. *application package*
-5. *name*
-
-To create your project copy & paste the following command to your console:
+To create your app copy & paste the following command to your console:
 
 ```
-mvn archetype:generate -DarchetypeGroupId=com.gitblit.fathom -DarchetypeArtifactId=fathom-archetype-standard
+mvn -B archetype:generate \
+  -DarchetypeGroupId=com.gitblit.fathom \
+  -DarchetypeArtifactId=fathom-archetype-standard \
+  -DarchetypeVersion=0.5.2 \
+  -DgroupId=com.mycompany \
+  -DartifactId=myapp \
+  -Dversion=1.0.0-SNAPSHOT \
+  -DpackageName=com.mycompany \
+  -Dname="My App"
 ```
+
+Make sure to substitute the *groupId*, *artifactId*, *version*, *packageName*, and *name* values with ones that make sense for your app.
 
 !!! Note
     After this command completes your new project will be available in the `artifactId` subdirectory of your current directory.
+
+!!! Warning
+    If you are creating your app with an IDE then you will have to configure your IDE compiler settings to use the `-parameters` compiler flag. See [this page](maven.md) for more details.
 
 ### About your Generated App
 

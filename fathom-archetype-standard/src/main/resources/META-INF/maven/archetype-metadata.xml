@@ -21,16 +21,6 @@
         xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
         name="fathom-standard">
     <requiredProperties>
-        <requiredProperty key="groupId">
-            <defaultValue>com.gitblit.example</defaultValue>
-        </requiredProperty>
-        <requiredProperty key="artifactId"/>
-        <requiredProperty key="version">
-            <defaultValue>1.0.0-SNAPSHOT</defaultValue>
-        </requiredProperty>
-        <requiredProperty key="package">
-            <defaultValue>com.gitblit.example</defaultValue>
-        </requiredProperty>
         <requiredProperty key="name">
             <defaultValue>Fathom App</defaultValue>
         </requiredProperty>

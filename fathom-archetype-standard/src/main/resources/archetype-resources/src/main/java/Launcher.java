@@ -25,7 +25,7 @@ import fathom.Boot;
  * Run this class as an Application.
  * </p>
  */
-public class App {
+public class Launcher {
 
     public static void main(String... args) {
         try {
