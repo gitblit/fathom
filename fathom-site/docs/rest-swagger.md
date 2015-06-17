@@ -2,8 +2,8 @@
 
 **Fathom-REST-Swagger** integrates [Fathom-REST](rest.md) with [Swagger] to provide you with an easy to use RESTful API specification generator and browser.
 
-!!! Warning
-    The [Swagger] specification is quite detailed.  **Fathom-REST-Swagger** makes a best-effort to provide an excellent [Swagger] experience, but it does not support all aspects of the Swagger specification.
+!!! Note
+    The Swagger specification is quite detailed.  **Fathom-REST-Swagger** makes a best-effort to provide an excellent Swagger experience, but it does not support all aspects of the specification.
 
 ## Installation
 
@@ -15,6 +15,28 @@ Add the **Fathom-REST-Swagger** artifact.
     <artifactId>fathom-rest-swagger</artifactId>
     <version>${fathom.version}</version>
 </dependency>
+```
+
+## Layout
+
+```
+YourApp
+└── src
+    └── main
+        ├── java
+        │   └── controllers
+        │       ├── EmployeeController.java
+        │       └── ItemController.java
+        └── resources
+            └── swagger
+                ├── info.md
+                └── controllers
+                    ├── EmployeeController
+                    │   ├── getEmployee.md
+                    │   └── deleteEmployee.md
+                    └── ItemController
+                        ├── getItem.md
+                        └── deleteItem.md
 ```
 
 ## Configuration
@@ -63,6 +85,7 @@ swagger {
   # Swagger UI and Specification Serving
   ui {
     # Path for serving Swagger UI and Swagger specifications
+    # This path is relative to your application, not swagger.basePath
     #  - Swagger UI served on /{swagger.ui.path}
     #  - JSON specification served on /{swagger.ui.path}/swagger.json
     #  - YAML specification served on /{swagger.ui.path}/swagger.yaml
@@ -80,55 +103,51 @@ swagger {
 
 ## Usage
 
-**Fathom-REST-Swagger** registers a [service](services.md) which will automatically generate & serve Swagger 2.0 specifications in JSON and YAML.  The specifications are generated from the registered Fathom [controller routes](/rest/#controllers).  Non-Controller routes that are directly implemented in the `conf/Routes.java` class are not candidates for inclusion because they lack too much detail.
+**Fathom-REST-Swagger** registers a [service](services.md) which will automatically generate & serve Swagger 2.0 specifications in JSON and YAML.  The specifications are generated from your registered Fathom [controller routes](/rest/#controllers) at runtime.  Routes that are directly implemented in the `conf/Routes.java` class are not considered for inclusion because they lack too much detail.
 
 !!! Note
-    **Only RESTful Fathom controller routes may be used to generate Swagger specifications.**
+    Only **RESTful Fathom Controller Routes** are included in the generated Swagger specifications.
 
 ### RESTful Fathom Controller Routes
 
-[Swagger] is a specification for describing a RESTful API.  Generally, a RESTful API is a collection of http/https urls paired with http methods which generate `application/json`, `application/xml`, and/or `application/x-yaml`.
+A [RESTful] web API is an http/https service that processes resource requests (/employee/5) using [http verbs] (GET, POST, PUT, DELETE, etc).
 
-In order for your Fathom controller route to be registered in your Swagger specification...
+RESTful web APIs typically...
 
-1. the route must declare that it `@Produces` one or more RESTful *content-types*
+- Produce `application/json`, `application/xml`, `application/x-yaml`
+and
+- Consume `application/json`, `application/xml`, `application/x-yaml`, `application/x-www-form-urlencoded`, and/or `multipart/form-data`
+
+In order for a Fathom controller route to be registered in your Swagger specification...
+
+1. the route must declare that it `@Produces` one or more aforementioned *content-types*
 2. the route must specify one of the following http methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`
-3. the route must NOT be annotated with `@Undocumented`
-4. the uri pattern must begin with the configured `swagger.basePath`
+3. the route and it's declaring controller are NOT annotated with `@Undocumented`
+4. the route's uri pattern must begin with the configured `swagger.basePath`
 
 ```java
-// Controller API Method, registered in Swagger specification
+// Controller API Method, REGISTERED in Swagger specification
 @GET("/employee/{id}")
 @Produces({Produces.JSON, Produces.XML})
-public void getEmployee(int id) {
-  Employee employee = employeeDao.get(id);
-  if (employee != null) {
-    getResponse().ok().send(employee);
-  } else {
-    getResponse().notFound();
-  }
+public Employee getEmployee(int id) {
 }
 
-// Controller View Method, NOT registered in Swagger specification
-@GET("/employees/{id}")
+// Controller View Method, NOT REGISTERED in Swagger specification
+@GET("/employee/{id}.html")
 @Produces({Produces.HTML})
 public void getEmployee(int id) {
-  Employee employee = employeeDao.get(id);
-  if (employee != null) {
-    getResponse().bind("employee", employee).render("employee");
-  } else {
-    getResponse().notFound();
-  }
 }
 ```
 
-### Improving the Generated Specification
+## Improving the Generated Specification
 
-Your generated Swagger specification, while functional, can not fully describe your API without some hints from you.
+**Fathom-REST-Swagger** is able to generate a fairly complete Swagger specification from your modestly-documented or well-documented [Fathom-REST](rest.md) controllers.
 
-#### @Tag
+However, there is always room for improvement.  Your generated specification, while functional, can not fully showcase your API without some hints from you.
 
-You may use the `@Tag` annotation to briefly describe a controller.
+### @Tag
+
+You may use the `@Tag` annotation to briefly describe a controller and it's set of methods/operations.  In Swagger, operations are grouped together by their *tag* and those operations share a common base path (*e.g. /api/employee*).
 
 ```java
 @Path("/api/employee")
@@ -138,79 +157,68 @@ public class EmployeeController extends Controller {
 }
 ```
 
-#### @Named
+### @Named
 
-You may use the `@Named` annotation to briefly describe a controller method.
+You may name your controller routes.  This information is used in the *Summary* field of the Swagger specification and may also be used for normal runtime logging of route dispatching.
 
 ```java
 @GET("/{id}")
-@Named("Get an employee")
-public void getEmployee(int id) {
+@Named("Get employee by id")
+public Employee getEmployee(int id) {
   Employee employee = employeeDao.get(id);
-  if (employee != null) {
-    getResponse().ok().send(employee);
-  } else {
-    getResponse().notFound();
-  }
+  return employee;
 }
 ```
 
-#### @Notes
+!!! Note
+    The `@Named` annotation is part of [Fathom-REST](rest.md) and is re-used for Swagger.
 
-The `@Notes` annotation is a flag to load a classpath Markdown resource of notes for the controller method.
+### @Notes
 
-By default, the resource file `classpath:swagger/com/package/controller/method.md` will be loaded and inserted into your specification.
+The `@Notes` annotation adds a brief description to an operation in addition to the `@Named` (*Summary*) information.
+
+You can use `@Notes` to load a classpath resource notes file.  [GFM] syntax may be used.
+These two examples are equivalent for a given controller method.
 
 ```java
 @GET("/{id}")
-@Named("Get an employee")
 @Notes
-public void getEmployee(int id) {
+public Employee getEmployee(int id) {
   Employee employee = employeeDao.get(id);
-  if (employee != null) {
-    getResponse().ok().send(employee);
-  } else {
-    getResponse().notFound();
-  }
+  return employee;
+}
+
+@GET("/{id}")
+@Notes("classpath:swagger/com/package/EmployeeController/getEmployee.md")
+public Employee getEmployee(int id) {
+  Employee employee = employeeDao.get(id);
+  return employee;
 }
 ```
 
-#### @Desc
+Or you may directly specify your note text:
+
+```java
+@Notes("This method requires a valid employee id")
+public Employee getEmployee(int id) {
+  Employee employee = employeeDao.get(id);
+  return employee;
+}
+```
+
+### @Desc
 
 You may use the `@Desc` annotation to briefly describe a controller method parameter.
 
 ```java
 @GET("/{id}")
-@Named("Get an employee")
-@Notes
-public void getEmployee(@Desc("employee id") int id) {
+public Employee getEmployee(@Desc("employee id") int id) {
   Employee employee = employeeDao.get(id);
-  if (employee != null) {
-    getResponse().ok().send(employee);
-  } else {
-    getResponse().notFound();
-  }
+  return employee;
 }
 ```
 
-#### @ResponseCode
-
-You may use the `@ResponseCode` annotation to briefly describe a response message.
-
-```java
-@GET("/{id}")
-@ResponseCode(code=404, message="Employee not found")
-public void getEmployee(@Desc("employee id") int id) {
-  Employee employee = employeeDao.get(id);
-  if (employee != null) {
-    getResponse().ok().send(employee);
-  } else {
-    getResponse().notFound();
-  }
-}
-```
-
-#### @Form
+### @Form
 
 Specify the `@Form` annotation to indicate that a method argument is sourced from a form.
 
@@ -224,4 +232,25 @@ public void uploadAvatar(
 }
 ```
 
+### @Return
+
+You may use the `@Return` annotation to briefly describe method-specific responses.
+
+```java
+@GET("/{id}")
+@Return(status = 200, description = "Employee retrieved", onResult = Employee.class)
+@Return(status = 404, description = "Employee not found", onResult = Void.class)
+public Employee getEmployee(@Desc("employee id") int id) {
+  Employee employee = employeeDao.get(id);
+  return employee;
+}
+```
+
+!!! Note
+    The `@Return` annotation is part of [Fathom-REST](rest.md) and is more thoroughly documented in that module.
+
+
 [Swagger]: http://swagger.io
+[RESTful]: https://en.wikipedia.org/wiki/Representational_state_transfer
+[http verbs]: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
+[GFM]: https://help.github.com/articles/github-flavored-markdown/

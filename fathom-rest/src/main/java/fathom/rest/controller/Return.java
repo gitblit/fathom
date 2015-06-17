@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fathom.rest.swagger;
+package fathom.rest.controller;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
@@ -23,45 +23,29 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Describes a possible response of an operation.
- * <p/>
- * This can be used to describe possible success and error codes from your REST
- * API call. You may or may not use this to describe the return type of the
- * operation (normally a successful code), but the successful response should be
- * described as well using the {@link Named}.
- * <p/>
- * If your API has uses a different response class for these responses, you can
- * describe them here by associating a response class with a response code.
- * Note, Swagger does not allow multiple response types for a single response
- * code.
- * <p/>
- * This annotation is not used directly and will not be parsed by Swagger. It
- * should be used within the {@link ResponseCodes}.
- *
- * @see ResponseCodes
+ * Describes a possible response of a controller method.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(ResponseCodes.class)
-public @interface ResponseCode {
+@Repeatable(Returns.class)
+public @interface Return {
     /**
      * The HTTP status code of the response.
-     * <p/>
+     * <p>
      * The value should be one of the formal <a target="_blank"
      * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP Status
      * Code Definitions</a>.
      */
-    int code();
+    int status();
 
     /**
-     * Human-readable message to accompany the response.
+     * Human-readable description to accompany a response.
      */
-    String message();
+    String description() default "";
 
     /**
-     * Optional response class to describe the payload of the message.
-     * <p/>
-     * Corresponds to the `responseModel` field of the response message object.
+     * Describes an expected result type or a expected thrown exception.
      */
-    Class<?> returns() default Void.class;
+    Class<?> onResult() default Void.class;
+
 }

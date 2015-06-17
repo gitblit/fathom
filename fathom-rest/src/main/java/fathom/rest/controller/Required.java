@@ -13,32 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fathom.rest.controller;
 
-package models.petstore;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import fathom.rest.swagger.Desc;
-import fathom.rest.swagger.Example;
-
-import javax.validation.constraints.NotNull;
-
-@fathom.rest.swagger.Tag(name = "Pet", description = "")
-public class Pet {
-
-    @Desc("unique identifier for the pet")
-    public long id;
-
-    public Category category;
-
-    @Example("doggie")
-    @NotNull
-    public String name;
-
-    @NotNull
-    public String[] photoUrls;
-
-    public Tag[] tags;
-
-    @Desc("pet status in the store")
-    public PetStatus status;
-
+/**
+ * Annotation to indicate a parameter or field is required and may not be null.
+ *
+ * @author James Moger
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+public @interface Required {
 }

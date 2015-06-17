@@ -21,20 +21,22 @@ import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Header;
 import fathom.rest.controller.Named;
+import fathom.rest.controller.Required;
 import fathom.rest.controller.POST;
 import fathom.rest.controller.PUT;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
+import fathom.rest.controller.Range;
+import fathom.rest.controller.Return;
+import fathom.rest.controller.exceptions.RangeException;
+import fathom.rest.controller.exceptions.ValidationException;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Form;
 import fathom.rest.swagger.Notes;
-import fathom.rest.swagger.ResponseCode;
 import fathom.rest.swagger.Tag;
 import models.petstore.Pet;
 import models.petstore.PetStatus;
 import ro.pippo.core.FileItem;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * Implementation of the Swagger Petstore /pet API.
@@ -48,16 +50,18 @@ public class PetController extends ApiV2 {
 
     @PUT
     @Named("Update an existing pet")
-    @ResponseCode(code = 400, message = "Invalid ID supplied")
-    @ResponseCode(code = 404, message = "Pet not found")
-    @ResponseCode(code = 405, message = "Validation exception")
+    @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
+    @Return(status = 404, description = "Pet not found")
+    @Return(status = 405, description = "Validation exception", onResult = ValidationException.class)
     public void updatePet(@Desc("Pet object that needs to be updated in the store") @Body Pet pet) {
-        getResponse().ok();
+        if (pet.id < 1 || pet.id > 5) {
+            throw new RangeException();
+        }
     }
 
     @POST
     @Named("Add a new pet to the store")
-    @ResponseCode(code = 405, message = "Invalid input")
+    @Return(status = 405, description = "Invalid input", onResult = ValidationException.class)
     public void addPet(@Desc("Pet object that needs to be added to the store") @Body Pet pet) {
         getResponse().ok();
     }
@@ -65,26 +69,29 @@ public class PetController extends ApiV2 {
     @GET("/findByStatus")
     @Named("Finds pets by status")
     @Notes
-    @ResponseCode(code = 200, message = "Successful operation", returns = Pet[].class)
-    @ResponseCode(code = 400, message = "Invalid status value")
-    public void findPetsByStatus(@Desc("Status values that need to be considered for filter") @NotNull PetStatus[] status) {
-        getResponse().ok().send(status);
+    @Return(status = 200, description = "Successful operation", onResult = Pet[].class)
+    @Return(status = 400, description = "Invalid status value", onResult = ValidationException.class)
+    public Pet[] findPetsByStatus(@Desc("Status values that need to be considered for filter") @Required PetStatus[] status) {
+        Pet[] pets = new Pet[0];
+        return pets;
     }
 
     @GET("/findByTags")
     @Named("Finds pets by tags")
     @Notes
-    @ResponseCode(code = 200, message = "Successful operation", returns = Pet[].class)
-    @ResponseCode(code = 400, message = "Invalid tag value")
-    public void findPetsByTags(@Desc("Tags to filter by") @NotNull String[] tag) {
-        getResponse().ok().send(tag);
+    @Return(status = 200, description = "Successful operation", onResult = Pet[].class)
+    @Return(status = 400, description = "Invalid tag value", onResult = ValidationException.class)
+    public Pet[] findPetsByTags(@Desc("Tags to filter by") @Required String[] tag) {
+        Pet[] pets = new Pet[0];
+        return pets;
     }
 
     @POST("/{petId}")
     @Named("Updates a pet in the store with form data")
-    @ResponseCode(code = 405, message = "Invalid input")
+    @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
+    @Return(status = 405, description = "Invalid input", onResult = ValidationException.class)
     public void updatePetWithForm(
-            @Desc("ID of pet that needs to be updated") long petId,
+            @Desc("ID of pet that needs to be updated") @Range(min = 1, max = 5) long petId,
             @Desc("Updated name of the pet") @Form String name,
             @Desc("Updated status of the pet") @Form PetStatus status) {
         getResponse().ok();
@@ -92,19 +99,19 @@ public class PetController extends ApiV2 {
 
     @DELETE("/{petId}")
     @Named("Deletes a pet")
-    @ResponseCode(code = 400, message = "Invalid pet value")
-    public void deletePet(@Desc("Pet id to delete") long petId, @Header String api_key) {
-        getResponse().ok();
+    @Return(status = 400, description = "Invalid pet id", onResult = RangeException.class)
+    public void deletePet(@Desc("Pet id to delete") @Range(min = 1, max = 5) long petId, @Header String api_key) {
     }
 
     @GET("/{petId}")
     @Named("Finds pet by ID")
     @Notes
-    @ResponseCode(code = 200, message = "Successful operation", returns = Pet.class)
-    @ResponseCode(code = 400, message = "Invalid ID supplied value")
-    @ResponseCode(code = 404, message = "Pet not found")
-    public void getPetById(@Desc("ID of pet that needs to be fetched") long petId) {
-        getResponse().ok();
+    @Return(status = 200, description = "Successful operation", onResult = Pet.class)
+    @Return(status = 400, description = "Invalid ID supplied value", onResult = RangeException.class)
+    @Return(status = 404, description = "Pet not found")
+    public Pet getPetById(@Desc("ID of pet that needs to be fetched") @Range(min = 1, max = 5) long petId) {
+        Pet pet = new Pet();
+        return pet;
     }
 
     @POST("/{petId}/uploadImage")

@@ -19,17 +19,21 @@ package fathom.rest.swagger;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.io.CharStreams;
 import fathom.conf.Settings;
-import fathom.exception.FathomException;
 import fathom.rest.RestServlet;
 import fathom.rest.controller.Auth;
 import fathom.rest.controller.Body;
+import fathom.rest.controller.Controller;
 import fathom.rest.controller.ControllerHandler;
 import fathom.rest.controller.Header;
 import fathom.rest.controller.Local;
-import fathom.rest.controller.Param;
+import fathom.rest.controller.Max;
+import fathom.rest.controller.Min;
 import fathom.rest.controller.Produces;
+import fathom.rest.controller.Range;
+import fathom.rest.controller.Required;
+import fathom.rest.controller.Return;
+import fathom.rest.controller.Returns;
 import fathom.rest.controller.Session;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
@@ -70,24 +74,17 @@ import io.swagger.models.properties.UUIDProperty;
 import io.swagger.util.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.Error;
 import ro.pippo.core.FileItem;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -101,7 +98,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * SwaggerBuilder builds a Swagger specification from your registered Controller Routes.
  *
  * @author James Moger
@@ -152,7 +148,7 @@ public class SwaggerBuilder {
         Info info = new Info();
         info.setTitle(settings.getString("swagger.info.title", settings.getApplicationName()));
         info.setVersion(settings.getString("swagger.info.version", settings.getApplicationVersion()));
-        info.setDescription(loadStringResource(settings.getFileUrl("swagger.info.description", "classpath:swagger/info.md")));
+        info.setDescription(ClassUtil.loadStringResource(settings.getFileUrl("swagger.info.description", "classpath:swagger/info.md")));
 
         // api support contact
         Contact contact = new Contact();
@@ -212,7 +208,7 @@ public class SwaggerBuilder {
             if (route.getRouteHandler() instanceof ControllerHandler) {
                 ControllerHandler handler = (ControllerHandler) route.getRouteHandler();
                 if (canRegister(route, handler)) {
-                    registerHandler(swagger, route, handler);
+                    registerOperation(swagger, route, handler);
                 }
             }
         }
@@ -235,7 +231,7 @@ public class SwaggerBuilder {
             return false;
         }
 
-        List<String> produces = getProduces(handler);
+        List<String> produces = SwaggerUtil.getProduces(handler);
         if (produces == null || produces.isEmpty()) {
             log.debug("Skip {} {}, {} does not generate RESTful API content",
                     route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()));
@@ -268,36 +264,21 @@ public class SwaggerBuilder {
         return true;
     }
 
-    /**
-     * Extracts the declared Produced content-types from the method and/or controller class.
-     *
-     * @param handler
-     * @return the list of produced content-types for the method
-     */
-    protected List<String> getProduces(ControllerHandler handler) {
-        if (handler.getControllerMethod().isAnnotationPresent(Produces.class)) {
-            Produces produces = handler.getControllerMethod().getAnnotation(Produces.class);
-            return new ArrayList<>(Arrays.asList(produces.value()));
-        } else if (handler.getControllerMethod().getDeclaringClass().isAnnotationPresent(Produces.class)) {
-            Produces produces = handler.getControllerMethod().getDeclaringClass().getAnnotation(Produces.class);
-            return new ArrayList<>(Arrays.asList(produces.value()));
-        }
-        return null;
-    }
 
     /**
-     * Registers a ControllerHandler as a Swagger Path.
+     * Registers a ControllerHandler as a Swagger Operation.
+     * If the path for the operation is unrecognized, a new Swagger Path is created.
      *
      * @param swagger
      * @param route
      * @param handler
      */
-    protected void registerHandler(Swagger swagger, Route route, ControllerHandler handler) {
+    protected void registerOperation(Swagger swagger, Route route, ControllerHandler handler) {
 
+        Class<? extends Controller> controller = handler.getControllerClass();
         Method method = handler.getControllerMethod();
-        Class<?> controller = method.getDeclaringClass();
 
-        List<String> produces = getProduces(handler);
+        List<String> produces = SwaggerUtil.getProduces(handler);
 
         Operation operation = new Operation();
         if (Strings.isNullOrEmpty(route.getName())) {
@@ -315,7 +296,7 @@ public class SwaggerBuilder {
 
         registerResponses(swagger, operation, method);
 
-        Tag tag = getTag(controller);
+        Tag tag = SwaggerUtil.getTag(controller);
         if (tag == null) {
             operation.addTag(controller.getSimpleName());
         } else {
@@ -334,43 +315,69 @@ public class SwaggerBuilder {
                 route.getRequestMethod(), operationPath, Util.toString(method));
     }
 
+    /**
+     * Registers the declared responses for the operation.
+     *
+     * @param swagger
+     * @param operation
+     * @param method
+     */
     protected void registerResponses(Swagger swagger, Operation operation, Method method) {
-        if (method.isAnnotationPresent(ResponseCodes.class)) {
-            ResponseCodes responseCodes = method.getAnnotation(ResponseCodes.class);
-            for (ResponseCode responseCode : responseCodes.value()) {
-                registerResponse(swagger, operation, responseCode);
+        if (method.isAnnotationPresent(Returns.class)) {
+            Returns returns = method.getAnnotation(Returns.class);
+            for (Return aReturn : returns.value()) {
+                registerResponse(swagger, operation, aReturn);
             }
-        } else if (method.isAnnotationPresent(ResponseCode.class)) {
-            ResponseCode responseCode = method.getAnnotation(ResponseCode.class);
-            registerResponse(swagger, operation, responseCode);
+        } else if (method.isAnnotationPresent(Return.class)) {
+            Return aReturn = method.getAnnotation(Return.class);
+            registerResponse(swagger, operation, aReturn);
         }
     }
 
-    protected void registerResponse(Swagger swagger, Operation operation, ResponseCode responseCode) {
+    /**
+     * Registers a declared response for the operation.
+     *
+     * @param swagger
+     * @param operation
+     * @param aReturn
+     */
+    protected void registerResponse(Swagger swagger, Operation operation, Return aReturn) {
         Response response = new Response();
-        response.setDescription(responseCode.message());
+        response.setDescription(aReturn.description());
 
-        if (responseCode.returns() != Void.class) {
+        Class<?> resultType = aReturn.onResult();
+        if (Exception.class.isAssignableFrom(resultType)) {
+            resultType = Error.class;
+        }
+
+        if (Void.class != resultType) {
             // Return type
-            if (responseCode.returns().isArray()) {
+            if (resultType.isArray()) {
                 // ARRAY[]
-                Class<?> componentClass = responseCode.returns().getComponentType();
+                Class<?> componentClass = resultType.getComponentType();
                 ArrayProperty arrayProperty = new ArrayProperty();
                 Property componentProperty = getSwaggerProperty(swagger, componentClass);
                 arrayProperty.setItems(componentProperty);
                 response.setSchema(arrayProperty);
             } else {
                 // Object
-                Property returnProperty = getSwaggerProperty(swagger, responseCode.returns());
+                Property returnProperty = getSwaggerProperty(swagger, resultType);
                 response.setSchema(returnProperty);
             }
         }
 
-        operation.response(responseCode.code(), response);
+        operation.response(aReturn.status(), response);
     }
 
+    /**
+     * Registers a custom object model with Swagger. A model is only registered once.
+     *
+     * @param swagger
+     * @param modelClass
+     * @return the Swagger ref of the model
+     */
     protected String registerModel(Swagger swagger, Class<?> modelClass) {
-        final Tag modelTag = getModelRef(modelClass);
+        final Tag modelTag = SwaggerUtil.getModelRef(modelClass);
         final String ref = modelTag.getName();
 
         if (swagger.getDefinitions() != null && swagger.getDefinitions().containsKey(ref)) {
@@ -404,7 +411,7 @@ public class SwaggerBuilder {
             } else {
                 property = getSwaggerProperty(swagger, fieldType);
             }
-            property.setRequired(field.isAnnotationPresent(NotNull.class));
+            property.setRequired(field.isAnnotationPresent(Required.class));
 
             if (field.isAnnotationPresent(Desc.class)) {
                 Desc desc = field.getAnnotation(Desc.class);
@@ -423,19 +430,15 @@ public class SwaggerBuilder {
         return ref;
     }
 
-    protected Tag getModelRef(Class<?> modelClass) {
-        if (modelClass.isAnnotationPresent(fathom.rest.swagger.Tag.class)) {
-            fathom.rest.swagger.Tag annotation = modelClass.getAnnotation(fathom.rest.swagger.Tag.class);
-            Tag tag = new Tag();
-            tag.setName(Optional.fromNullable(Strings.emptyToNull(annotation.name())).or(modelClass.getSimpleName()));
-            tag.setDescription(annotation.description());
-            return tag;
-        }
-        Tag tag = new Tag();
-        tag.setName(modelClass.getName());
-        return tag;
-    }
-
+    /**
+     * Register an Operation's parameters.
+     *
+     * @param swagger
+     * @param operation
+     * @param route
+     * @param method
+     * @return the registered Swagger URI for the operation
+     */
     protected String registerParameters(Swagger swagger, Operation operation, Route route, Method method) {
         Map<String, Object> pathParameterPlaceholders = new HashMap<>();
         for (String uriParameterName : getUriParameterNames(route.getUriPattern())) {
@@ -450,18 +453,10 @@ public class SwaggerBuilder {
             pathParameterPlaceholders.put(uriParameterName, "{" + uriParameterName + "}");
         }
 
-        // identify query/form parameters
-        for (int i = 0; i < method.getParameterCount(); i++) {
-            Parameter methodParameter = method.getParameters()[i];
+        // identify body, header, query, & form parameters
+        for (Parameter methodParameter : method.getParameters()) {
 
-            // identify parameter name and pattern from method signature
-            String methodParameterName = methodParameter.getName();
-            if (methodParameter.isAnnotationPresent(Param.class)) {
-                Param param = methodParameter.getAnnotation(Param.class);
-                if (!Strings.isNullOrEmpty(param.value())) {
-                    methodParameterName = param.value();
-                }
-            }
+            String methodParameterName = SwaggerUtil.getParameterName(methodParameter);
 
             if (pathParameterPlaceholders.containsKey(methodParameterName)) {
                 // path parameter already accounted for
@@ -469,14 +464,17 @@ public class SwaggerBuilder {
             }
 
             if (methodParameter.isAnnotationPresent(Local.class)) {
+                // ignore parameter
                 continue;
             }
 
             if (methodParameter.isAnnotationPresent(Session.class)) {
+                // ignore parameter
                 continue;
             }
 
             if (methodParameter.isAnnotationPresent(Auth.class)) {
+                // ignore parameter
                 continue;
             }
 
@@ -485,7 +483,7 @@ public class SwaggerBuilder {
                 // BODY
                 BodyParameter bodyParameter = new BodyParameter();
                 bodyParameter.setName(methodParameterName);
-                bodyParameter.setDescription(getDescription(methodParameter));
+                bodyParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
                 bodyParameter.setRequired(true);
 
                 if (methodParameter.getType().isArray()) {
@@ -496,7 +494,8 @@ public class SwaggerBuilder {
                     bodyParameter.setSchema(arrayModel);
                 } else if (Collection.class.isAssignableFrom(methodParameter.getType())) {
                     // COLLECTION
-                    Property property = getSwaggerProperty(swagger, getParameterGenericType(method, i));
+                    Class<?> componentClass = ClassUtil.getParameterGenericType(method, methodParameter);
+                    Property property = getSwaggerProperty(swagger, componentClass);
                     ArrayModel arrayModel = new ArrayModel();
                     arrayModel.setItems(property);
                     bodyParameter.setSchema(arrayModel);
@@ -522,7 +521,7 @@ public class SwaggerBuilder {
                     headerParameter.setName(header.value());
                 }
 
-                headerParameter.setDescription(getDescription(methodParameter));
+                headerParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
                 setPropertyType(swagger, headerParameter, method);
 
                 operation.addParameter(headerParameter);
@@ -532,7 +531,7 @@ public class SwaggerBuilder {
                 // FORM
                 FormParameter formParameter = new FormParameter();
                 formParameter.setName(methodParameterName);
-                formParameter.setDescription(getDescription(methodParameter));
+                formParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
                 setPropertyType(swagger, formParameter, method);
 
                 operation.addParameter(formParameter);
@@ -550,7 +549,7 @@ public class SwaggerBuilder {
                 // QUERY
                 QueryParameter queryParameter = new QueryParameter();
                 queryParameter.setName(methodParameterName);
-                queryParameter.setDescription(getDescription(methodParameter));
+                queryParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
                 setPropertyType(swagger, queryParameter, method);
 
                 operation.addParameter(queryParameter);
@@ -564,77 +563,11 @@ public class SwaggerBuilder {
         return swaggerUri;
     }
 
-    protected Tag getTag(Class<?> controllerClass) {
-        if (controllerClass.isAnnotationPresent(fathom.rest.swagger.Tag.class)) {
-            fathom.rest.swagger.Tag annotation = controllerClass.getAnnotation(fathom.rest.swagger.Tag.class);
-            Tag tag = new Tag();
-            tag.setName(Optional.fromNullable(Strings.emptyToNull(annotation.name())).or(controllerClass.getSimpleName()));
-            tag.setDescription(annotation.description());
-
-            if (!Strings.isNullOrEmpty(annotation.externalDocs())) {
-                ExternalDocs docs = new ExternalDocs();
-                docs.setUrl(annotation.externalDocs());
-                tag.setExternalDocs(docs);
-            }
-
-            if (!Strings.isNullOrEmpty(tag.getDescription())) {
-                return tag;
-            }
-        }
-        return null;
-    }
-
-    protected String getDescription(Parameter parameter) {
-        if (parameter.isAnnotationPresent(Desc.class)) {
-            Desc annotation = parameter.getAnnotation(Desc.class);
-            return annotation.value();
-        }
-        return null;
-    }
-
-    protected String getNotes(Method method) {
-        if (method.isAnnotationPresent(Notes.class)) {
-            Notes notes = method.getAnnotation(Notes.class);
-            String resource = "classpath:swagger/" + method.getDeclaringClass().getName().replace('.', '/')
-                    + "/" + method.getName() + ".md";
-            if (!Strings.isNullOrEmpty(notes.value())) {
-                resource = notes.value();
-            }
-
-            String content = loadStringResource(resource);
-            if (Strings.isNullOrEmpty(content)) {
-                log.error("'{}' specifies @{} but '{}' was not found!",
-                        Util.toString(method), Notes.class.getSimpleName(), resource);
-            }
-            return content;
-        }
-        return null;
-    }
-
-    protected List<String> getUriParameterNames(String uriPattern) {
-        ArrayList list = new ArrayList();
-        Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(uriPattern);
-
-        while (matcher.find()) {
-            list.add(matcher.group(1));
-        }
-
-        return list;
-    }
-
     protected void setPropertyType(Swagger swagger, AbstractSerializableParameter swaggerParameter, Method method) {
 
-        for (int i = 0; i < method.getParameterCount(); i++) {
-            Parameter methodParameter = method.getParameters()[i];
+        for (Parameter methodParameter : method.getParameters()) {
 
-            // identify parameter name and pattern from method signature
-            String methodParameterName = methodParameter.getName();
-            if (methodParameter.isAnnotationPresent(Param.class)) {
-                Param param = methodParameter.getAnnotation(Param.class);
-                if (!Strings.isNullOrEmpty(param.value())) {
-                    methodParameterName = param.value();
-                }
-            }
+            String methodParameterName = SwaggerUtil.getParameterName(methodParameter);
 
             if (methodParameterName.equals(swaggerParameter.getName())) {
                 // determine Swagger property from type of method parameter
@@ -648,7 +581,8 @@ public class SwaggerBuilder {
                     swaggerProperty = arrayProperty;
                 } else if (Collection.class.isAssignableFrom(parameterClass)) {
                     // COLLECTIONS
-                    Property componentProperty = getSwaggerProperty(swagger, getParameterGenericType(method, i));
+                    Class<?> componentClass = ClassUtil.getParameterGenericType(method, methodParameter);
+                    Property componentProperty = getSwaggerProperty(swagger, componentClass);
                     ArrayProperty arrayProperty = new ArrayProperty(componentProperty);
                     arrayProperty.setUniqueItems(Set.class.isAssignableFrom(parameterClass));
                     swaggerProperty = arrayProperty;
@@ -658,8 +592,8 @@ public class SwaggerBuilder {
                 }
 
                 if (swaggerProperty != null) {
-                    swaggerParameter.setDescription(getDescription(methodParameter));
-                    swaggerParameter.setRequired(isRequired(methodParameter));
+                    swaggerParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
+                    swaggerParameter.setRequired(SwaggerUtil.isRequired(methodParameter));
                     swaggerParameter.setProperty(swaggerProperty);
 
                     if (swaggerProperty instanceof StringProperty) {
@@ -670,141 +604,139 @@ public class SwaggerBuilder {
                     }
 
                     if (swaggerProperty instanceof AbstractNumericProperty) {
+
                         AbstractNumericProperty numericProperty = (AbstractNumericProperty) swaggerProperty;
                         if (methodParameter.isAnnotationPresent(Min.class)) {
                             Min min = methodParameter.getAnnotation(Min.class);
                             numericProperty.setMinimum((double) min.value());
                         }
+
                         if (methodParameter.isAnnotationPresent(Max.class)) {
-                            Max max= methodParameter.getAnnotation(Max.class);
+                            Max max = methodParameter.getAnnotation(Max.class);
                             numericProperty.setMaximum((double) max.value());
                         }
+
+                        if (methodParameter.isAnnotationPresent(Range.class)) {
+                            Range range = methodParameter.getAnnotation(Range.class);
+                            numericProperty.setMinimum((double) range.min());
+                            numericProperty.setMaximum((double) range.max());
+                        }
                     }
+
                     break;
                 }
             }
         }
     }
 
-    protected Class<?> getParameterGenericType(Method method, int i) {
-        Type parameterType = method.getGenericParameterTypes()[i];
-        if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
-            throw new FathomException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
-                    method.getParameterTypes()[i].getName(), i, Util.toString(method));
-        }
-
-        ParameterizedType parameterizedType = (ParameterizedType) parameterType;
-        try {
-            Class<?> genericClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-            return genericClass;
-        } catch (ClassCastException e) {
-            throw new FathomException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
-                    method.getParameterTypes()[i].getName(), i, Util.toString(method));
-        }
-    }
-
-    protected boolean isRequired(Parameter parameter) {
-        return parameter.isAnnotationPresent(Body.class)
-                || parameter.isAnnotationPresent(NotNull.class);
-    }
-
-    protected Property getSwaggerProperty(Swagger swagger, Class<?> parameterClass) {
+    /**
+     * Returns the appropriate Swagger Property instance for a given object class.
+     *
+     * @param swagger
+     * @param objectClass
+     * @return a SwaggerProperty instance
+     */
+    protected Property getSwaggerProperty(Swagger swagger, Class<?> objectClass) {
         Property swaggerProperty = null;
-        if (byte.class == parameterClass || Byte.class == parameterClass) {
+        if (byte.class == objectClass || Byte.class == objectClass) {
             // STRING
             swaggerProperty = new StringProperty("byte");
-        } else if (char.class == parameterClass || Character.class == parameterClass) {
+        } else if (char.class == objectClass || Character.class == objectClass) {
             // CHAR is STRING LEN 1
             StringProperty property = new StringProperty();
             property.setMaxLength(1);
             swaggerProperty = property;
-        } else if (short.class == parameterClass || Short.class == parameterClass) {
+        } else if (short.class == objectClass || Short.class == objectClass) {
             // SHORT is INTEGER with 16-bit max & min
             IntegerProperty property = new IntegerProperty();
             property.setMinimum((double) Short.MIN_VALUE);
             property.setMaximum((double) Short.MAX_VALUE);
             swaggerProperty = property;
-        } else if (int.class == parameterClass || Integer.class == parameterClass) {
+        } else if (int.class == objectClass || Integer.class == objectClass) {
             // INTEGER
             swaggerProperty = new IntegerProperty();
-        } else if (long.class == parameterClass || Long.class == parameterClass) {
+        } else if (long.class == objectClass || Long.class == objectClass) {
             // LONG
             swaggerProperty = new LongProperty();
-        } else if (float.class == parameterClass || Float.class == parameterClass) {
+        } else if (float.class == objectClass || Float.class == objectClass) {
             // FLOAT
             swaggerProperty = new FloatProperty();
-        } else if (double.class == parameterClass || Double.class == parameterClass) {
+        } else if (double.class == objectClass || Double.class == objectClass) {
             // DOUBLE
             swaggerProperty = new DoubleProperty();
-        } else if (BigDecimal.class == parameterClass) {
+        } else if (BigDecimal.class == objectClass) {
             // DECIMAL
             swaggerProperty = new DecimalProperty();
-        } else if (boolean.class == parameterClass || Boolean.class == parameterClass) {
+        } else if (boolean.class == objectClass || Boolean.class == objectClass) {
             // BOOLEAN
             swaggerProperty = new BooleanProperty();
-        } else if (String.class == parameterClass) {
+        } else if (String.class == objectClass) {
             // STRING
             swaggerProperty = new StringProperty();
-        } else if (Date.class == parameterClass) {
+        } else if (Date.class == objectClass) {
             // DATETIME
             DateTimeProperty property = new DateTimeProperty();
             swaggerProperty = property;
-        } else if (java.sql.Date.class == parameterClass) {
+        } else if (java.sql.Date.class == objectClass) {
             // DATE
             DateProperty property = new DateProperty();
             swaggerProperty = property;
-        } else if (UUID.class == parameterClass) {
+        } else if (UUID.class == objectClass) {
             // UUID
             swaggerProperty = new UUIDProperty();
-        } else if (parameterClass.isEnum()) {
+        } else if (objectClass.isEnum()) {
             // ENUM
             StringProperty property = new StringProperty();
             List<String> enumValues = new ArrayList<>();
-            for (Object enumValue : parameterClass.getEnumConstants()) {
+            for (Object enumValue : objectClass.getEnumConstants()) {
                 enumValues.add(((Enum) enumValue).name());
             }
             property.setEnum(enumValues);
             swaggerProperty = property;
-        } else if (FileItem.class == parameterClass) {
+        } else if (FileItem.class == objectClass) {
             // FILE UPLOAD
             FileProperty property = new FileProperty();
             swaggerProperty = property;
         } else {
             // Register a Model class
-            String modelRef = registerModel(swagger, parameterClass);
+            String modelRef = registerModel(swagger, objectClass);
             swaggerProperty = new RefProperty(modelRef);
         }
         return swaggerProperty;
     }
 
-    protected String loadStringResource(String resource) {
-        try {
-            URL url;
-            if (resource.startsWith("classpath:")) {
-                url = ClassUtil.getResource(resource.substring("classpath:".length()));
-            } else if (resource.startsWith("url:")) {
-                url = new URL(resource.substring("url:".length()));
-            } else if (resource.startsWith("file:")) {
-                url = new URL(resource.substring("file:".length()));
-            } else {
-                url = new URL(resource);
+    protected String getNotes(Method method) {
+        if (method.isAnnotationPresent(Notes.class)) {
+            Notes notes = method.getAnnotation(Notes.class);
+            String resource = "classpath:swagger/" + method.getDeclaringClass().getName().replace('.', '/')
+                    + "/" + method.getName() + ".md";
+            if (!Strings.isNullOrEmpty(notes.value())) {
+                resource = notes.value();
             }
-            return loadStringResource(url);
-        } catch (IOException e) {
-            throw new FathomException(e, "Failed to read String resource from '{}'", resource);
+
+            if (resource.startsWith("classpath:")) {
+                String content = ClassUtil.loadStringResource(resource);
+                if (Strings.isNullOrEmpty(content)) {
+                    log.error("'{}' specifies @{} but '{}' was not found!",
+                            Util.toString(method), Notes.class.getSimpleName(), resource);
+                }
+                return content;
+            } else {
+                return resource;
+            }
         }
+        return null;
     }
 
-    protected String loadStringResource(URL resourceUrl) {
-        String content = null;
-        if (resourceUrl != null) {
-            try {
-                content = CharStreams.toString(new InputStreamReader(resourceUrl.openStream()));
-            } catch (IOException e) {
-                log.error("Failed to read String resource from {}", resourceUrl, e);
-            }
+    protected List<String> getUriParameterNames(String uriPattern) {
+        ArrayList list = new ArrayList();
+        Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(uriPattern);
+
+        while (matcher.find()) {
+            list.add(matcher.group(1));
         }
-        return content;
+
+        return list;
     }
 
 }

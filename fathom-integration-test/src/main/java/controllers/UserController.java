@@ -24,10 +24,13 @@ import fathom.rest.controller.POST;
 import fathom.rest.controller.PUT;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
+import fathom.rest.controller.Return;
+import fathom.rest.controller.exceptions.RequiredException;
+import fathom.rest.controller.exceptions.ValidationException;
 import fathom.rest.swagger.Desc;
+import fathom.rest.swagger.Form;
 import fathom.rest.swagger.Notes;
 import fathom.rest.swagger.Password;
-import fathom.rest.swagger.ResponseCode;
 import fathom.rest.swagger.Tag;
 import models.petstore.User;
 
@@ -47,65 +50,63 @@ public class UserController extends ApiV2 {
     @POST("/createWithArray")
     @Named("Create list of users with given input array")
     public void createUsersWithArrayInput(@Desc("List of User object") @Body User[] users) {
-        getResponse().ok();
     }
 
     @POST("/createWithList")
     @Named("Create list of users with given input array")
     public void createUsersWithListInput(@Desc("List of User object") @Body List<User> users) {
-        getResponse().ok();
     }
 
     @PUT("/{username}")
     @Named("Update user")
     @Notes("classpath:swagger/controllers/UserController/note.md")
-    @ResponseCode(code = 400, message = "Invalid username supplied")
-    @ResponseCode(code = 404, message = "User not found")
+    @Return(status = 400, description = "Invalid username supplied", onResult = RequiredException.class)
+    @Return(status = 404, description = "User not found")
     public void updateUser(@Desc("Username of User to be updated") @NotNull String username,
                            @Desc("Updated User object") @Body User user) {
-        getResponse().ok();
     }
 
     @DELETE("/{username}")
     @Named("Delete user")
     @Notes("classpath:swagger/controllers/UserController/note.md")
-    @ResponseCode(code = 400, message = "Invalid username supplied")
-    @ResponseCode(code = 404, message = "User not found")
+    @Return(status = 400, description = "Invalid username supplied", onResult = RequiredException.class)
+    @Return(status = 404, description = "User not found")
     public void deleteUser(@Desc("Username of User to be deleted") @NotNull String username) {
-        getResponse().ok();
     }
 
     @GET("/{username}")
     @Named("Get user by username")
-    @ResponseCode(code = 200, message = "User", returns = User.class)
-    @ResponseCode(code = 400, message = "Invalid username supplied")
-    @ResponseCode(code = 404, message = "User not found")
-    public void getUserByName(@Desc("Username of User to be fetched. Use user1 for testing.") @NotNull String username) {
-        getResponse().ok();
+    @Return(status = 200, description = "User", onResult = User.class)
+    @Return(status = 400, description = "Invalid username supplied", onResult = RequiredException.class)
+    @Return(status = 404, description = "User not found")
+    public User getUserByName(@Desc("Username of User to be fetched. Use user1 for testing.") @NotNull String username) {
+        User user = new User();
+        return user;
     }
 
-    @GET("/login")
-    @Named("Logs user into the system")
-    @ResponseCode(code = 200, message = "Invalid username and password combination", returns = String.class)
-    @ResponseCode(code = 400, message = "Invalid username and password combination")
-    public void loginUser(@Desc("The Username for login") @NotNull String username,
-                          @Desc("The password for login in clear text") @Password @NotNull String password) {
-        getResponse().ok();
+    @POST("/login")
+    @Named("Log user into the system")
+    @Return(status = 200, description = "User logged in", onResult = String.class)
+    @Return(status = 400, description = "Invalid credentials", onResult = ValidationException.class)
+    public String loginUser(@Desc("The Username for login") @NotNull @Form String username,
+                          @Desc("The password for login in clear text") @Form @Password @NotNull String password) {
+        if (username.equals(password)) {
+            return "Welcome!";
+        }
+        throw new ValidationException();
     }
 
-    @GET("/logout")
-    @Named("Logs out current logged in user session")
+    @POST("/logout")
+    @Named("Log user out of the system")
     public void logoutUser() {
-        getResponse().ok();
     }
 
     @POST("/")
     @Named("Create user")
     @Notes("classpath:swagger/controllers/UserController/note.md")
-    @ResponseCode(code = 400, message = "Invalid username supplied")
-    @ResponseCode(code = 404, message = "User not found")
+    @Return(status = 400, description = "Invalid username supplied", onResult = RequiredException.class)
+    @Return(status = 404, description = "User not found")
     public void createUser(@Desc("User object to create") @Body User user) {
-        getResponse().ok();
     }
 
 }

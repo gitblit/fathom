@@ -22,6 +22,8 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import fathom.exception.FathomException;
 import fathom.rest.Context;
+import fathom.rest.controller.exceptions.RequiredException;
+import fathom.rest.controller.exceptions.RangeException;
 import fathom.rest.controller.extractors.ArgumentExtractor;
 import fathom.rest.controller.extractors.CollectionExtractor;
 import fathom.rest.controller.extractors.ConfigurableExtractor;
@@ -35,12 +37,9 @@ import fathom.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.FileItem;
+import ro.pippo.core.HttpConstants;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.util.StringUtils;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,6 +57,7 @@ public class ControllerHandler implements RouteHandler<Context> {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerHandler.class);
 
+    protected final Class<? extends Controller> controllerClass;
     protected final Provider<? extends Controller> controllerProvider;
     protected final Method method;
     protected ArgumentExtractor[] extractors;
@@ -69,11 +69,16 @@ public class ControllerHandler implements RouteHandler<Context> {
             throw new FathomException("Controller '{}' may not be annotated as a Singleton!", controllerClass.getName());
         }
 
+        this.controllerClass = controllerClass;
         this.controllerProvider = injector.getProvider(controllerClass);
         this.method = findMethod(injector, controllerClass, methodName);
 
         Preconditions.checkNotNull(method, "Failed to find method '%s'", Util.toString(controllerClass, methodName));
         log.trace("Obtained method for '{}'", Util.toString(method));
+    }
+
+    public Class<? extends Controller> getControllerClass() {
+        return controllerClass;
     }
 
     public Method getControllerMethod() {
@@ -112,19 +117,51 @@ public class ControllerHandler implements RouteHandler<Context> {
                 }
             }
 
-            method.invoke(controller, args);
+            Object result = method.invoke(controller, args);
+            if (Void.class != method.getReturnType()) {
+                // method declares a return value
+                if (result == null) {
+                    // prepare a NOT FOUND (404)
+                    context.getResponse().notFound();
+
+                    for (Return declaredReturn : getDeclaredReturns(method)) {
+                        if (declaredReturn.status() == HttpConstants.StatusCode.NOT_FOUND) {
+                            if (!Strings.isNullOrEmpty(declaredReturn.description())) {
+                                context.setLocal("message", declaredReturn.description());
+                            }
+                            break;
+                        }
+                    }
+                } else {
+                    // prepare Declared Return
+                    Class<?> resultClass = result.getClass();
+                    for (Return declaredReturn : getDeclaredReturns(method)) {
+                        if (declaredReturn.onResult() == resultClass) {
+                            context.status(declaredReturn.status());
+                            break;
+                        }
+                    }
+
+                    context.send(result);
+                }
+            }
 
             context.next();
 
         } catch (InvocationTargetException e) {
+            // handles exceptions thrown within the proxied controller method
             Throwable t = e.getTargetException();
-            if (t instanceof FathomException) {
-                // pass-through the thrown exception
-                throw (FathomException) t;
+            if (t instanceof Exception) {
+                Exception target = (Exception) t;
+                handleDeclaredReturnException(target, method, context);
+            } else if (t instanceof Error) {
+                throw (Error) t;
+            } else {
+                log.error("Failed to handle controller method exception", t);
             }
-            throw new FathomException(t);
         } catch (Exception e) {
-            throw new FathomException(e);
+            // handles exceptions thrown within this handle() method
+            handleDeclaredReturnException(e, method, context);
         }
     }
 
@@ -245,25 +282,37 @@ public class ControllerHandler implements RouteHandler<Context> {
     }
 
     protected void validateParameterValue(Parameter parameter, Object value) {
-        if ((value == null && parameter.isAnnotationPresent(NotNull.class))
-                || (value == null && parameter.getType().isPrimitive())) {
-            throw new FathomException("'{}' is a required parameter!", getParameterName(parameter));
+        if (value == null && parameter.isAnnotationPresent(Required.class)) {
+            throw new RequiredException("'{}' is a required parameter!", getParameterName(parameter));
         }
+
         if (value != null && value instanceof Number) {
             Number number = (Number) value;
 
             if (parameter.isAnnotationPresent(Min.class)) {
                 // validate required minimum value
                 Min min = parameter.getAnnotation(Min.class);
-                Preconditions.checkArgument(number.longValue() >= min.value(),
-                        StringUtils.format("'{}' must be >= {}", getParameterName(parameter), min.value()));
+                if (number.longValue() < min.value()) {
+                    throw new RangeException("'{}' must be >= {}", getParameterName(parameter), min.value());
+                }
             }
 
             if (parameter.isAnnotationPresent(Max.class)) {
                 // validate required maximum value
                 Max max = parameter.getAnnotation(Max.class);
-                Preconditions.checkArgument(number.longValue() <= max.value(),
-                        StringUtils.format("'{}' must be <= {}", getParameterName(parameter), max.value()));
+                if (number.longValue() > max.value()) {
+                    throw new RangeException("'{}' must be <= {}", getParameterName(parameter), max.value());
+                }
+            }
+
+            if (parameter.isAnnotationPresent(Range.class)) {
+                Range range = parameter.getAnnotation(Range.class);
+                if (number.longValue() < range.min()) {
+                    throw new RangeException("'{}' must be >= {}", getParameterName(parameter), range.min());
+                }
+                if (number.longValue() > range.max()) {
+                    throw new RangeException("'{}' must be <= {}", getParameterName(parameter), range.max());
+                }
             }
         }
     }
@@ -337,5 +386,40 @@ public class ControllerHandler implements RouteHandler<Context> {
             return objectType.getSimpleName();
         }
         return collectionType.getSimpleName() + "<" + objectType.getSimpleName() + ">";
+    }
+
+    protected void handleDeclaredReturnException(Exception e, Method method, Context context) {
+        Class<? extends Exception> exceptionClass = e.getClass();
+        for (Return declaredReturn : getDeclaredReturns(method)) {
+            if (exceptionClass.isAssignableFrom(declaredReturn.onResult())) {
+                context.status(declaredReturn.status());
+                if (Strings.isNullOrEmpty(declaredReturn.description())) {
+                    context.setLocal("message", e.getMessage());
+                } else {
+                    context.setLocal("message", declaredReturn.description());
+                }
+                log.warn("Handling declared return exception '{}' for '{}'", e.getMessage(), Util.toString(method));
+                return;
+            }
+        }
+
+        if (e instanceof FathomException) {
+            // pass-through the thrown exception
+            throw (FathomException) e;
+        }
+
+        // undeclared exception, wrap & throw
+        throw new FathomException(e);
+    }
+
+    protected Return[] getDeclaredReturns(Method method) {
+        if (method.isAnnotationPresent(Returns.class)) {
+            Returns returns = method.getAnnotation(Returns.class);
+            return returns.value();
+        } else if (method.isAnnotationPresent(Return.class)) {
+            Return aReturn = method.getAnnotation(Return.class);
+            return new Return[]{aReturn};
+        }
+        return new Return[0];
     }
 }

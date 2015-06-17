@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package fathom.rest.swagger;
+package fathom.rest.controller;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,15 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A wrapper to allow a list of multiple {@link ResponseCode} objects.
+ * Annotation to indicate a minimum value for parameter or field.
  *
- * @see ResponseCode
+ * @author James Moger
  */
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ResponseCodes {
-    /**
-     * A list of {@link ResponseCode}s provided by the API operation.
-     */
-    ResponseCode[] value();
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+public @interface Min {
+    long value();
 }

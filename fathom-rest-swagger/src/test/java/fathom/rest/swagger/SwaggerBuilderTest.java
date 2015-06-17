@@ -21,13 +21,6 @@ import com.google.inject.Injector;
 import fathom.conf.Settings;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.ControllerHandler;
-import fathom.rest.controller.DELETE;
-import fathom.rest.controller.GET;
-import fathom.rest.controller.HttpMethod;
-import fathom.rest.controller.PATCH;
-import fathom.rest.controller.POST;
-import fathom.rest.controller.PUT;
-import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
 import org.junit.Test;
 import ro.pippo.core.route.DefaultRouter;
@@ -36,7 +29,7 @@ import ro.pippo.core.route.Route;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author James Moger
@@ -45,8 +38,13 @@ public class SwaggerBuilderTest {
 
     @Test
     public void testGenerate() throws Exception {
-        SwaggerBuilder sb = new SwaggerBuilder(new Settings(), new DefaultRouter());
-        String json = sb.generateJSON(getRoutes());
+        DefaultRouter router = new DefaultRouter();
+        for (Route route : getRoutes()) {
+            router.addRoute(route);
+        }
+
+        SwaggerBuilder sb = new SwaggerBuilder(new Settings(), router);
+        String json = sb.generateJSON(router.getRoutes());
         assertNotNull(json);
     }
 

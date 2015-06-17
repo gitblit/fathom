@@ -21,10 +21,10 @@ import dao.ItemDao;
 import fathom.metrics.Metered;
 import fathom.realm.Account;
 import fathom.rest.controller.Auth;
-import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
+import fathom.rest.controller.Return;
 import models.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,15 +64,13 @@ public class ApiController extends ApiV1 {
      */
     @GET("{id: [0-9]+}")
     @Metered
-    public void get(int id, @Auth Account account) {
+    @Return(status = 200, description = "Item retrieved", onResult = Item.class)
+    @Return(status = 404, description = "Item does not exist")
+    public Item get(int id, @Auth Account account) {
 
         log.debug("GET item #{} for '{}'", id, account);
         Item item = dao.get(id);
-        if (item == null) {
-            getResponse().notFound().send("Item #{} does not exist", id);
-        } else {
-            getResponse().ok().send(item);
-        }
+        return item;
     }
 
 }

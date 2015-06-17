@@ -173,19 +173,19 @@ public class MyController extends Controller {
   }
 
   @GET("/all")
-  public void getAll() {
+  public List<Employee> getAll() {
     List<Employee> list = employeeDao.getAll();
-    getResponse().ok().send(list);
+    return list;
   }
 
   @GET("/{id: [0-9]+}")
-  public void getEmployee(int id) {
+  public Employee getEmployee(int id) {
     // The method parameter name "id" matches the url parameter name "id"
     Employee employee = employeeDao.get(id);
     if (employee == null) {
       getResponse().notFound().send("Failed to find employee {}!", id);
     } else {
-      getResponse().ok().send(employee);
+      return employee;
     }
   }
 
@@ -226,14 +226,14 @@ Argument Extractors allow you to specify an annotation which instructs **Fathom-
 
 **Fathom-REST** supports implied and explicit argument validation.
 
-1. Implied validation by specifying parameter RegEx
-2. Implied `@NotNull` validation when specifying **primitive numeric and boolean types**
-3. Implied `@NotNull` validation for body parameters
-4. Explicit `@NotNull` validation for all other argument types
+1. Implicit validation by regular expression pattern matching of the Route path parameters
+2. Implicit `@Required` validation for `@Body` parameters
+3. Explicit `@Required` validation for all other argument types
+4. Explicit `@Min`, `@Max`, & `@Range` validation for numeric argument types
 
 ```java
 @POST("/{id: [0-9]+}")
-public void renameEmployee(int id, @NotNull String name) {
+public void renameEmployee(@Min(1) @Max(10) int id, @Required String name) {
 }
 ```
 
@@ -246,7 +246,7 @@ If you need deterministic *controller* method registration order you may specify
 ```java
 @GET("/{id: [0-9]+}")
 @Order(5)
-public void getEmployee(int id) {
+public Employee getEmployee(int id) {
 }
 ```
 
@@ -256,8 +256,8 @@ You may name your controller routes.  This information is used in the registered
 
 ```java
 @GET("/{id: [0-9]+}")
-@Named("Get employee by ID")
-public void getEmployee(int id) {
+@Named("Get employee by id")
+public Employee getEmployee(int id) {
 }
 ```
 
@@ -268,9 +268,33 @@ It's very easy to collect [Metrics](metrics.md) data about your *controllers*.  
 ```java
 @GET("/{id: [0-9]+}")
 @Metered
-public void getEmployee(int id) {
+public Employee getEmployee(int id) {
 }
 ```
+
+#### Declaring Responses Results
+
+You may use the `@Return` annotation to briefly declare method-specific responses.
+
+This has a few benefits.
+
+1. it allows you to implement the logic of your controller without directly relying on the request/response/context objects.
+2. it makes the intended results of your controller method execution clear
+3. it facilitates api documentation generators or other static analysis tools
+
+```java
+@GET("/{id}")
+@Return(status=200, description="Employee retrieved", onResult=Employee.class)
+@Return(status=400, description="Invalid id specified", onResult=ValidationException.class)
+@Return(status=404, description="Employee not found")
+public Employee getEmployee(@Min(1) @Max(5) int id) {
+  Employee employee = employeeDao.get(id);
+  return employee;
+}
+```
+
+!!! Note
+    You are not required to use the `@Return` annotation.
 
 #### Requiring Settings (Controller)
 
@@ -353,9 +377,6 @@ All standard [Pippo] content-type engines are supported.
 [Pippo]: http://pippo.ro
 [Pippo Routes]: http://www.pippo.ro/doc/routes.html
 [AOP method interceptors]: https://github.com/google/guice/wiki/AOP
-
-[Swagger]: http://swagger.io
-[RAML]: http://raml.org
 
 [Webjars]: http://www.webjars.org
 [pretty-time]: http://www.ocpsoft.org/prettytime

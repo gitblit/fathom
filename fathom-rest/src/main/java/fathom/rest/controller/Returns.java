@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-package models.petstore;
+package fathom.rest.controller;
 
-import fathom.rest.swagger.Desc;
-import fathom.rest.swagger.Example;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import javax.validation.constraints.NotNull;
-
-@fathom.rest.swagger.Tag(name = "Pet", description = "")
-public class Pet {
-
-    @Desc("unique identifier for the pet")
-    public long id;
-
-    public Category category;
-
-    @Example("doggie")
-    @NotNull
-    public String name;
-
-    @NotNull
-    public String[] photoUrls;
-
-    public Tag[] tags;
-
-    @Desc("pet status in the store")
-    public PetStatus status;
-
+/**
+ * A wrapper to allow a list of multiple {@link Return} objects.
+ *
+ * @see Return
+ */
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Returns {
+    /**
+     * A list of {@link Return}s provided by the API operation.
+     */
+    Return[] value();
 }

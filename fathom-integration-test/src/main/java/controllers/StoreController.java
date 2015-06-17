@@ -23,9 +23,11 @@ import fathom.rest.controller.Named;
 import fathom.rest.controller.POST;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
+import fathom.rest.controller.Return;
+import fathom.rest.controller.exceptions.RangeException;
+import fathom.rest.controller.exceptions.ValidationException;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Notes;
-import fathom.rest.swagger.ResponseCode;
 import fathom.rest.swagger.Tag;
 import models.petstore.Order;
 
@@ -45,27 +47,26 @@ public class StoreController extends ApiV2 {
     @DELETE("/order/{orderId}")
     @Named("Delete purchase order by ID")
     @Notes
-    @ResponseCode(code = 400, message = "Invalid ID supplied")
-    @ResponseCode(code = 404, message = "Order not found")
-    public void deleteOrder(@Desc("ID of the order that needs to be deleted") @Min(1) long orderId) {
-        getResponse().ok();
+    @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
+    @Return(status = 404, description = "Order not found")
+    public void deleteOrder(@Desc("ID of the order that needs to be deleted") @Max(5) @Min(1) long orderId) {
     }
 
     @GET("/order/{orderId}")
     @Named("Find purchase order by ID")
     @Notes
-    @ResponseCode(code = 200, message = "Valid order", returns = Order.class)
-    @ResponseCode(code = 400, message = "Invalid ID supplied")
-    @ResponseCode(code = 404, message = "Order not found")
-    public void getOrderById(@Desc("ID of the order that needs to be fetched") @Max(5) @Min(1) long orderId) {
-        getResponse().ok();
+    @Return(status = 200, description = "Valid order", onResult = Order.class)
+    @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
+    @Return(status = 404, description = "Order not found")
+    public Order getOrderById(@Desc("ID of the order that needs to be fetched") @Max(5) @Min(1) long orderId) {
+        Order order = new Order();
+        return order;
     }
 
     @POST("/order")
     @Named("Place an order for a pet")
-    @ResponseCode(code = 400, message = "Invalid order")
+    @Return(status = 400, description = "Invalid order", onResult = ValidationException.class)
     public void placeOrder(@Desc("Order placed for purchasing the pet") @Body Order order) {
-        getResponse().ok();
     }
 
 }

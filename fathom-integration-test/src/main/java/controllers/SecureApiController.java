@@ -25,6 +25,7 @@ import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
+import fathom.rest.controller.Return;
 import fathom.rest.security.aop.RequirePermission;
 import fathom.rest.swagger.Undocumented;
 import models.Item;
@@ -66,7 +67,9 @@ public class SecureApiController extends Controller {
     @Produces({Produces.JSON, Produces.XML})
     @Metered
     @RequirePermission("secure:view")
-    public void get(int id, @Auth Account account) {
+    @Return(status = 200, description = "Item retrieved", onResult = Item.class)
+    @Return(status = 404, description = "Item does not exist")
+    public Item get(int id, @Auth Account account) {
 
         // Enforce a required permission (see Components.java).
         // Alternatively we could skip @RequirePermission and
@@ -76,11 +79,7 @@ public class SecureApiController extends Controller {
 
         log.debug("GET item #{} for '{}'", id, account);
         Item item = dao.get(id);
-        if (item == null) {
-            getResponse().notFound().send("Item #{} does not exist", id);
-        } else {
-            getResponse().ok().send(item);
-        }
+        return item;
     }
 
 }

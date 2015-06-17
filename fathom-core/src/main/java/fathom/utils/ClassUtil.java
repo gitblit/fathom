@@ -18,6 +18,7 @@ package fathom.utils;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.io.CharStreams;
 import fathom.exception.FathomException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -267,4 +271,50 @@ public class ClassUtil {
         return false;
     }
 
+    public static Class<?> getParameterGenericType(Method method, Parameter parameter) {
+        Type parameterType = parameter.getParameterizedType();
+        if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
+            throw new FathomException("Please specify a generic parameter type for '{}' of '{}'",
+                    parameter.getType().getName(), Util.toString(method));
+        }
+
+        ParameterizedType parameterizedType = (ParameterizedType) parameterType;
+        try {
+            Class<?> genericClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            return genericClass;
+        } catch (ClassCastException e) {
+            throw new FathomException("Please specify a generic parameter type for '{}' of '{}'",
+                    parameter.getType().getName(), Util.toString(method));
+        }
+    }
+
+    public static String loadStringResource(String resource) {
+        try {
+            URL url;
+            if (resource.startsWith("classpath:")) {
+                url = getResource(resource.substring("classpath:".length()));
+            } else if (resource.startsWith("url:")) {
+                url = new URL(resource.substring("url:".length()));
+            } else if (resource.startsWith("file:")) {
+                url = new URL(resource.substring("file:".length()));
+            } else {
+                url = new URL(resource);
+            }
+            return loadStringResource(url);
+        } catch (IOException e) {
+            throw new FathomException(e, "Failed to read String resource from '{}'", resource);
+        }
+    }
+
+    public static String loadStringResource(URL resourceUrl) {
+        String content = null;
+        if (resourceUrl != null) {
+            try {
+                content = CharStreams.toString(new InputStreamReader(resourceUrl.openStream()));
+            } catch (IOException e) {
+                log.error("Failed to read String resource from {}", resourceUrl, e);
+            }
+        }
+        return content;
+    }
 }
