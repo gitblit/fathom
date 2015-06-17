@@ -94,6 +94,51 @@ undertow {
   keystorePassword = ""
   truststoreFile = ""
   truststorePassword = ""
+
+  # Threads
+  #
+  # io threads accept incoming socket connections
+  # worker threads handle your logic post-socket-accept
+
+  # Specify the number of io threads for handling socket requests.
+  # A value of 0 will use Undertow's default which is:
+  #  - 2 io threads for a single-core machine
+  #  - 1 io thread/core for a multi-core machine
+  ioThreads = 0
+
+  # Specify the number of worker threads for handling your logic.
+  # A value of 0 will use Undertow's default which is:
+  #  - 8*ioThreads
+  workerThreads = 0
+
+  # Buffers
+  #
+  # Undertow adaptively sizes it's buffers based on the heap allocated to the JVM.
+  #
+  # If the heap < 64M:
+  #  - bufferSize = 512
+  #  - buffersPerRegion = 10
+  #    this allocates 10*512 bytes
+  #
+  # If the heap < 128M:
+  #  - bufferSize = 1K
+  #  - buffersPerRegion = 10
+  #    this allocates 10*1k
+  #
+  # Else
+  #  - bufferSize = 16k
+  #  - buffersPerRegion = 20
+  #    this allocates 20*16k
+
+  # Set the buffer size.
+  # A value of 0 uses Undertow's adaptive default.
+  #  e.g. 16k, 32k
+  bufferSize = 16k
+
+  # Set the number of buffers.
+  # A value of 0 uses Undertow's adaptive default.
+  buffersPerRegion = 20
+
 }
 ```
 

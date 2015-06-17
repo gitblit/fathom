@@ -8,10 +8,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
 
+- [fathom-rest] Refined controllers to be more declarative
+- [fathom-core] Added more system information to startup log
+
 #### Added
 
-- Added [fathom-rest-swagger]
-- Added basic validation of controller arguments
+- [fathom-rest-swagger] Added new module for Swagger
+- [fathom-rest] Added simple validation of controller arguments
+- [fathom-core] Added Undertow tunning settings
 
 #### Removed
 

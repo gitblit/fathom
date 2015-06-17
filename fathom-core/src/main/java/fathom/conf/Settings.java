@@ -395,6 +395,10 @@ public class Settings {
         return getBoolean(key.toString(), defaultValue);
     }
 
+    public long getBytes(Enum<?> key, String defaultValue) {
+        return getBytes(key.toString(), defaultValue);
+    }
+
     public void overrideSetting(Enum<?> key, String defaultValue) {
         overrideSetting(key.toString(), defaultValue);
     }
@@ -525,6 +529,37 @@ public class Settings {
         }
 
         return defaultValue;
+    }
+
+    /**
+     * Returns the bytes value for the specified name. If the name does not
+     * exist or the value for the name can not be interpreted as a size expression, the
+     * defaultValue is returned.
+     *
+     * @param name
+     * @param defaultValue
+     * @return value or defaultValue
+     */
+    public long getBytes(String name, String defaultValue) {
+        if (config.hasPath(name)) {
+            try {
+                long value = config.getBytes(name);
+                return value;
+            } catch (Exception e) {
+                log.warn("Failed to parse bytes for {} using default of {}", name, defaultValue);
+            }
+        }
+
+        if (!Strings.isNullOrEmpty(defaultValue)) {
+            try {
+                Config temp = ConfigFactory.parseString(String.format("%s=%s", name, defaultValue));
+                long value = temp.getBytes(name);
+                return value;
+            } catch (Exception e) {
+                log.warn("Failed to parse default bytes expression {} for {}", defaultValue, name);
+            }
+        }
+        return 0;
     }
 
     /**
@@ -787,7 +822,11 @@ public class Settings {
         undertow_keystoreFile,
         undertow_keystorePassword,
         undertow_truststoreFile,
-        undertow_truststorePassword;
+        undertow_truststorePassword,
+        undertow_ioThreads,
+        undertow_workerThreads,
+        undertow_bufferSize,
+        undertow_buffersPerRegion;
 
         @Override
         public String toString() {

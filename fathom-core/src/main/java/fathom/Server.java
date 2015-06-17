@@ -16,6 +16,7 @@
 package fathom;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
 import fathom.conf.Settings;
@@ -153,10 +154,14 @@ public class Server {
         int ports = settings.getHttpPort() + settings.getHttpsPort() + settings.getAjpPort();
         Preconditions.checkState(ports > 0, "No port specified! Please review your server port settings!");
 
+        log.debug("Configuring Undertow engine");
+
         Builder builder = io.undertow.Undertow.builder();
+
         if (settings.getHttpPort() > 0) {
             // HTTP
             builder.addHttpListener(settings.getHttpPort(), settings.getHost());
+            logSetting(Settings.Setting.undertow_httpPort, settings.getHttpPort());
         }
 
         if (settings.getHttpsPort() > 0) {
@@ -167,6 +172,7 @@ public class Server {
                 KeyStore trustStore = loadKeyStore(settings.getTruststoreFile(), settings.getTruststorePassword());
                 SSLContext sslContext = createSSLContext(keyStore, trustStore);
                 builder.addHttpsListener(settings.getHttpsPort(), settings.getHost(), sslContext);
+                logSetting(Settings.Setting.undertow_httpsPort, settings.getHttpsPort());
             } catch (Exception e) {
                 throw new FathomException(e, "Failed to setup an Undertow SSL listener!");
             }
@@ -175,11 +181,40 @@ public class Server {
         if (settings.getAjpPort() > 0) {
             // AJP
             builder.addAjpListener(settings.getAjpPort(), settings.getHost());
+            logSetting(Settings.Setting.undertow_ajpPort, settings.getAjpPort());
+        }
+
+        int ioThreads = settings.getInteger(Settings.Setting.undertow_ioThreads, 0);
+        if (ioThreads > 0) {
+            builder.setIoThreads(ioThreads);
+            logSetting(Settings.Setting.undertow_ioThreads, ioThreads);
+        }
+
+        int workerThreads = settings.getInteger(Settings.Setting.undertow_workerThreads, 0);
+        if (workerThreads > 0) {
+            builder.setWorkerThreads(workerThreads);
+            logSetting(Settings.Setting.undertow_workerThreads, workerThreads);
+        }
+
+        long bufferSize = settings.getBytes(Settings.Setting.undertow_bufferSize, null);
+        if (bufferSize > 0) {
+            builder.setBufferSize((int) bufferSize);
+            logSetting(Settings.Setting.undertow_bufferSize, bufferSize);
+        }
+
+        int buffersPerRegion = settings.getInteger(Settings.Setting.undertow_buffersPerRegion, 0);
+        if (buffersPerRegion > 0) {
+            builder.setBuffersPerRegion(buffersPerRegion);
+            logSetting(Settings.Setting.undertow_buffersPerRegion, buffersPerRegion);
         }
 
         builder.setHandler(contextHandler);
         io.undertow.Undertow server = builder.build();
         return server;
+    }
+
+    protected void logSetting(Settings.Setting setting, Object value) {
+        log.debug("{}{}", Strings.padEnd(setting.toString(), 32, '.') , value);
     }
 
     protected DeploymentManager createFathomDeploymentManager() throws ServletException {
