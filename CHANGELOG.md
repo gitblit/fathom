@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - [fathom-rest] Refined controllers to be more declarative
 - [fathom-core] Added more system information to startup log
+- [fathom-core] Update Undertow to 1.2.8
 
 #### Added
 
