@@ -31,6 +31,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -182,7 +186,17 @@ public class Boot implements Daemon {
 
         String osName = System.getProperty("os.name");
         String osVersion = System.getProperty("os.version");
-        log.info("Starting Fathom on {} ({}) in {} mode", osName, osVersion, settings.getMode().toString());
+        log.info("Bootstrapping Fathom v{}", Constants.getVersion());
+        log.info("  Mode                 : {}", settings.getMode().toString());
+        log.info("  Operating System     : {} ({})", osName, osVersion);
+        log.info("  Available processors : {}", Runtime.getRuntime().availableProcessors());
+        log.info("  Available heap       : {} MB", Runtime.getRuntime().maxMemory()/(1024*1024));
+
+        SimpleDateFormat df = new SimpleDateFormat("z Z");
+        df.setTimeZone(TimeZone.getDefault());
+        String offset = df.format(new Date());
+        log.info("  JVM timezone         : {} ({})", TimeZone.getDefault().getID(), offset);
+        log.info("  JVM locale           : {}", Locale.getDefault());
 
         long startTime = System.nanoTime();
         getServer().start();
