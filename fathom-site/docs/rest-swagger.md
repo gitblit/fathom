@@ -46,9 +46,18 @@ YourApp
 ```hocon
 swagger {
 
-  # The base path of your API.
+  # The host (name or ip) serving the API.  This MUST be the host only and does
+  # not include the scheme nor subpath.  It MAY include a port. If the host is
+  # not specified, the host serving the documentation is to be used
+  # (including the port).
+  host = ""
+
+  # The base path on which the API is served, which is relative to the host.
   # All specified routes will be relative to this path.
   basePath = "/api"
+
+  # The transfer protocol of the API.
+  schemes = [ "http", "https" ]
 
   # Swagger API Specification
   info {

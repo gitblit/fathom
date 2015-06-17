@@ -187,13 +187,31 @@ public class SwaggerBuilder {
             swagger.setExternalDocs(externalDocs);
         }
 
-        // transport and base url details
-        List<Scheme> schemes = new ArrayList<>();
-        if (settings.getInteger(Settings.Setting.undertow_httpPort, 0) > 0) {
-            schemes.add(Scheme.HTTP);
+        // host (name or ip) serving the API
+        String host = Strings.emptyToNull(settings.getString("swagger.host", null));
+        if (host != null) {
+            swagger.setHost(host);
         }
-        if (settings.getInteger(Settings.Setting.undertow_httpsPort, 0) > 0) {
-            schemes.add(Scheme.HTTPS);
+
+        // transport and base url details
+        List<String> configuredSchemes = settings.getStrings("swagger.schemes");
+        List<Scheme> schemes = new ArrayList<>();
+        if (configuredSchemes.isEmpty()) {
+            // add schemes based on undertow settings
+            if (settings.getInteger(Settings.Setting.undertow_httpPort, 0) > 0) {
+                schemes.add(Scheme.HTTP);
+            }
+            if (settings.getInteger(Settings.Setting.undertow_httpsPort, 0) > 0) {
+                schemes.add(Scheme.HTTPS);
+            }
+        } else {
+            // set configured schemes
+            for (String scheme : configuredSchemes) {
+                Scheme s = Scheme.forValue(scheme.trim());
+                if (s != null) {
+                    schemes.add(s);
+                }
+            }
         }
         swagger.setSchemes(schemes);
 
