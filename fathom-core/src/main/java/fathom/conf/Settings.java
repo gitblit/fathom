@@ -804,6 +804,22 @@ public class Settings {
         return props;
     }
 
+    public Properties toProperties(String name) {
+        Properties props = new Properties();
+        for (Map.Entry<String, ConfigValue> entry : getConfig(name).entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue().unwrapped();
+            props.put(key, value);
+        }
+        String nameGroup = name + ".";
+        for (String override : overrides.stringPropertyNames()) {
+            if (override.startsWith(nameGroup)) {
+                props.put(override, overrides.get(override));
+            }
+        }
+        return props;
+    }
+
     public static enum Setting {
         application_name,
         application_version,
