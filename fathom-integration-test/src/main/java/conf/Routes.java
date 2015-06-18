@@ -26,6 +26,7 @@ import fathom.metrics.Metered;
 import fathom.realm.Account;
 import fathom.rest.RoutesModule;
 import fathom.rest.Context;
+import fathom.rest.route.HeaderFilter;
 import fathom.rest.security.CSRFHandler;
 import fathom.rest.security.FormAuthenticationGuard;
 import fathom.rest.security.FormAuthenticationHandler;
@@ -219,6 +220,16 @@ public class Routes extends RoutesModule {
         GET("/internalError", (ctx) -> {
             throw new FathomException("This is an example exception");
         });
+
+
+        /*
+         * Add a CORS filter for our API routes
+         */
+        HeaderFilter corsFilter = new HeaderFilter();
+        corsFilter.setHeader("Access-Control-Allow-Origin", "*");
+        corsFilter.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
+        corsFilter.setHeader("Access-Control-Allow-Headers", "Content-Type, api_key, Authorization");
+        ALL("/api/?.*", corsFilter).named("CORS Filter");
 
         /*
          * Discover and add annotated controllers

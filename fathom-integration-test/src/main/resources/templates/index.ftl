@@ -36,6 +36,8 @@
             <li><a href="${appPath}/collections">Collections (forms)</a></li>
             <li><a href="${appPath}/content">JSON Content (forms)</a></li>
             <li><a href="${appPath}/api">Swagger UI for API Routes</a></li>
+            <li><a href="${appPath}/api/swagger.json">Swagger Specification (JSON)</a></li>
+            <li><a href="${appPath}/api/swagger.yaml">Swagger Specification (YAML)</a></li>
         </ul>
     </div>
     <div class="large-6 columns">

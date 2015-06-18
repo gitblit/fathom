@@ -18,7 +18,6 @@ package fathom.rest.swagger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -132,11 +131,14 @@ public class SwaggerService implements Service {
 
         // Swagger specification routes
         for (String filename : specifications.keySet()) {
-            GET(Joiner.on("/").join(swaggerPath, filename), (ctx) -> serveSpecification(ctx, filename));
+            String specPath = Joiner.on("/").join(swaggerPath, filename);
+            HEAD(specPath, (ctx) -> serveSpecification(ctx, filename));
+            GET(specPath, (ctx) -> serveSpecification(ctx, filename));
         }
 
         // Register a WebJars Route if we don't already have one
-        if (router.uriPatternFor(WebjarsResourceHandler.class) == null) {
+        String webJarsUri = router.uriPatternFor(WebjarsResourceHandler.class);
+        if (webJarsUri == null) {
             WebjarsResourceHandler webjars = new WebjarsResourceHandler();
             webjars.setHttpCacheToolkit(httpCacheToolkit);
             webjars.setMimeTypes(mimeTypes);
@@ -146,6 +148,11 @@ public class SwaggerService implements Service {
 
     protected void GET(String uriPattern, RouteHandler handler) {
         Route route = new Route(uriPattern, HttpMethod.GET, handler);
+        router.addRoute(route);
+    }
+
+    protected void HEAD(String uriPattern, RouteHandler handler) {
+        Route route = new Route(uriPattern, HttpMethod.HEAD, handler);
         router.addRoute(route);
     }
 
@@ -175,7 +182,9 @@ public class SwaggerService implements Service {
                 ctx.text();
             }
 
-            ctx.getResponse().send(document);
+            if (HttpMethod.GET.equals(ctx.getRequestMethod())) {
+                ctx.getResponse().send(document);
+            }
         }
     }
 

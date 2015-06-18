@@ -258,6 +258,50 @@ public Employee getEmployee(@Desc("employee id") int id) {
 !!! Note
     The `@Return` annotation is part of [Fathom-REST](rest.md) and is more thoroughly documented in that module.
 
+## CORS or Cross Origin Resource Sharing
+
+CORS is a technique to prevent websites from doing bad things with your personal data. Most browsers + javascript toolkits not only support CORS but enforce it, which has implications for your API server which supports Swagger.
+
+You can read about CORS here: http://www.w3.org/TR/cors.
+
+There are two cases where no action is needed for CORS support:
+
+1. swagger-ui is hosted on the same server as the application itself (same host and port).
+2. The application is located behind a proxy that enables the requires CORS headers. This may already be covered within your organization.
+
+Otherwise, CORS support needs to be enabled for:
+
+1. Your generated Swagger specifications, swagger.json and swagger.yaml
+2. Your API endpoints, if you want the *Try it now* button to work
+
+### Configuring CORS Support
+
+Add a `HeaderFilter` in your `conf/Routes.java` class before you register your API routes.
+
+```java
+HeaderFilter corsFilter = new HeaderFilter();
+corsFilter.setHeader("Access-Control-Allow-Origin", "*");
+corsFilter.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
+corsFilter.setHeader("Access-Control-Allow-Headers", "Content-Type, api_key, Authorization");
+
+ALL("/api/?.*", corsFilter).named("CORS Filter");
+```
+
+### Testing CORS Support
+
+Once you have setup your CORS filter, you can test that the appropriate headers are being set with curl or your favorite browser extension.
+
+```
+$ curl -I "http://localhost:8080/api/swagger.json"
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: Content-Type, api_key, Authorization
+Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS
+Date: Thu, 18 Jun 2015 15:55:38 GMT
+Last-Modified: Thu, 18 Jun 2015 11:55:35 GMT
+Content-Type: application/json;charset=UTF-8
+Content-Length: 0
+```
 
 [Swagger]: http://swagger.io
 [RESTful]: https://en.wikipedia.org/wiki/Representational_state_transfer
