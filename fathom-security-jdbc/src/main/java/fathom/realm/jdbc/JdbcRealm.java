@@ -29,6 +29,7 @@ import fathom.exception.FathomException;
 import fathom.realm.Account;
 import fathom.realm.CachingRealm;
 import fathom.utils.ClassUtil;
+import fathom.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,20 +175,20 @@ public class JdbcRealm extends CachingRealm {
     public void start() {
 
         log.debug("Realm '{}' configuration:", getRealmName());
-        logSetting(log, "url", jdbcUrl);
-        logSetting(log, "username", jdbcUsername);
-        logSetting(log, "password", jdbcPassword);
-        logSetting(log, "accountQuery", accountQuery);
-        logSetting(log, "passwordMapping", passwordMapping);
-        logSetting(log, "nameMapping", nameMapping);
-        logSetting(log, "emailMapping", emailMapping);
-        logSetting(log, "roleMapping", roleMapping);
-        logSetting(log, "permissionMapping", permissionMapping);
-        logSetting(log, "accountRolesQuery", accountRolesQuery);
-        logSetting(log, "accountPermissionsQuery", accountPermissionsQuery);
-        logSetting(log, "definedRolesQuery", definedRolesQuery);
-        logSetting(log, "startScript", startScript);
-        logSetting(log, "stopScript", stopScript);
+        Util.logSetting(log, "url", jdbcUrl);
+        Util.logSetting(log, "username", jdbcUsername);
+        Util.logSetting(log, "password", jdbcPassword);
+        Util.logSetting(log, "accountQuery", accountQuery);
+        Util.logSetting(log, "passwordMapping", passwordMapping);
+        Util.logSetting(log, "nameMapping", nameMapping);
+        Util.logSetting(log, "emailMapping", emailMapping);
+        Util.logSetting(log, "roleMapping", roleMapping);
+        Util.logSetting(log, "permissionMapping", permissionMapping);
+        Util.logSetting(log, "accountRolesQuery", accountRolesQuery);
+        Util.logSetting(log, "accountPermissionsQuery", accountPermissionsQuery);
+        Util.logSetting(log, "definedRolesQuery", definedRolesQuery);
+        Util.logSetting(log, "startScript", startScript);
+        Util.logSetting(log, "stopScript", stopScript);
         super.logCacheSettings(log);
 
         if (dataSource == null) {

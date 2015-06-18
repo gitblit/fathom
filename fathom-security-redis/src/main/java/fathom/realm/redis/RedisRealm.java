@@ -24,6 +24,7 @@ import fathom.exception.FathomException;
 import fathom.realm.Account;
 import fathom.realm.CachingRealm;
 import fathom.utils.ClassUtil;
+import fathom.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
@@ -106,12 +107,12 @@ public class RedisRealm extends CachingRealm {
     public void start() {
 
         log.debug("Realm '{}' configuration:", getRealmName());
-        logSetting(log, "url", redisUrl);
-        logSetting(log, "password", redisPassword);
-        logSetting(log, "passwordMapping", passwordMapping);
-        logSetting(log, "nameMapping", nameMapping);
-        logSetting(log, "emailMapping", emailMapping);
-        logSetting(log, "roleMapping", roleMapping);
+        Util.logSetting(log, "url", redisUrl);
+        Util.logSetting(log, "password", redisPassword);
+        Util.logSetting(log, "passwordMapping", passwordMapping);
+        Util.logSetting(log, "nameMapping", nameMapping);
+        Util.logSetting(log, "emailMapping", emailMapping);
+        Util.logSetting(log, "roleMapping", roleMapping);
         super.logCacheSettings(log);
 
         try {

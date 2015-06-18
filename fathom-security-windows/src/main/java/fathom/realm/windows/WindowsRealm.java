@@ -23,6 +23,7 @@ import com.typesafe.config.Config;
 import fathom.authc.StandardCredentials;
 import fathom.realm.Account;
 import fathom.realm.CachingRealm;
+import fathom.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import waffle.windows.auth.IWindowsAccount;
@@ -84,16 +85,16 @@ public class WindowsRealm extends CachingRealm {
     @Override
     public void start() {
         log.debug("Realm '{}' configuration:", getRealmName());
-        logSetting(log, "defaultDomain", defaultDomain);
-        logSetting(log, "allowGuests", allowGuests);
-        logSetting(log, "adminGroups", adminGroups);
+        Util.logSetting(log, "defaultDomain", defaultDomain);
+        Util.logSetting(log, "allowGuests", allowGuests);
+        Util.logSetting(log, "adminGroups", adminGroups);
         super.logCacheSettings(log);
 
         IWindowsComputer computer = waffle.getCurrentComputer();
         log.debug("Windows realm information:");
-        logSetting(log, "name", computer.getComputerName());
-        logSetting(log, "status", describeJoinStatus(computer.getJoinStatus()));
-        logSetting(log, "memberOf", computer.getMemberOf());
+        Util.logSetting(log, "name", computer.getComputerName());
+        Util.logSetting(log, "status", describeJoinStatus(computer.getJoinStatus()));
+        Util.logSetting(log, "memberOf", computer.getMemberOf());
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import fathom.conf.Settings;
 import fathom.exception.FathomException;
+import fathom.utils.Util;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.slf4j.Logger;
@@ -186,17 +187,18 @@ public class Boot implements Daemon {
 
         String osName = System.getProperty("os.name");
         String osVersion = System.getProperty("os.version");
-        log.info("Bootstrapping Fathom v{}", Constants.getVersion());
-        log.info("  Mode                 : {}", settings.getMode().toString());
-        log.info("  Operating System     : {} ({})", osName, osVersion);
-        log.info("  Available processors : {}", Runtime.getRuntime().availableProcessors());
-        log.info("  Available heap       : {} MB", Runtime.getRuntime().maxMemory()/(1024*1024));
+        log.info("Bootstrapping {} ({})", settings.getApplicationName(), settings.getApplicationVersion());
+        Util.logSetting(log, "Fathom", Constants.getVersion());
+        Util.logSetting(log, "Mode", settings.getMode().toString());
+        Util.logSetting(log, "Operating System", String.format("%s (%s)", osName, osVersion));
+        Util.logSetting(log, "Available processors", Runtime.getRuntime().availableProcessors());
+        Util.logSetting(log, "Available heap", (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + " MB");
 
         SimpleDateFormat df = new SimpleDateFormat("z Z");
         df.setTimeZone(TimeZone.getDefault());
         String offset = df.format(new Date());
-        log.info("  JVM timezone         : {} ({})", TimeZone.getDefault().getID(), offset);
-        log.info("  JVM locale           : {}", Locale.getDefault());
+        Util.logSetting(log, "JVM timezone", String.format("%s (%s)", TimeZone.getDefault().getID(), offset));
+        Util.logSetting(log, "JVM locale", Locale.getDefault());
 
         long startTime = System.nanoTime();
         getServer().start();
@@ -221,7 +223,7 @@ public class Boot implements Daemon {
         } else {
             duration = String.format("%.1f seconds", (delta / 1000f));
         }
-        log.info("Fathom started {} mode in {}", settings.getMode().toString(), duration);
+        log.info("Fathom bootstrapped {} mode in {}", settings.getMode().toString(), duration);
         log.info("READY.");
 
     }

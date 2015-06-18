@@ -15,6 +15,7 @@
  */
 package fathom.utils;
 
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,6 +181,10 @@ public class Util {
         String[] values = value.split(delimiter);
         LinkedHashSet<String> set = new LinkedHashSet<>(Arrays.asList(values));
         return set;
+    }
+
+    public static void logSetting(Logger log, String name, Object value) {
+        log.debug(Strings.padEnd(name, 32, '.') + (value == null ? "" : (name.equalsIgnoreCase("password") ? "<masked>" : value.toString())));
     }
 
 }

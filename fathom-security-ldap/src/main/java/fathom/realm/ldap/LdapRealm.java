@@ -37,6 +37,7 @@ import com.unboundid.util.ssl.TrustAllTrustManager;
 import fathom.authc.StandardCredentials;
 import fathom.realm.Account;
 import fathom.realm.CachingRealm;
+import fathom.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,17 +166,17 @@ public class LdapRealm extends CachingRealm {
     @Override
     public void start() {
         log.debug("Realm '{}' configuration:", getRealmName());
-        logSetting(log, "url", ldapUrl);
-        logSetting(log, "username", ldapUsername);
-        logSetting(log, "password", ldapPassword);
-        logSetting(log, "bindPattern", ldapBindPattern);
-        logSetting(log, "accountBase", accountBase);
-        logSetting(log, "accountPattern", accountPattern);
-        logSetting(log, "nameMapping", nameMapping);
-        logSetting(log, "emailMapping", emailMapping);
-        logSetting(log, "groupBase", groupBase);
-        logSetting(log, "groupMemberPattern", groupMemberPattern);
-        logSetting(log, "adminGroups", adminGroups);
+        Util.logSetting(log, "url", ldapUrl);
+        Util.logSetting(log, "username", ldapUsername);
+        Util.logSetting(log, "password", ldapPassword);
+        Util.logSetting(log, "bindPattern", ldapBindPattern);
+        Util.logSetting(log, "accountBase", accountBase);
+        Util.logSetting(log, "accountPattern", accountPattern);
+        Util.logSetting(log, "nameMapping", nameMapping);
+        Util.logSetting(log, "emailMapping", emailMapping);
+        Util.logSetting(log, "groupBase", groupBase);
+        Util.logSetting(log, "groupMemberPattern", groupMemberPattern);
+        Util.logSetting(log, "adminGroups", adminGroups);
         super.logCacheSettings(log);
     }
 

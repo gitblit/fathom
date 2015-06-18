@@ -21,6 +21,7 @@ import com.typesafe.config.Config;
 import fathom.authc.StandardCredentials;
 import fathom.realm.Account;
 import fathom.realm.CachingRealm;
+import fathom.utils.Util;
 import org.jvnet.libpam.PAM;
 import org.jvnet.libpam.PAMException;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ public class PamRealm extends CachingRealm {
     @Override
     public void start() {
         log.debug("Realm '{}' configuration:", getRealmName());
-        logSetting(log, "serviceName", serviceName);
+        Util.logSetting(log, "serviceName", serviceName);
         super.logCacheSettings(log);
     }
 

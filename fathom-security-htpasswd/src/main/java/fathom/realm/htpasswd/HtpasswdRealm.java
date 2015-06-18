@@ -23,6 +23,7 @@ import fathom.authc.StandardCredentials;
 import fathom.realm.Account;
 import fathom.realm.MemoryRealm;
 import fathom.utils.ClassUtil;
+import fathom.utils.Util;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.Crypt;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -116,8 +117,8 @@ public class HtpasswdRealm extends MemoryRealm {
     @Override
     public void start() {
         log.debug("Realm '{}' configuration:", getRealmName());
-        logSetting(log, "file", file);
-        logSetting(log, "allowClearPasswords", isAllowClearTextPasswords);
+        Util.logSetting(log, "file", file);
+        Util.logSetting(log, "allowClearPasswords", isAllowClearTextPasswords);
     }
 
     @Override

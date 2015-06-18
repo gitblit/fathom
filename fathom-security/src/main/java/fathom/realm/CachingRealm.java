@@ -19,6 +19,7 @@ package fathom.realm;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.typesafe.config.Config;
+import fathom.utils.Util;
 import org.slf4j.Logger;
 
 import java.util.concurrent.TimeUnit;
@@ -66,9 +67,9 @@ public abstract class CachingRealm extends StandardCredentialsRealm {
     }
 
     protected void logCacheSettings(Logger log) {
-        logSetting(log, "caching", accountCache != null);
-        logSetting(log, "cacheTtl (mins)", cacheTtl);
-        logSetting(log, "cacheMax (accounts)", cacheMax);
+        Util.logSetting(log, "caching", accountCache != null);
+        Util.logSetting(log, "cacheTtl (mins)", cacheTtl);
+        Util.logSetting(log, "cacheMax (accounts)", cacheMax);
     }
 
     @Override

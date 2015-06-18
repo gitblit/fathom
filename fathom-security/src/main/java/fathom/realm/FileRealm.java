@@ -21,6 +21,7 @@ import com.google.common.base.Strings;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import fathom.authc.AuthenticationToken;
+import fathom.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class FileRealm extends MemoryRealm {
     @Override
     public void start() {
         log.debug("Realm '{}' configuration:", getRealmName());
-        logSetting(log, "file", realmFile);
+        Util.logSetting(log, "file", realmFile);
     }
 
     /**
