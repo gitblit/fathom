@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - [fathom-rest-swagger] Added new module for Swagger
 - [fathom-rest] Added simple validation of controller arguments
+- [fathom-rest] Added HeaderFilter and CORSFilter
 - [fathom-core] Added Undertow tunning settings
 
 #### Removed

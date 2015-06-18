@@ -24,9 +24,10 @@ import fathom.conf.Fathom;
 import fathom.exception.FathomException;
 import fathom.metrics.Metered;
 import fathom.realm.Account;
-import fathom.rest.RoutesModule;
 import fathom.rest.Context;
-import fathom.rest.route.HeaderFilter;
+import fathom.rest.RoutesModule;
+import fathom.rest.controller.HttpMethod;
+import fathom.rest.route.CORSFilter;
 import fathom.rest.security.CSRFHandler;
 import fathom.rest.security.FormAuthenticationGuard;
 import fathom.rest.security.FormAuthenticationHandler;
@@ -225,10 +226,10 @@ public class Routes extends RoutesModule {
         /*
          * Add a CORS filter for our API routes
          */
-        HeaderFilter corsFilter = new HeaderFilter();
-        corsFilter.setHeader("Access-Control-Allow-Origin", "*");
-        corsFilter.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
-        corsFilter.setHeader("Access-Control-Allow-Headers", "Content-Type, api_key, Authorization");
+        CORSFilter corsFilter = new CORSFilter();
+        corsFilter.setAllowOrigin("*");
+        corsFilter.setAllowMethods(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE, HttpMethod.HEAD);
+        corsFilter.setAllowHeaders("Content-Type", "api_key", "Authorization", CSRFHandler.HEADER);
         ALL("/api/?.*", corsFilter).named("CORS Filter");
 
         /*

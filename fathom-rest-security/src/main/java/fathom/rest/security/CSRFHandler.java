@@ -57,7 +57,9 @@ import java.util.Set;
  */
 public class CSRFHandler implements RouteHandler<Context> {
 
-    public static final String TOKEN = "_csrf_token";
+    public static final String HEADER = "Csrf-Token";
+
+    public static final String PARAMETER = "_csrf_token";
 
     public static final String BINDING = "csrfToken";
 
@@ -91,11 +93,11 @@ public class CSRFHandler implements RouteHandler<Context> {
     }
 
     protected String getSessionCsrfToken(Context context) {
-        return context.getSession(TOKEN);
+        return context.getSession(PARAMETER);
     }
 
     protected void setSessionCsrfToken(Context context, String token) {
-        context.setSession(TOKEN, token);
+        context.setSession(PARAMETER, token);
     }
 
     protected String getTokenId(Context context) {
@@ -117,27 +119,27 @@ public class CSRFHandler implements RouteHandler<Context> {
             }
 
             // Permit "nocheck" Csrf-Token headers
-            String requestToken = context.getHeader("Csrf-Token");
+            String requestToken = context.getHeader(HEADER);
             if ("nocheck".equals(requestToken)) {
                 log.debug("Ignoring 'nocheck' request for {} '{}'", context.getRequestMethod(), context.getRequestUri());
                 return;
             }
 
             if (Strings.isNullOrEmpty(requestToken)) {
-                requestToken = context.getParameter(TOKEN).toString();
+                requestToken = context.getParameter(PARAMETER).toString();
             }
 
             if (Strings.isNullOrEmpty(requestToken)) {
-                throw new StatusCodeException(HttpServletResponse.SC_FORBIDDEN, "Illegal request, no '{}'!", TOKEN);
+                throw new StatusCodeException(HttpServletResponse.SC_FORBIDDEN, "Illegal request, no '{}'!", PARAMETER);
             }
 
             // Validate the request token against the session token
             String sessionToken = getSessionCsrfToken(context);
             if (!requestToken.equals(sessionToken)) {
-                throw new StatusCodeException(HttpServletResponse.SC_FORBIDDEN, "Illegal request, invalid '{}'!", TOKEN);
+                throw new StatusCodeException(HttpServletResponse.SC_FORBIDDEN, "Illegal request, invalid '{}'!", PARAMETER);
             }
 
-            log.debug("Validated '{}' for {} '{}'", TOKEN, context.getRequestMethod(), context.getRequestUri());
+            log.debug("Validated '{}' for {} '{}'", PARAMETER, context.getRequestMethod(), context.getRequestUri());
 
         } else if (HttpMethod.GET.equals(httpSerlvetRequestMethod)) {
 
@@ -146,7 +148,7 @@ public class CSRFHandler implements RouteHandler<Context> {
                 String sessionId = getTokenId(context);
                 String token = CryptoUtil.hmacDigest(sessionId, secretKey, algorithm);
                 setSessionCsrfToken(context, token);
-                log.debug("Generated '{}' for {} '{}'", TOKEN, httpSerlvetRequestMethod, context.getRequestUri());
+                log.debug("Generated '{}' for {} '{}'", PARAMETER, httpSerlvetRequestMethod, context.getRequestUri());
             }
 
             String token = getSessionCsrfToken(context);

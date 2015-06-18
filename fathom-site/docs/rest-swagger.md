@@ -262,7 +262,7 @@ public Employee getEmployee(@Desc("employee id") int id) {
 
 CORS is a technique to prevent websites from doing bad things with your personal data. Most browsers + javascript toolkits not only support CORS but enforce it, which has implications for your API server which supports Swagger.
 
-You can read about CORS here: http://www.w3.org/TR/cors.
+You can read about CORS here: http://www.html5rocks.com/en/tutorials/cors/.
 
 There are two cases where no action is needed for CORS support:
 
@@ -279,10 +279,10 @@ Otherwise, CORS support needs to be enabled for:
 Add a `HeaderFilter` in your `conf/Routes.java` class before you register your API routes.
 
 ```java
-HeaderFilter corsFilter = new HeaderFilter();
-corsFilter.setHeader("Access-Control-Allow-Origin", "*");
-corsFilter.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
-corsFilter.setHeader("Access-Control-Allow-Headers", "Content-Type, api_key, Authorization");
+CORSFilter corsFilter = new CORSFilter();
+corsFilter.setAllowOrigin("*");
+corsFilter.setAllowMethods("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD");
+corsFilter.setAllowHeaders("Content-Type", "api_key", "Authorization", "Csrf-Token");
 
 ALL("/api/?.*", corsFilter).named("CORS Filter");
 ```
@@ -292,15 +292,26 @@ ALL("/api/?.*", corsFilter).named("CORS Filter");
 Once you have setup your CORS filter, you can test that the appropriate headers are being set with curl or your favorite browser extension.
 
 ```
-$ curl -I "http://localhost:8080/api/swagger.json"
-HTTP/1.1 200 OK
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Headers: Content-Type, api_key, Authorization
-Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS
-Date: Thu, 18 Jun 2015 15:55:38 GMT
-Last-Modified: Thu, 18 Jun 2015 11:55:35 GMT
-Content-Type: application/json;charset=UTF-8
-Content-Length: 0
+$ curl -v -X OPTIONS --header "Access-Control-Request-Method: GET" "http://localhost:8080/api/swagger.json"
+* Hostname was NOT found in DNS cache
+*   Trying 127.0.0.1...
+* Connected to localhost (127.0.0.1) port 8080 (#0)
+> OPTIONS /api/swagger.json HTTP/1.1
+> User-Agent: curl/7.35.0
+> Host: localhost:8080
+> Accept: */*
+> Access-Control-Request-Method: GET
+>
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Headers: Content-Type,api_key,Authorization,Csrf-Token
+< Content-Type: text/html;charset=UTF-8
+< Content-Length: 0
+< Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,HEAD
+< Date: Thu, 18 Jun 2015 22:06:47 GMT
+<
+* Connection #0 to host localhost left intact
 ```
 
 [Swagger]: http://swagger.io
