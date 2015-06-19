@@ -448,6 +448,11 @@ public class Settings {
         return config.getConfig(name);
     }
 
+    public String getNonEmptyString(String name, String defaultValue) {
+        String value = Optional.fromNullable(Strings.emptyToNull(getString(name, null))).or(defaultValue);
+        return value;
+    }
+
     /**
      * Returns the string value for the specified name. If the name does not exist
      * or the value for the name can not be interpreted as a string, the
