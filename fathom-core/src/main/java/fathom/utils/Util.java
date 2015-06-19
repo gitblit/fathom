@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -178,8 +177,10 @@ public class Util {
     }
 
     public static Set<String> splitToSet(String value, String delimiter) {
-        String[] values = value.split(delimiter);
-        LinkedHashSet<String> set = new LinkedHashSet<>(Arrays.asList(values));
+        LinkedHashSet<String> set = new LinkedHashSet<>();
+        for (String chunk : value.split(delimiter)) {
+            set.add(chunk.trim());
+        }
         return set;
     }
 
