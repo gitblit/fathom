@@ -21,15 +21,17 @@ import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Header;
 import fathom.rest.controller.Named;
-import fathom.rest.controller.Required;
 import fathom.rest.controller.POST;
 import fathom.rest.controller.PUT;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
 import fathom.rest.controller.Range;
+import fathom.rest.controller.Required;
 import fathom.rest.controller.Return;
 import fathom.rest.controller.exceptions.RangeException;
 import fathom.rest.controller.exceptions.ValidationException;
+import fathom.rest.security.aop.RequirePermission;
+import fathom.rest.security.aop.RequireToken;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Form;
 import fathom.rest.swagger.Notes;
@@ -46,10 +48,13 @@ import ro.pippo.core.FileItem;
 @Path("/pet")
 @Tag(name = "pet", description = "Operations about pets")
 @Produces({Produces.JSON, Produces.XML})
+@RequireToken
+@RequirePermission("read:pet")
 public class PetController extends ApiV2 {
 
     @PUT
     @Named("Update an existing pet")
+    @RequirePermission("update:pet")
     @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
     @Return(status = 404, description = "Pet not found")
     @Return(status = 405, description = "Validation exception", onResult = ValidationException.class)
@@ -61,6 +66,7 @@ public class PetController extends ApiV2 {
 
     @POST
     @Named("Add a new pet to the store")
+    @RequirePermission("add:pet")
     @Return(status = 405, description = "Invalid input", onResult = ValidationException.class)
     public void addPet(@Desc("Pet object that needs to be added to the store") @Body Pet pet) {
         getResponse().ok();
@@ -88,17 +94,18 @@ public class PetController extends ApiV2 {
 
     @POST("/{petId}")
     @Named("Updates a pet in the store with form data")
+    @RequirePermission("update:pet")
     @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
     @Return(status = 405, description = "Invalid input", onResult = ValidationException.class)
     public void updatePetWithForm(
             @Desc("ID of pet that needs to be updated") @Range(min = 1, max = 5) long petId,
             @Desc("Updated name of the pet") @Form String name,
             @Desc("Updated status of the pet") @Form PetStatus status) {
-        getResponse().ok();
     }
 
     @DELETE("/{petId}")
     @Named("Deletes a pet")
+    @RequirePermission("delete:pet")
     @Return(status = 400, description = "Invalid pet id", onResult = RangeException.class)
     public void deletePet(@Desc("Pet id to delete") @Range(min = 1, max = 5) long petId, @Header String api_key) {
     }
@@ -116,6 +123,7 @@ public class PetController extends ApiV2 {
 
     @POST("/{petId}/uploadImage")
     @Named("uploads an image")
+    @RequirePermission("update:pet")
     @Produces(Produces.JSON)
     public void uploadFile(
             @Desc("ID of pet to update") long petId,

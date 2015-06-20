@@ -32,6 +32,7 @@ import fathom.rest.security.CSRFHandler;
 import fathom.rest.security.FormAuthenticationGuard;
 import fathom.rest.security.FormAuthenticationHandler;
 import fathom.rest.security.LogoutHandler;
+import fathom.rest.security.aop.RequireToken;
 import models.Employee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +116,7 @@ public class Routes extends RoutesModule {
          * This creates a session for all matching requests.
          */
         CSRFHandler csrfHandler = new CSRFHandler();
-        ALL("/(secure/.*|collections|content)", csrfHandler).named("CSRF handler");
+        ALL("/(secure/.*|collections|content|api)", csrfHandler).named("CSRF handler");
 
         /*
          * Create a form authentication guard for secure routes.
@@ -123,8 +124,8 @@ public class Routes extends RoutesModule {
          * to the login url.
          */
         FormAuthenticationGuard guard = new FormAuthenticationGuard("/login");
-        GET("/(secure/.*|collections|content)", guard);
-        POST("/(secure/.*|collections|content)", guard);
+        GET("/(secure/.*|collections|content|api)", guard);
+        POST("/(secure/.*|collections|content|api)", guard);
 
         /*
          * Root page
@@ -226,10 +227,11 @@ public class Routes extends RoutesModule {
         /*
          * Add a CORS filter for our API routes
          */
+
         CORSFilter corsFilter = new CORSFilter();
         corsFilter.setAllowOrigin("*");
         corsFilter.setAllowMethods(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE, HttpMethod.HEAD);
-        corsFilter.setAllowHeaders("Content-Type", "api_key", "Authorization", CSRFHandler.HEADER);
+        corsFilter.setAllowHeaders("Content-Type", RequireToken.DEFAULT, "Authorization", CSRFHandler.HEADER);
         ALL("/api/?.*", corsFilter).named("CORS Filter");
 
         /*

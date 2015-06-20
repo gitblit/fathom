@@ -136,7 +136,7 @@ public class EmployeesController extends Controller {
 }
 ```
 
-### Controller Method Authorization
+### Controller Authorization
 
 Instead of manually injecting and checking the *account* for a specific permission, you may use an annotation to specify the *role* or *permission* to require.  If the request has no associated *account* then the *Guest account* is supplied to avoid NullPointerExceptions.
 
@@ -144,13 +144,14 @@ If the *account* is unauthorized an *AuthorizationException* will be thrown whic
 
 | Annotation                         | Use-Case                                                       |
 |------------------------------------|----------------------------------------------------------------|
+| `@RequireToken`                    | Action requires a valid Realm Account token                    |
 | `@RequireGuest`                    | Action requires a Guest account                                |
 | `@RequireAuthenticated`            | Action requires an Authenticated account (not a Guest account) |
 | `@RequireAdministrator`            | Action requires administrator permissions                      |
 | `@RequireRole("role")`             | Action requires the specified role                             |
 | `@RequirePermission("permission")` | Action requires the specified permission                       |
 
-In the following examples we are enforcing `employee:view` and `employee:delete` *permissions* on the controller methods.
+In the following examples we are enforcing `employee:view` and `employee:delete` *permissions* on the controller methods.  Additionally, the *deleteEmployee* method requires the presence of a *token* in the request.  This *token* may be a *query* parameter or a *header* but it must correlate to an *Account* in your *Realm* configuration.
 
 ```java
 @Path("/employees")
@@ -171,6 +172,7 @@ public class EmployeesController extends Controller {
   }
 
   @DELETE("/employees/{id: [0-9]+}")
+  @RequireToken
   @RequirePermission("employee:delete")
   public void deleteEmployee(int id) {
     boolean success = employeeDao.remove(id);

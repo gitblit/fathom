@@ -16,13 +16,14 @@
 
 package fathom.rest.security;
 
+import com.google.inject.matcher.Matcher;
 import fathom.Module;
+import fathom.rest.controller.Controller;
+import fathom.rest.security.aop.ControllerInterceptor;
 import fathom.rest.security.aop.RequireAdministrator;
 import fathom.rest.security.aop.RequireAdministratorInterceptor;
 import fathom.rest.security.aop.RequireAuthenticated;
 import fathom.rest.security.aop.RequireAuthenticatedInterceptor;
-import fathom.rest.security.aop.RequireGuest;
-import fathom.rest.security.aop.RequireGuestInterceptor;
 import fathom.rest.security.aop.RequirePermission;
 import fathom.rest.security.aop.RequirePermissionInterceptor;
 import fathom.rest.security.aop.RequirePermissions;
@@ -31,9 +32,9 @@ import fathom.rest.security.aop.RequireRole;
 import fathom.rest.security.aop.RequireRoleInterceptor;
 import fathom.rest.security.aop.RequireRoles;
 import fathom.rest.security.aop.RequireRolesInterceptor;
+import fathom.security.SecurityManager;
 
-import static com.google.inject.matcher.Matchers.annotatedWith;
-import static com.google.inject.matcher.Matchers.any;
+import static com.google.inject.matcher.Matchers.*;
 
 /**
  * @author James Moger
@@ -46,26 +47,35 @@ public class SecurityModule extends Module {
         bind(BasicAuthenticationHandler.class);
         bind(FormAuthenticationHandler.class);
 
-        RequireGuestInterceptor guestInterceptor = new RequireGuestInterceptor();
-        bindInterceptor(any(), annotatedWith(RequireGuest.class), guestInterceptor);
+        Matcher<Class> controllers = subclassesOf(Controller.class);
+        Matcher<Class> notControllers = not(controllers);
 
+        /*
+         * The grand ControllerInterceptor.
+         */
+        ControllerInterceptor controllerInterceptor = new ControllerInterceptor(getProvider(SecurityManager.class));
+        bindInterceptor(controllers, any(), controllerInterceptor);
+
+        /*
+         * Individual method interceptors for annotating non-controllers.
+         */
         RequireAuthenticatedInterceptor authenticatedInterceptor = new RequireAuthenticatedInterceptor();
-        bindInterceptor(any(), annotatedWith(RequireAuthenticated.class), authenticatedInterceptor);
+        bindInterceptor(notControllers, annotatedWith(RequireAuthenticated.class), authenticatedInterceptor);
 
         RequireAdministratorInterceptor administratorInterceptor = new RequireAdministratorInterceptor();
-        bindInterceptor(any(), annotatedWith(RequireAdministrator.class), administratorInterceptor);
+        bindInterceptor(notControllers, annotatedWith(RequireAdministrator.class), administratorInterceptor);
 
         RequireRoleInterceptor roleInterceptor = new RequireRoleInterceptor();
-        bindInterceptor(any(), annotatedWith(RequireRole.class), roleInterceptor);
+        bindInterceptor(notControllers, annotatedWith(RequireRole.class), roleInterceptor);
 
         RequirePermissionInterceptor permissionInterceptor = new RequirePermissionInterceptor();
-        bindInterceptor(any(), annotatedWith(RequirePermission.class), permissionInterceptor);
+        bindInterceptor(notControllers, annotatedWith(RequirePermission.class), permissionInterceptor);
 
         RequireRolesInterceptor rolesInterceptor = new RequireRolesInterceptor();
-        bindInterceptor(any(), annotatedWith(RequireRoles.class), rolesInterceptor);
+        bindInterceptor(notControllers, annotatedWith(RequireRoles.class), rolesInterceptor);
 
         RequirePermissionsInterceptor permissionsInterceptor = new RequirePermissionsInterceptor();
-        bindInterceptor(any(), annotatedWith(RequirePermissions.class), permissionsInterceptor);
+        bindInterceptor(notControllers, annotatedWith(RequirePermissions.class), permissionsInterceptor);
     }
 
 }
