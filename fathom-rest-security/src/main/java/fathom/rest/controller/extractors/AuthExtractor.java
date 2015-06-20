@@ -58,7 +58,8 @@ public class AuthExtractor implements TypedExtractor, NamedExtractor, Configurab
     @Override
     public Account extract(Context context) {
         Account session = context.getSession(AuthConstants.ACCOUNT_ATTRIBUTE);
-        Account account = Optional.fromNullable(session).or(Account.GUEST);
+        Account local = context.getLocal(AuthConstants.ACCOUNT_ATTRIBUTE);
+        Account account = Optional.fromNullable(session).or(Optional.fromNullable(local).or(Account.GUEST));
         return account;
     }
 }
