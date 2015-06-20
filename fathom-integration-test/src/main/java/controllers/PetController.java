@@ -125,6 +125,7 @@ public class PetController extends ApiV2 {
     @Named("uploads an image")
     @RequirePermission("update:pet")
     @Produces(Produces.JSON)
+    @Return(status = 200, description = "Successful operation")
     public void uploadFile(
             @Desc("ID of pet to update") long petId,
             @Desc("Additional data to pass to server") @Form String additionalMetadata,

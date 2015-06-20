@@ -49,11 +49,13 @@ public class UserController extends ApiV2 {
 
     @POST("/createWithArray")
     @Named("Create list of users with given input array")
+    @Return(status = 201, description = "Users created")
     public void createUsersWithArrayInput(@Desc("List of User object") @Body User[] users) {
     }
 
     @POST("/createWithList")
     @Named("Create list of users with given input array")
+    @Return(status = 201, description = "Users created")
     public void createUsersWithListInput(@Desc("List of User object") @Body List<User> users) {
     }
 
@@ -98,6 +100,7 @@ public class UserController extends ApiV2 {
 
     @POST("/logout")
     @Named("Log user out of the system")
+    @Return(status = 200, description = "User logged out")
     public void logoutUser() {
     }
 
