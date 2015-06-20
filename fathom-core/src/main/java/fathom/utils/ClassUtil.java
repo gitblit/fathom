@@ -163,6 +163,22 @@ public class ClassUtil {
         return Collections.unmodifiableCollection(classes);
     }
 
+    /**
+     * Extract the annotation from the method or the declaring class.
+     *
+     * @param method
+     * @param annotationClass
+     * @param <T>
+     * @return the annotation or null
+     */
+    public static <T extends Annotation> T getAnnotation(Method method, Class<T> annotationClass) {
+        T t = method.getAnnotation(annotationClass);
+        if (t == null) {
+            t = method.getDeclaringClass().getAnnotation(annotationClass);
+        }
+        return t;
+    }
+
     public static <T> T newInstance(Class<T> classOfT) {
         try {
             return (T) classOfT.getConstructor().newInstance();

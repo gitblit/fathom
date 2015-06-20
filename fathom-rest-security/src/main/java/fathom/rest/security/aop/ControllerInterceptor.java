@@ -26,17 +26,14 @@ import fathom.rest.Context;
 import fathom.rest.controller.extractors.AuthExtractor;
 import fathom.rest.security.AuthConstants;
 import fathom.security.SecurityManager;
+import fathom.utils.ClassUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteDispatcher;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,22 +66,6 @@ public class ControllerInterceptor implements MethodInterceptor {
         return invocation.proceed();
     }
 
-    /**
-     * Extract the annotation from the Method or the Controller class.
-     *
-     * @param method
-     * @param annotationClass
-     * @param <T>
-     * @return the annotation or null
-     */
-    <T extends Annotation> T getAnnotation(Method method, Class<T> annotationClass) {
-        T t = method.getAnnotation(annotationClass);
-        if (t == null) {
-            t = method.getDeclaringClass().getAnnotation(annotationClass);
-        }
-        return t;
-    }
-
     Account getAccount() {
         Context context = RouteDispatcher.getRouteContext();
         AuthExtractor extractor = new AuthExtractor();
@@ -93,7 +74,7 @@ public class ControllerInterceptor implements MethodInterceptor {
     }
 
     protected void checkRequireToken(Method method) {
-        RequireToken requireToken = getAnnotation(method, RequireToken.class);
+        RequireToken requireToken = ClassUtil.getAnnotation(method, RequireToken.class);
         if (requireToken != null) {
 
             String tokenName = requireToken.value();
@@ -125,69 +106,23 @@ public class ControllerInterceptor implements MethodInterceptor {
     }
 
     protected void checkRequireRoles(Method method) {
-        List<String> roles = new ArrayList<>();
-        roles.addAll(collectRoles(method.getAnnotation(RequireRoles.class)));
-        roles.addAll(collectRoles(method.getDeclaringClass().getAnnotation(RequireRoles.class)));
-
-        if (method.isAnnotationPresent(RequireRole.class)) {
-            roles.add(method.getAnnotation(RequireRole.class).value());
-        }
-
-        if (method.getDeclaringClass().isAnnotationPresent(RequireRole.class)) {
-            roles.add(method.getDeclaringClass().getAnnotation(RequireRole.class).value());
-        }
-
+        List<String> roles = SecurityUtil.collectRoles(method);
         if (!roles.isEmpty()) {
             Account account = getAccount();
             account.checkRoles(roles.toArray(new String[roles.size()]));
         }
     }
 
-    Collection<String> collectRoles(RequireRoles requireRoles) {
-        if (requireRoles == null) {
-            return Collections.emptyList();
-        }
-
-        List<String> roles = new ArrayList<>();
-        for (RequireRole role : requireRoles.value()) {
-            roles.add(role.value());
-        }
-        return roles;
-    }
-
     protected void checkRequirePermissions(Method method) {
-        List<String> permissions = new ArrayList<>();
-        permissions.addAll(collectPermissions(method.getAnnotation(RequirePermissions.class)));
-        permissions.addAll(collectPermissions(method.getDeclaringClass().getAnnotation(RequirePermissions.class)));
-
-        if (method.isAnnotationPresent(RequirePermission.class)) {
-            permissions.add(method.getAnnotation(RequirePermission.class).value());
-        }
-
-        if (method.getDeclaringClass().isAnnotationPresent(RequirePermission.class)) {
-            permissions.add(method.getDeclaringClass().getAnnotation(RequirePermission.class).value());
-        }
-
+        List<String> permissions = SecurityUtil.collectPermissions(method);
         if (!permissions.isEmpty()) {
             Account account = getAccount();
             account.checkPermissions(permissions.toArray(new String[permissions.size()]));
         }
     }
 
-    Collection<String> collectPermissions(RequirePermissions requirePermissions) {
-        if (requirePermissions == null) {
-            return Collections.emptyList();
-        }
-
-        List<String> permissions = new ArrayList<>();
-        for (RequirePermission permission : requirePermissions.value()) {
-            permissions.add(permission.value());
-        }
-        return permissions;
-    }
-
     protected void checkRequireAdministrator(Method method) {
-        RequireAdministrator annotation = getAnnotation(method, RequireAdministrator.class);
+        RequireAdministrator annotation = ClassUtil.getAnnotation(method, RequireAdministrator.class);
         if (annotation != null) {
             Account account = getAccount();
             account.checkAdministrator();
@@ -195,7 +130,7 @@ public class ControllerInterceptor implements MethodInterceptor {
     }
 
     protected void checkRequireAuthenticated(Method method) {
-        RequireAuthenticated annotation = getAnnotation(method, RequireAuthenticated.class);
+        RequireAuthenticated annotation = ClassUtil.getAnnotation(method, RequireAuthenticated.class);
         if (annotation != null) {
             Account account = getAccount();
             account.checkAuthenticated();
@@ -203,7 +138,7 @@ public class ControllerInterceptor implements MethodInterceptor {
     }
 
     protected void checkRequireGuest(Method method) {
-        RequireGuest annotation = getAnnotation(method, RequireGuest.class);
+        RequireGuest annotation = ClassUtil.getAnnotation(method, RequireGuest.class);
         if (annotation != null) {
             Account account = getAccount();
             account.checkGuest();

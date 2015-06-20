@@ -17,13 +17,12 @@ package fathom.rest.security.aop;
 
 import com.google.inject.Inject;
 import fathom.realm.Account;
-import fathom.rest.controller.extractors.AuthExtractor;
 import fathom.rest.Context;
+import fathom.rest.controller.extractors.AuthExtractor;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import ro.pippo.core.route.RouteDispatcher;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,12 +37,7 @@ public class RequirePermissionsInterceptor implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
 
-        RequirePermissions annotation = invocation.getMethod().getAnnotation(RequirePermissions.class);
-        List<String> permissions = new ArrayList<>();
-        for (RequirePermission permission : annotation.value()) {
-            permissions.add(permission.value());
-        }
-
+        List<String> permissions = SecurityUtil.collectPermissions(invocation.getMethod());
         Context context = RouteDispatcher.getRouteContext();
         AuthExtractor extractor = new AuthExtractor();
         Account account = extractor.extract(context);

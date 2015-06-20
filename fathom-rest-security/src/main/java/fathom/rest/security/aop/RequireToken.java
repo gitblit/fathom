@@ -24,8 +24,6 @@ import java.lang.annotation.Target;
  * Specifies that a token value is required to complete the request.
  * The token must uniquely identify a valid Account.
  *
- * The token name is configured in default.conf as "rest.tokenName"
- *
  * @author James Moger
  */
 @Target({ElementType.TYPE, ElementType.METHOD})

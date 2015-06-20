@@ -32,6 +32,8 @@ import fathom.rest.security.aop.RequireRole;
 import fathom.rest.security.aop.RequireRoleInterceptor;
 import fathom.rest.security.aop.RequireRoles;
 import fathom.rest.security.aop.RequireRolesInterceptor;
+import fathom.rest.security.aop.RequireToken;
+import fathom.rest.security.aop.RequireTokenInterceptor;
 import fathom.security.SecurityManager;
 
 import static com.google.inject.matcher.Matchers.*;
@@ -59,6 +61,9 @@ public class SecurityModule extends Module {
         /*
          * Individual method interceptors for annotating non-controllers.
          */
+        RequireTokenInterceptor tokenInterceptor = new RequireTokenInterceptor(getProvider(SecurityManager.class));
+        bindInterceptor(notControllers, annotatedWith(RequireToken.class), tokenInterceptor);
+
         RequireAuthenticatedInterceptor authenticatedInterceptor = new RequireAuthenticatedInterceptor();
         bindInterceptor(notControllers, annotatedWith(RequireAuthenticated.class), authenticatedInterceptor);
 
