@@ -103,8 +103,18 @@ swagger {
     # Text to display in the banner of the Swagger UI
     bannerText = "swagger"
 
-    # Display the API key text field in Swagger UI
-    showApiKey = false
+    # Define the name of the token to send from Swagger UI.
+    # The default value is "api_key"
+    apiKeyName = api_key
+
+    # Define the type of the API key to send from Swagger UI.
+    # The default type is "header", the alternatives are "query" and "none".
+    apiKeyType = header
+
+    # Display the API key text field in Swagger UI.
+    # Showing the text field allows the api key to be manually specified.
+    hideApiKey = true
+
   }
 
 }
@@ -257,6 +267,22 @@ public Employee getEmployee(@Desc("employee id") int id) {
 
 !!! Note
     The `@Return` annotation is part of [Fathom-REST](rest.md) and is more thoroughly documented in that module.
+
+### @RequireToken
+
+You may use the `@RequireToken` annotation to enforce token-based access to your controller method.
+
+```java
+@GET("/{id}")
+@RequireToken
+public Employee getEmployee(@Desc("employee id") int id) {
+  Employee employee = employeeDao.get(id);
+  return employee;
+}
+```
+
+!!! Note
+    The `@RequireToken` annotation is part of [Fathom-REST-Security](rest-security.md) and is more thoroughly documented in that module.
 
 ## CORS or Cross Origin Resource Sharing
 

@@ -18,12 +18,16 @@ package fathom.rest.swagger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fathom.Service;
 import fathom.conf.Settings;
+import fathom.realm.Account;
 import fathom.rest.controller.HttpMethod;
+import fathom.rest.security.AuthConstants;
+import fathom.rest.security.aop.RequireToken;
 import io.swagger.models.Swagger;
 import io.swagger.util.Json;
 import io.swagger.util.Yaml;
@@ -117,15 +121,33 @@ public class SwaggerService implements Service {
      */
     protected void registerRoutes() {
 
-        String swaggerPath = settings.getString("swagger.ui.path", "/api");
-        boolean showApiKey = settings.getBoolean("swagger.ui.showApiKey", false);
+        boolean hideApiKey;
+        String apiKeyName;
+        String apiKeyType = settings.getString("swagger.ui.apiKeyType", "header");
+        if ("none".equals(apiKeyType)) {
+            apiKeyName = "";
+            hideApiKey = true;
+        } else {
+            hideApiKey = settings.getBoolean("swagger.ui.hideApiKey", false);
+            apiKeyName = settings.getString("swagger.ui.apiKeyName", RequireToken.DEFAULT);
+        }
 
         // Swagger UI route
+        String swaggerPath = settings.getString("swagger.ui.path", "/api");
         GET(swaggerPath, (ctx) -> {
             ctx.setLocal("apiTitle", settings.getString("swagger.api.title", settings.getApplicationName()));
             ctx.setLocal("bannerText", settings.getString("swagger.ui.bannerText", "swagger"));
             ctx.setLocal("swaggerPath", StringUtils.removeStart(swaggerPath, "/"));
-            ctx.setLocal("showApiKey", showApiKey);
+            ctx.setLocal("hideApiKey", hideApiKey);
+            ctx.setLocal("apiKeyName", apiKeyName);
+            ctx.setLocal("apiKeyType", apiKeyType);
+
+            // Get the current account and it's first token, might be guest and/or may have no tokens
+            Account session = ctx.getSession(AuthConstants.ACCOUNT_ATTRIBUTE);
+            Account local = ctx.getLocal(AuthConstants.ACCOUNT_ATTRIBUTE);
+            Account account = Optional.fromNullable(session).or(Optional.fromNullable(local).or(Account.GUEST));
+            ctx.setLocal("apiKey", Optional.fromNullable(account.getToken()).or(""));
+
             ctx.render("swagger/index");
         });
 

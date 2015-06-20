@@ -54,17 +54,14 @@
             function addApiKeyAuthorization(){
                 var key = encodeURIComponent($('#input_apiKey')[0].value);
                 if(key && key.trim() != "") {
-                    var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("api_key", key, "query");
+                    var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("${apiKeyName}", key, "${apiKeyType}");
                     window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
                     log("added key " + key);
                 }
             }
             $('#input_apiKey').change(addApiKeyAuthorization);
-            // if you have an apiKey you would like to pre-populate on the page for demonstration purposes...
-            /*
-              var apiKey = "myApiKeyXXXX123456789";
-              $('#input_apiKey').val(apiKey);
-            */
+            $('#input_apiKey').val("${apiKey}");
+
             window.swaggerUi.load();
             function log() {
                 if ('console' in window) {
@@ -81,10 +78,13 @@
         <a id="logo" href="${appPath}">${bannerText}</a>
         <form id='api_selector'>
             <div class='input'><input hidden="true" placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
-            <#if showApiKey>
-                <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
-                <div class='input'><a id="explore" href="#">Explore</a></div>
-            </#if>
+            <div class='input'>
+                <#if hideApiKey>
+                    <input hidden placeholder="${apiKeyName}" id="input_apiKey" name="apiKey" type="text" value="${apiKey}" />
+                <#else>
+                    <input placeholder="${apiKeyName}" id="input_apiKey" name="apiKey" type="text" value="${apiKey}"/>
+                </#if>
+            </div>
         </form>
     </div>
 </div>
