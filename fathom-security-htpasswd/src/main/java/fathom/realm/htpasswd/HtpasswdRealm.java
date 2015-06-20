@@ -82,6 +82,11 @@ public class HtpasswdRealm extends MemoryRealm {
     }
 
     @Override
+    public boolean canAuthenticate(AuthenticationToken authenticationToken) {
+        return authenticationToken instanceof StandardCredentials;
+    }
+
+    @Override
     public void setup(Config config) {
         super.setup(config);
 

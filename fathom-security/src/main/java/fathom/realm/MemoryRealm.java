@@ -20,7 +20,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValue;
+import fathom.authc.AuthenticationToken;
 import fathom.authc.StandardCredentials;
+import fathom.authc.TokenCredentials;
 import fathom.authz.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,7 @@ public class MemoryRealm extends StandardCredentialsRealm {
     private static final Logger log = LoggerFactory.getLogger(MemoryRealm.class);
 
     private final Map<String, Account> accounts;
+    private final Map<String, Account> tokens;
     private final Map<String, Role> definedRoles;
     private String realmName;
 
@@ -48,7 +51,23 @@ public class MemoryRealm extends StandardCredentialsRealm {
         super();
         this.realmName = getClass().getSimpleName();
         this.accounts = new ConcurrentHashMap<>();
+        this.tokens = new ConcurrentHashMap<>();
         this.definedRoles = new ConcurrentHashMap<>();
+    }
+
+    @Override
+    public boolean canAuthenticate(AuthenticationToken authenticationToken) {
+        return authenticationToken instanceof StandardCredentials || authenticationToken instanceof TokenCredentials;
+    }
+
+    @Override
+    public Account authenticate(AuthenticationToken authenticationToken) {
+        if (authenticationToken instanceof StandardCredentials) {
+            return super.authenticate(authenticationToken);
+        } else if (authenticationToken instanceof TokenCredentials) {
+            return authenticateToken((TokenCredentials) authenticationToken);
+        }
+        return null;
     }
 
     @Override
@@ -61,6 +80,7 @@ public class MemoryRealm extends StandardCredentialsRealm {
         definedRoles.putAll(parseDefinedRoles(config));
 
         accounts.clear();
+        tokens.clear();
         if (config.hasPath("accounts")) {
             for (Config accountConfig : config.getConfigList("accounts")) {
                 Account account = parseAccount(accountConfig);
@@ -99,6 +119,18 @@ public class MemoryRealm extends StandardCredentialsRealm {
 
         if (accountConfig.hasPath("emailAddresses")) {
             account.addEmailAddresses(accountConfig.getStringList("emailAddresses"));
+        }
+
+        if (accountConfig.hasPath("tokens")) {
+            account.addTokens(accountConfig.getStringList("tokens"));
+            for (String token : account.getTokens()) {
+                if (tokens.containsKey(token)) {
+                    String otherAccount = tokens.get(token).getUsername();
+                    log.error("Token collision: {} has the same token as {}", account.getUsername(), otherAccount);
+                } else {
+                    tokens.put(token, account);
+                }
+            }
         }
 
         if (accountConfig.hasPath("disabled") && accountConfig.getBoolean("disabled")) {
@@ -172,6 +204,10 @@ public class MemoryRealm extends StandardCredentialsRealm {
     public Account authenticate(String username, String password) {
         Account account = authenticate(new StandardCredentials(username, password));
         return account;
+    }
+
+    public Account authenticateToken(TokenCredentials credentials) {
+        return tokens.get(credentials.getToken());
     }
 
     public Account addAccount(String username, String password) {

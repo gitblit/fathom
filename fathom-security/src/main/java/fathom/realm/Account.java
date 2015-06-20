@@ -24,11 +24,12 @@ import fathom.authz.AuthorizationException;
 import fathom.authz.Authorizations;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Account represents Credentials and Authorizations.
@@ -47,7 +48,9 @@ public class Account implements Serializable {
 
     protected final Authorizations authorizations;
 
-    protected final List<String> emailAddresses;
+    protected final Set<String> emailAddresses;
+
+    protected final Set<String> tokens;
 
     protected String name;
 
@@ -61,7 +64,8 @@ public class Account implements Serializable {
         this.name = name;
         this.credentials = credentials;
         this.authorizations = authorizations;
-        this.emailAddresses = new ArrayList<>();
+        this.emailAddresses = new LinkedHashSet<>();
+        this.tokens = new HashSet<>();
     }
 
     public Credentials getCredentials() {
@@ -96,8 +100,38 @@ public class Account implements Serializable {
         this.emailAddresses.addAll(addresses);
     }
 
+    public String getEmailAddress() {
+        if (emailAddresses.isEmpty()) {
+            return null;
+        }
+        return emailAddresses.toArray()[0].toString();
+    }
+
     public Collection<String> getEmailAddresses() {
         return Collections.unmodifiableCollection(emailAddresses);
+    }
+
+    public void addToken(String token) {
+        this.tokens.add(token);
+    }
+
+    public void addTokens(String... tokens) {
+        this.tokens.addAll(Arrays.asList(tokens));
+    }
+
+    public void addTokens(Collection<String> tokens) {
+        this.tokens.addAll(tokens);
+    }
+
+    public String getToken() {
+        if (tokens.isEmpty()) {
+            return null;
+        }
+        return tokens.toArray()[0].toString();
+    }
+
+    public Collection<String> getTokens() {
+        return Collections.unmodifiableCollection(tokens);
     }
 
     /**
@@ -280,7 +314,7 @@ public class Account implements Serializable {
      */
     public void checkPermissions(String... permissions) throws AuthorizationException {
         if (!isPermittedAll(permissions)) {
-            throw new AuthorizationException("'{}' does not have the permissions '{}'", toString(), permissions);
+            throw new AuthorizationException("'{}' does not have the permissions {}", toString(), Arrays.toString(permissions));
         }
     }
 
@@ -327,7 +361,30 @@ public class Account implements Serializable {
      */
     public void checkRoles(String... roleIdentifiers) throws AuthorizationException {
         if (!hasRoles(roleIdentifiers)) {
-            throw new AuthorizationException("'{}' does not have the roles '{}'", toString(), roleIdentifiers);
+            throw new AuthorizationException("'{}' does not have the roles {}", toString(), Arrays.toString(roleIdentifiers));
+        }
+    }
+
+    /**
+     * Returns {@code true} if this Account has the specified role, {@code false} otherwise.
+     *
+     * @param token the authentication token.
+     * @return {@code true} if this Account has the specified token, {@code false} otherwise.
+     */
+    public boolean hasToken(String token) {
+        return tokens.contains(token);
+    }
+
+    /**
+     * Asserts this Account has the specified token by returning quietly if they do or throwing an
+     * {@link fathom.authz.AuthorizationException} if they do not.
+     *
+     * @param token the authentication token.
+     * @throws fathom.authz.AuthorizationException if this Account does not have the token.
+     */
+    public void checkToken(String token) throws AuthorizationException {
+        if (!hasToken(token)) {
+            throw new AuthorizationException("'{}' does not have the token '{}'", toString(), token);
         }
     }
 

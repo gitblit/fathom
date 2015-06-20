@@ -89,7 +89,7 @@ public Account login(String username, String password) {
 
 ## Accounts
 
-*Account* usernames are specified to be **global** across all *realms*.  **Fathom-Security** will collect and merge *account* definitions across all defined *realms* to create an aggregate *account*.  This is necessary because not all *realms* are able to provide full *account* metadata, *roles*, or *permissions*.
+*Account* usernames are specified to be **global** across all *realms*.  **Fathom-Security** will collect and merge *account* definitions across all defined *realms* to create an aggregate *account*.  This is necessary because not all *realms* are able to provide full *account* metadata, *roles*, *permissions*, and *tokens*.
 
 For example, the *account* named `james` is assumed to represent the same person across all defined *realms* so that if `james` authenticates against a **PAM Realm**, his *account* metadata, *roles*, and *permissions* can be collected from the `james` *account* defined in a **File Realm**, **JDBC Realm**, etc.
 
@@ -146,6 +146,23 @@ roles: {
   administrator: ["*"]
   normal: ["secure:view"]
 }
+```
+
+## Tokens
+
+*Tokens* may be specified on an *account*. *Tokens* are both powerful and dangerous because a *token* is an authentication alias for an Account. You might use a *token* in a request header of a RESTful API route.
+
+!!! Note
+    Because a *token* is an alias for an Account, each *token* must be unique across all realms.
+
+```hocon
+accounts: [
+  {
+    username: "frank"
+    roles: ["normal"]
+    tokens: ["cafebabe","deadbeef"]
+  }
+]
 ```
 
 ## Authorization

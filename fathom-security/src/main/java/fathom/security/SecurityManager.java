@@ -188,6 +188,7 @@ public class SecurityManager implements Service {
                         aggregateAccount.setName(account.getName());
                     }
                     aggregateAccount.addEmailAddresses(account.getEmailAddresses());
+                    aggregateAccount.addTokens(account.getTokens());
                     aggregateAccount.getAuthorizations()
                             .addRoles(account.getAuthorizations().getRoles())
                             .addPermissions(account.getAuthorizations().getPermissions());
