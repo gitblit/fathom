@@ -35,6 +35,7 @@ import fathom.rest.controller.Required;
 import fathom.rest.controller.Return;
 import fathom.rest.controller.Returns;
 import fathom.rest.controller.Session;
+import fathom.rest.security.aop.RequireToken;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
 import io.swagger.models.ArrayModel;
@@ -50,6 +51,8 @@ import io.swagger.models.Response;
 import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
+import io.swagger.models.auth.ApiKeyAuthDefinition;
+import io.swagger.models.auth.In;
 import io.swagger.models.parameters.AbstractSerializableParameter;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.FormParameter;
@@ -88,6 +91,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -175,7 +179,6 @@ public class SwaggerBuilder {
         }
 
         swagger.setInfo(info);
-
 
         // External docs
         ExternalDocs externalDocs = new ExternalDocs();
@@ -313,6 +316,7 @@ public class SwaggerBuilder {
                 || controller.isAnnotationPresent(Deprecated.class));
 
         registerResponses(swagger, operation, method);
+        registerSecurity(swagger, operation, method);
 
         Tag tag = SwaggerUtil.getTag(controller);
         if (tag == null) {
@@ -446,6 +450,22 @@ public class SwaggerBuilder {
         }
 
         return ref;
+    }
+
+    protected void registerSecurity(Swagger swagger, Operation operation, Method method) {
+        RequireToken requireToken = ClassUtil.getAnnotation(method, RequireToken.class);
+        if (requireToken != null) {
+            String apiKeyName = requireToken.value();
+            if (swagger.getSecurityDefinitions() == null || !swagger.getSecurityDefinitions().containsKey(apiKeyName)) {
+                ApiKeyAuthDefinition security = new ApiKeyAuthDefinition();
+                security.setName(apiKeyName);
+                security.setIn(In.HEADER);
+                security.setType("apiKey");
+                swagger.addSecurityDefinition(apiKeyName, security);
+            }
+
+            operation.addSecurity(apiKeyName, Collections.emptyList());
+        }
     }
 
     /**
