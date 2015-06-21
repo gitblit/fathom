@@ -20,7 +20,6 @@ import fathom.rest.controller.Body;
 import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Header;
-import fathom.rest.controller.Named;
 import fathom.rest.controller.POST;
 import fathom.rest.controller.PUT;
 import fathom.rest.controller.Path;
@@ -32,10 +31,11 @@ import fathom.rest.controller.exceptions.RangeException;
 import fathom.rest.controller.exceptions.ValidationException;
 import fathom.rest.security.aop.RequirePermission;
 import fathom.rest.security.aop.RequireToken;
+import fathom.rest.swagger.ApiSummary;
+import fathom.rest.swagger.ApiTag;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Form;
-import fathom.rest.swagger.Notes;
-import fathom.rest.swagger.Tag;
+import fathom.rest.swagger.ApiNotes;
 import models.petstore.Pet;
 import models.petstore.PetStatus;
 import ro.pippo.core.FileItem;
@@ -46,14 +46,14 @@ import ro.pippo.core.FileItem;
  * @author James Moger
  */
 @Path("/pet")
-@Tag(name = "pet", description = "Operations about pets")
+@ApiTag(name = "pet", description = "Operations about pets")
 @Produces({Produces.JSON, Produces.XML})
 @RequireToken
 @RequirePermission("read:pet")
 public class PetController extends ApiV2 {
 
     @PUT
-    @Named("Update an existing pet")
+    @ApiSummary("Update an existing pet")
     @RequirePermission("update:pet")
     @Return(code = 400, description = "Invalid ID supplied", onResult = RangeException.class)
     @Return(code = 404, description = "Pet not found")
@@ -65,7 +65,7 @@ public class PetController extends ApiV2 {
     }
 
     @POST
-    @Named("Add a new pet to the store")
+    @ApiSummary("Add a new pet to the store")
     @RequirePermission("add:pet")
     @Return(code = 405, description = "Invalid input", onResult = ValidationException.class)
     public void addPet(@Desc("Pet object that needs to be added to the store") @Body Pet pet) {
@@ -73,8 +73,8 @@ public class PetController extends ApiV2 {
     }
 
     @GET("/findByStatus")
-    @Named("Finds pets by status")
-    @Notes
+    @ApiSummary("Finds pets by status")
+    @ApiNotes
     @Return(code = 200, description = "Successful operation", onResult = Pet[].class)
     @Return(code = 400, description = "Invalid status value", onResult = ValidationException.class)
     public Pet[] findPetsByStatus(@Desc("Status values that need to be considered for filter") @Required PetStatus[] status) {
@@ -83,8 +83,8 @@ public class PetController extends ApiV2 {
     }
 
     @GET("/findByTags")
-    @Named("Finds pets by tags")
-    @Notes
+    @ApiSummary("Finds pets by tags")
+    @ApiNotes
     @Return(code = 200, description = "Successful operation", onResult = Pet[].class)
     @Return(code = 400, description = "Invalid tag value", onResult = ValidationException.class)
     public Pet[] findPetsByTags(@Desc("Tags to filter by") @Required String[] tag) {
@@ -93,7 +93,7 @@ public class PetController extends ApiV2 {
     }
 
     @POST("/{petId}")
-    @Named("Updates a pet in the store with form data")
+    @ApiSummary("Updates a pet in the store with form data")
     @RequirePermission("update:pet")
     @Return(code = 400, description = "Invalid ID supplied", onResult = RangeException.class)
     @Return(code = 405, description = "Invalid input", onResult = ValidationException.class)
@@ -104,15 +104,15 @@ public class PetController extends ApiV2 {
     }
 
     @DELETE("/{petId}")
-    @Named("Deletes a pet")
+    @ApiSummary("Deletes a pet")
     @RequirePermission("delete:pet")
     @Return(code = 400, description = "Invalid pet id", onResult = RangeException.class)
     public void deletePet(@Desc("Pet id to delete") @Range(min = 1, max = 5) long petId, @Header String api_key) {
     }
 
     @GET("/{petId}")
-    @Named("Finds pet by ID")
-    @Notes
+    @ApiSummary("Finds pet by ID")
+    @ApiNotes("Returns a single pet.")
     @Return(code = 200, description = "Successful operation", onResult = Pet.class)
     @Return(code = 400, description = "Invalid ID supplied value", onResult = RangeException.class)
     @Return(code = 404, description = "Pet not found")
@@ -122,7 +122,7 @@ public class PetController extends ApiV2 {
     }
 
     @POST("/{petId}/uploadImage")
-    @Named("uploads an image")
+    @ApiSummary("uploads an image")
     @RequirePermission("update:pet")
     @Produces(Produces.JSON)
     @Return(code = 200, description = "Successful operation")

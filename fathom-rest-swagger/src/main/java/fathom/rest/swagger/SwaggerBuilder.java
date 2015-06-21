@@ -270,6 +270,13 @@ public class SwaggerBuilder {
             return false;
         }
 
+        if (handler.getDeclaredReturns().isEmpty()) {
+            log.debug("Skip {} {}, {} does not declare expected @Returns",
+                    route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()));
+            return false;
+        }
+
+
         if (handler.getControllerMethod().isAnnotationPresent(Undocumented.class)
                 || handler.getControllerMethod().getDeclaringClass().isAnnotationPresent(Undocumented.class)) {
             log.debug("Skip {} {}, {} is annotated as Undocumented",
@@ -304,7 +311,10 @@ public class SwaggerBuilder {
         List<String> produces = handler.getDeclaredProduces();
 
         Operation operation = new Operation();
-        if (Strings.isNullOrEmpty(route.getName())) {
+        if (method.isAnnotationPresent(ApiSummary.class)) {
+            ApiSummary apiSummary = method.getAnnotation(ApiSummary.class);
+            operation.setSummary(apiSummary.value());
+        } else if (Strings.isNullOrEmpty(route.getName())) {
             operation.setSummary(Util.toString(method));
         } else {
             operation.setSummary(route.getName());
@@ -758,19 +768,19 @@ public class SwaggerBuilder {
     }
 
     protected String getNotes(Method method) {
-        if (method.isAnnotationPresent(Notes.class)) {
-            Notes notes = method.getAnnotation(Notes.class);
+        if (method.isAnnotationPresent(ApiNotes.class)) {
+            ApiNotes apiNotes = method.getAnnotation(ApiNotes.class);
             String resource = "classpath:swagger/" + method.getDeclaringClass().getName().replace('.', '/')
                     + "/" + method.getName() + ".md";
-            if (!Strings.isNullOrEmpty(notes.value())) {
-                resource = notes.value();
+            if (!Strings.isNullOrEmpty(apiNotes.value())) {
+                resource = apiNotes.value();
             }
 
             if (resource.startsWith("classpath:")) {
                 String content = ClassUtil.loadStringResource(resource);
                 if (Strings.isNullOrEmpty(content)) {
                     log.error("'{}' specifies @{} but '{}' was not found!",
-                            Util.toString(method), Notes.class.getSimpleName(), resource);
+                            Util.toString(method), ApiNotes.class.getSimpleName(), resource);
                 }
                 return content;
             } else {

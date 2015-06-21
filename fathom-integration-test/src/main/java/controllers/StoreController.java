@@ -27,8 +27,8 @@ import fathom.rest.controller.Return;
 import fathom.rest.controller.exceptions.RangeException;
 import fathom.rest.controller.exceptions.ValidationException;
 import fathom.rest.swagger.Desc;
-import fathom.rest.swagger.Notes;
-import fathom.rest.swagger.Tag;
+import fathom.rest.swagger.ApiNotes;
+import fathom.rest.swagger.ApiTag;
 import models.petstore.Order;
 
 import javax.validation.constraints.Max;
@@ -41,12 +41,12 @@ import javax.validation.constraints.Min;
  */
 @Path("/store")
 @Produces({Produces.JSON, Produces.XML})
-@Tag(name = "store", description = "Access to Petstore orders")
+@ApiTag(name = "store", description = "Access to Petstore orders")
 public class StoreController extends ApiV2 {
 
     @DELETE("/order/{orderId}")
     @Named("Delete purchase order by ID")
-    @Notes
+    @ApiNotes
     @Return(code = 400, description = "Invalid ID supplied", onResult = RangeException.class)
     @Return(code = 404, description = "Order not found")
     public void deleteOrder(@Desc("ID of the order that needs to be deleted") @Max(5) @Min(1) long orderId) {
@@ -54,7 +54,7 @@ public class StoreController extends ApiV2 {
 
     @GET("/order/{orderId}")
     @Named("Find purchase order by ID")
-    @Notes
+    @ApiNotes
     @Return(code = 200, description = "Valid order", onResult = Order.class)
     @Return(code = 400, description = "Invalid ID supplied", onResult = RangeException.class)
     @Return(code = 404, description = "Order not found")

@@ -85,8 +85,8 @@ public class SwaggerUtil {
      * @return a controller tag or null
      */
     public static io.swagger.models.Tag getTag(Class<? extends Controller> controllerClass) {
-        if (controllerClass.isAnnotationPresent(fathom.rest.swagger.Tag.class)) {
-            fathom.rest.swagger.Tag annotation = controllerClass.getAnnotation(fathom.rest.swagger.Tag.class);
+        if (controllerClass.isAnnotationPresent(ApiTag.class)) {
+            ApiTag annotation = controllerClass.getAnnotation(ApiTag.class);
             io.swagger.models.Tag tag = new io.swagger.models.Tag();
             tag.setName(Optional.fromNullable(Strings.emptyToNull(annotation.name())).or(controllerClass.getSimpleName()));
             tag.setDescription(annotation.description());

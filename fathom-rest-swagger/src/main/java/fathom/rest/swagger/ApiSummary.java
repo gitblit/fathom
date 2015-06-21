@@ -21,16 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for notes on a controller method.
- *
- * Unless otherwise specified, a Markdown resource file named
- * classpath:swagger/com/package/ControllerClass/method.md
- * will be loaded and inserted as the Swagger Operation notes.
+ * Annotation for a Swagger Operation summary.
  *
  * @author James Moger
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Notes {
-    String value() default "";
+public @interface ApiSummary {
+    String value();
 }

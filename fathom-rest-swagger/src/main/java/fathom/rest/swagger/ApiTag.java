@@ -21,12 +21,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for a parameter which indicates it is a form parameter.
- * Fathom-REST/Pippo does not internally distinguish between form and query parameters.
+ * Annotation for an controller Tag.
  *
  * @author James Moger
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface Form {
+@Target(ElementType.TYPE)
+public @interface ApiTag {
+    String name() default "";
+    String description();
+    String externalDocs() default "";
 }

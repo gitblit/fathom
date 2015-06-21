@@ -140,9 +140,10 @@ and
 In order for a Fathom controller route to be registered in your Swagger specification...
 
 1. the route must declare that it `@Produces` one or more aforementioned *content-types*
-2. the route must specify one of the following http methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`
-3. the route and it's declaring controller are NOT annotated with `@Undocumented`
-4. the route's uri pattern must begin with the configured `swagger.basePath`
+2. the route must declare one of the following http verbs: `@GET`, `@POST`, `@PUT`, `@PATCH`, `@DELETE`, `@OPTIONS`
+3. the route must declare at least one `@Return` specification
+4. the route and it's declaring controller are NOT annotated with `@Undocumented`
+5. the route's uri pattern must begin with the configured `swagger.basePath`
 
 ```java
 // Controller API Method, REGISTERED in Swagger specification
@@ -164,25 +165,26 @@ public void getEmployee(int id) {
 
 However, there is always room for improvement.  Your generated specification, while functional, can not fully showcase your API without some hints from you.
 
-### @Tag
+### @ApiTag
 
-You may use the `@Tag` annotation to briefly describe a controller and it's set of methods/operations.  In Swagger, operations are grouped together by their *tag* and those operations share a common base path (*e.g. /api/employee*).
+You may use the `@ApiTag` annotation to briefly describe a controller and it's set of methods/operations.  In Swagger, operations are grouped together by their *tag* and those operations share a common base path (*e.g. /api/employee*).
 
 ```java
 @Path("/api/employee")
 @Produces({Produces.JSON, Produces.XML})
-@Tag(name="employees", description="Employees API")
+@ApiTag(name="employees", description="Employees API")
 public class EmployeeController extends Controller {
 }
 ```
 
-### @Named
+### @Named and/or @ApiSummary
 
-You may name your controller routes.  This information is used in the *Summary* field of the Swagger specification and may also be used for normal runtime logging of route dispatching.
+You may name your controller routes using the `@Named` annotation.  This information is used in the *Summary* field of the Swagger specification and may also be used for normal runtime logging of route dispatching.  Alternatively, you may use the `@ApiSummary` annotation which is only used as the summary in your generated Swagger specification.
 
 ```java
 @GET("/{id}")
-@Named("Get employee by id")
+@Named("GetEmployeeById")
+@ApiSummary("Get employee by id")
 public Employee getEmployee(int id) {
   Employee employee = employeeDao.get(id);
   return employee;
@@ -192,23 +194,23 @@ public Employee getEmployee(int id) {
 !!! Note
     The `@Named` annotation is part of [Fathom-REST](rest.md) and is re-used for Swagger.
 
-### @Notes
+### @ApiNotes
 
-The `@Notes` annotation adds a brief description to an operation in addition to the `@Named` (*Summary*) information.
+The `@ApiNotes` annotation adds a brief description to an operation in addition to the `@Named` or `@ApiSummary` (*Summary*) information.
 
-You can use `@Notes` to load a classpath resource notes file.  [GFM] syntax may be used.
+You can use `@ApiNotes` to load a classpath resource notes file.  [GFM] syntax may be used.
 These two examples are equivalent for a given controller method.
 
 ```java
 @GET("/{id}")
-@Notes
+@ApiNotes
 public Employee getEmployee(int id) {
   Employee employee = employeeDao.get(id);
   return employee;
 }
 
 @GET("/{id}")
-@Notes("classpath:swagger/com/package/EmployeeController/getEmployee.md")
+@ApiNotes("classpath:swagger/com/package/EmployeeController/getEmployee.md")
 public Employee getEmployee(int id) {
   Employee employee = employeeDao.get(id);
   return employee;
@@ -218,7 +220,7 @@ public Employee getEmployee(int id) {
 Or you may directly specify your note text:
 
 ```java
-@Notes("This method requires a valid employee id")
+@ApiNotes("This method requires a **valid** employee id")
 public Employee getEmployee(int id) {
   Employee employee = employeeDao.get(id);
   return employee;
@@ -270,7 +272,7 @@ public Employee getEmployee(@Desc("employee id") int id) {
 
 ### @RequireToken
 
-You may use the `@RequireToken` annotation to enforce token-based access to your controller method.
+You may use the `@RequireToken` annotation to enforce token-based authentication for your controller method.
 
 ```java
 @GET("/{id}")

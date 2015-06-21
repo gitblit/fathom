@@ -29,9 +29,9 @@ import fathom.rest.controller.exceptions.RequiredException;
 import fathom.rest.controller.exceptions.ValidationException;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Form;
-import fathom.rest.swagger.Notes;
+import fathom.rest.swagger.ApiNotes;
 import fathom.rest.swagger.Password;
-import fathom.rest.swagger.Tag;
+import fathom.rest.swagger.ApiTag;
 import models.petstore.User;
 
 import javax.validation.constraints.NotNull;
@@ -43,7 +43,7 @@ import java.util.List;
  * @author James Moger
  */
 @Path("/user")
-@Tag(name = "user", description = "Operations about user")
+@ApiTag(name = "user", description = "Operations about user")
 @Produces({Produces.JSON, Produces.XML})
 public class UserController extends ApiV2 {
 
@@ -61,7 +61,7 @@ public class UserController extends ApiV2 {
 
     @PUT("/{username}")
     @Named("Update user")
-    @Notes("classpath:swagger/controllers/UserController/note.md")
+    @ApiNotes("classpath:swagger/controllers/UserController/note.md")
     @Return(code = 400, description = "Invalid username supplied", onResult = RequiredException.class)
     @Return(code = 404, description = "User not found")
     public void updateUser(@Desc("Username of User to be updated") @NotNull String username,
@@ -70,7 +70,7 @@ public class UserController extends ApiV2 {
 
     @DELETE("/{username}")
     @Named("Delete user")
-    @Notes("classpath:swagger/controllers/UserController/note.md")
+    @ApiNotes("classpath:swagger/controllers/UserController/note.md")
     @Return(code = 400, description = "Invalid username supplied", onResult = RequiredException.class)
     @Return(code = 404, description = "User not found")
     public void deleteUser(@Desc("Username of User to be deleted") @NotNull String username) {
@@ -106,7 +106,7 @@ public class UserController extends ApiV2 {
 
     @POST("/")
     @Named("Create user")
-    @Notes("classpath:swagger/controllers/UserController/note.md")
+    @ApiNotes("classpath:swagger/controllers/UserController/note.md")
     @Return(code = 400, description = "Invalid username supplied", onResult = RequiredException.class)
     @Return(code = 404, description = "User not found")
     public void createUser(@Desc("User object to create") @Body User user) {
