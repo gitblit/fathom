@@ -102,13 +102,27 @@ public class SwaggerService implements Service {
 
         Map<String, String> specs = new HashMap<>();
         try {
-            specs.put("swagger.json", Json.pretty().writeValueAsString(swagger));
+            String json;
+            if (settings.isDev()) {
+                // pretty-print spec in dev mode
+                json = Json.pretty().writeValueAsString(swagger);
+            } else {
+                json = Json.mapper().writeValueAsString(swagger);
+            }
+            specs.put("swagger.json", json);
         } catch (JsonProcessingException e) {
             log.error("Failed to generate Swagger 2.0 specification as JSON", e);
         }
 
         try {
-            specs.put("swagger.yaml", Yaml.pretty().writeValueAsString(swagger));
+            String yaml;
+            if (settings.isDev()) {
+                // pretty-print spec in dev mode
+                yaml = Yaml.pretty().writeValueAsString(swagger);
+            } else {
+                yaml = Yaml.mapper().writeValueAsString(swagger);
+            }
+            specs.put("swagger.yaml", yaml);
         } catch (JsonProcessingException e) {
             log.error("Failed to generate Swagger 2.0 specification as YAML", e);
         }
