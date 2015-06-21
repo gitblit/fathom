@@ -16,20 +16,26 @@
 package fathom.rest.security.aop;
 
 import fathom.realm.Account;
-import org.aopalliance.intercept.MethodInvocation;
+import fathom.rest.Context;
+import fathom.rest.controller.extractors.AuthExtractor;
+import org.aopalliance.intercept.MethodInterceptor;
+import ro.pippo.core.route.RouteDispatcher;
 
 /**
  * @author James Moger
  */
-public class RequireAuthenticatedInterceptor extends SecurityInterceptor {
+public abstract class SecurityInterceptor implements MethodInterceptor {
 
-    @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
+    private final AuthExtractor authExtractor;
 
-        Account account = getAccount();
-        account.checkAuthenticated();
+    public SecurityInterceptor() {
+        this.authExtractor = new AuthExtractor();
+    }
 
-        return invocation.proceed();
+    protected Account getAccount() {
+        Context context = RouteDispatcher.getRouteContext();
+        Account account = authExtractor.extract(context);
+        return account;
     }
 
 }

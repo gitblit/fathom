@@ -23,11 +23,9 @@ import fathom.authc.TokenCredentials;
 import fathom.authz.AuthorizationException;
 import fathom.realm.Account;
 import fathom.rest.Context;
-import fathom.rest.controller.extractors.AuthExtractor;
 import fathom.rest.security.AuthConstants;
 import fathom.security.SecurityManager;
 import fathom.utils.ClassUtil;
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +34,7 @@ import ro.pippo.core.route.RouteDispatcher;
 /**
  * @author James Moger
  */
-public class RequireTokenInterceptor implements MethodInterceptor {
+public class RequireTokenInterceptor extends SecurityInterceptor {
 
     private final Logger log = LoggerFactory.getLogger(RequireTokenInterceptor.class);
 
@@ -62,8 +60,7 @@ public class RequireTokenInterceptor implements MethodInterceptor {
             throw new AuthorizationException("Missing '{}' token", tokenName);
         }
 
-        AuthExtractor extractor = new AuthExtractor();
-        Account account = extractor.extract(context);
+        Account account = getAccount();
         if (account.isGuest()) {
             // authenticate by token
             TokenCredentials credentials = new TokenCredentials(token);

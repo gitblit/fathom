@@ -264,6 +264,24 @@ public final class Authorizations implements Serializable, Cloneable {
         return true;
     }
 
+    /**
+     * Returns {@code true} if this Account implies all of the specified permission strings, {@code false} otherwise.
+     * <p>
+     * This is an overloaded method for the corresponding type-safe {@link fathom.authz.Permission Permission}
+     * variant.  Please see the class-level JavaDoc for more information on these String-based permission methods.
+     *
+     * @param permissions the String representations of the Permissions that are being checked.
+     * @return true if this Account has all of the specified permissions, false otherwise.
+     */
+    public boolean isPermittedAll(Collection<String> permissions) {
+        for (boolean permitted : isPermitted(permissions.toArray(new String[permissions.size()]))) {
+            if (!permitted) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     protected boolean isPermitted(Permission permission) {
         for (Permission perm : getAggregatePermissions()) {
             if (perm.implies(permission)) {
@@ -290,6 +308,20 @@ public final class Authorizations implements Serializable, Cloneable {
      * @return {@code true} if this Account has all the specified roles, {@code false} otherwise.
      */
     public boolean hasRoles(String... roleIdentifiers) {
+        List<Role> requiredRoles = new ArrayList<>();
+        for (String roleIdentifier : roleIdentifiers) {
+            requiredRoles.add(new Role(roleIdentifier));
+        }
+        return roles.containsAll(requiredRoles);
+    }
+
+    /**
+     * Returns {@code true} if this Account has the specified roles, {@code false} otherwise.
+     *
+     * @param roleIdentifiers the application-specific role identifiers to check (usually role ids or role names).
+     * @return {@code true} if this Account has all the specified roles, {@code false} otherwise.
+     */
+    public boolean hasRoles(Collection<String> roleIdentifiers) {
         List<Role> requiredRoles = new ArrayList<>();
         for (String roleIdentifier : roleIdentifiers) {
             requiredRoles.add(new Role(roleIdentifier));

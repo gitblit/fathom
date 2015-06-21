@@ -280,6 +280,20 @@ public class Account implements Serializable {
     }
 
     /**
+     * Returns {@code true} if this Account implies all of the specified permission strings, {@code false} otherwise.
+     * <p>
+     * This is an overloaded method for the corresponding type-safe {@link fathom.authz.Permission Permission}
+     * variant.  Please see the class-level JavaDoc for more information on these String-based permission methods.
+     *
+     * @param permissions the String representations of the Permissions that are being checked.
+     * @return true if this Account has all of the specified permissions, false otherwise.
+     * @since 0.9
+     */
+    public boolean isPermittedAll(Collection<String> permissions) {
+        return authorizations.isPermittedAll(permissions);
+    }
+
+    /**
      * Ensures this Account implies the specified permission String.
      * <p>
      * If this Account's existing associated permissions do not {@link fathom.authz.Permission#implies(fathom.authz.Permission)} imply}
@@ -319,6 +333,27 @@ public class Account implements Serializable {
     }
 
     /**
+     * Ensures this Account
+     * {@link fathom.authz.Permission#implies(fathom.authz.Permission) implies} all of the
+     * specified permission strings.
+     * <p>
+     * If this Account's existing associated permissions do not
+     * {@link fathom.authz.Permission#implies(fathom.authz.Permission) imply} all of the given permissions,
+     * an {@link fathom.authz.AuthorizationException} will be thrown.
+     * <p>
+     * This is an overloaded method for the corresponding type-safe {@link fathom.authz.Permission Permission} variant.
+     * Please see the class-level JavaDoc for more information on these String-based permission methods.
+     *
+     * @param permissions the string representations of Permissions to check.
+     * @throws AuthorizationException if this Account does not have all of the given permissions.
+     */
+    public void checkPermissions(Collection<String> permissions) throws AuthorizationException {
+        if (!isPermittedAll(permissions)) {
+            throw new AuthorizationException("'{}' does not have the permissions {}", toString(), permissions);
+        }
+    }
+
+    /**
      * Returns {@code true} if this Account has the specified role, {@code false} otherwise.
      *
      * @param roleIdentifier the application-specific role identifier (usually a role id or role name).
@@ -335,6 +370,16 @@ public class Account implements Serializable {
      * @return {@code true} if this Account has all the specified roles, {@code false} otherwise.
      */
     public boolean hasRoles(String... roleIdentifiers) {
+        return authorizations.hasRoles(roleIdentifiers);
+    }
+
+    /**
+     * Returns {@code true} if this Account has the specified roles, {@code false} otherwise.
+     *
+     * @param roleIdentifiers the application-specific role identifiers to check (usually role ids or role names).
+     * @return {@code true} if this Account has all the specified roles, {@code false} otherwise.
+     */
+    public boolean hasRoles(Collection<String> roleIdentifiers) {
         return authorizations.hasRoles(roleIdentifiers);
     }
 
@@ -362,6 +407,20 @@ public class Account implements Serializable {
     public void checkRoles(String... roleIdentifiers) throws AuthorizationException {
         if (!hasRoles(roleIdentifiers)) {
             throw new AuthorizationException("'{}' does not have the roles {}", toString(), Arrays.toString(roleIdentifiers));
+        }
+    }
+
+    /**
+     * Asserts this Account has all of the specified roles by returning quietly if they do or throwing an
+     * {@link fathom.authz.AuthorizationException} if they do not.
+     *
+     * @param roleIdentifiers roleIdentifiers the application-specific role identifiers to check (usually role ids or role names).
+     * @throws AuthorizationException fathom.authz.AuthorizationException
+     *                                if this Account does not have all of the specified roles.
+     */
+    public void checkRoles(Collection<String> roleIdentifiers) throws AuthorizationException {
+        if (!hasRoles(roleIdentifiers)) {
+            throw new AuthorizationException("'{}' does not have the roles {}", toString(), roleIdentifiers);
         }
     }
 

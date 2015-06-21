@@ -15,30 +15,18 @@
  */
 package fathom.rest.security.aop;
 
-import com.google.inject.Inject;
 import fathom.realm.Account;
-import fathom.rest.controller.extractors.AuthExtractor;
-import fathom.rest.Context;
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import ro.pippo.core.route.RouteDispatcher;
 
 /**
  * @author James Moger
  */
-public class RequireGuestInterceptor implements MethodInterceptor {
-
-    @Inject
-    public RequireGuestInterceptor() {
-    }
+public class RequireGuestInterceptor extends SecurityInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
 
-        Context context = RouteDispatcher.getRouteContext();
-        AuthExtractor extractor = new AuthExtractor();
-        Account account = extractor.extract(context);
-
+        Account account = getAccount();
         account.checkGuest();
 
         return invocation.proceed();

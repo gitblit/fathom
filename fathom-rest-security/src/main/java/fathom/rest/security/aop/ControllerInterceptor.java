@@ -23,11 +23,9 @@ import fathom.authc.TokenCredentials;
 import fathom.authz.AuthorizationException;
 import fathom.realm.Account;
 import fathom.rest.Context;
-import fathom.rest.controller.extractors.AuthExtractor;
 import fathom.rest.security.AuthConstants;
 import fathom.security.SecurityManager;
 import fathom.utils.ClassUtil;
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,14 +33,13 @@ import ro.pippo.core.route.RouteDispatcher;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * ControllerInterceptor enforces authentication and authorization requirements on controllers.
  *
  * @author James Moger
  */
-public class ControllerInterceptor implements MethodInterceptor {
+public class ControllerInterceptor extends SecurityInterceptor {
 
     private final Logger log = LoggerFactory.getLogger(ControllerInterceptor.class);
 
@@ -57,24 +54,20 @@ public class ControllerInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
 
         Method method = invocation.getMethod();
-        checkRequireToken(method);
-        checkRequirePermissions(method);
-        checkRequireRoles(method);
-        checkRequireAdministrator(method);
-        checkRequireAuthenticated(method);
-        checkRequireGuest(method);
+
+        Account account = checkRequireToken(method);
+        checkRequirePermissions(account, method);
+        checkRequireRoles(account, method);
+        checkRequireAdministrator(account, method);
+        checkRequireAuthenticated(account, method);
+        checkRequireGuest(account, method);
 
         return invocation.proceed();
     }
 
-    Account getAccount() {
-        Context context = RouteDispatcher.getRouteContext();
-        AuthExtractor extractor = new AuthExtractor();
-        Account account = extractor.extract(context);
-        return account;
-    }
+    protected Account checkRequireToken(Method method) {
+        Account account = getAccount();
 
-    protected void checkRequireToken(Method method) {
         RequireToken requireToken = ClassUtil.getAnnotation(method, RequireToken.class);
         if (requireToken != null) {
 
@@ -89,7 +82,6 @@ public class ControllerInterceptor implements MethodInterceptor {
                 throw new AuthorizationException("Missing '{}' token", tokenName);
             }
 
-            Account account = getAccount();
             if (account.isGuest()) {
                 // authenticate by token
                 TokenCredentials credentials = new TokenCredentials(token);
@@ -104,44 +96,41 @@ public class ControllerInterceptor implements MethodInterceptor {
                 account.checkToken(token);
             }
         }
+
+        return account;
     }
 
-    protected void checkRequireRoles(Method method) {
+    protected void checkRequireRoles(Account account, Method method) {
         Collection<String> roles = SecurityUtil.collectRoles(method);
         if (!roles.isEmpty()) {
-            Account account = getAccount();
-            account.checkRoles(roles.toArray(new String[roles.size()]));
+            account.checkRoles(roles);
         }
     }
 
-    protected void checkRequirePermissions(Method method) {
+    protected void checkRequirePermissions(Account account, Method method) {
         Collection<String> permissions = SecurityUtil.collectPermissions(method);
         if (!permissions.isEmpty()) {
-            Account account = getAccount();
-            account.checkPermissions(permissions.toArray(new String[permissions.size()]));
+            account.checkPermissions(permissions);
         }
     }
 
-    protected void checkRequireAdministrator(Method method) {
+    protected void checkRequireAdministrator(Account account, Method method) {
         RequireAdministrator annotation = ClassUtil.getAnnotation(method, RequireAdministrator.class);
         if (annotation != null) {
-            Account account = getAccount();
             account.checkAdministrator();
         }
     }
 
-    protected void checkRequireAuthenticated(Method method) {
+    protected void checkRequireAuthenticated(Account account, Method method) {
         RequireAuthenticated annotation = ClassUtil.getAnnotation(method, RequireAuthenticated.class);
         if (annotation != null) {
-            Account account = getAccount();
             account.checkAuthenticated();
         }
     }
 
-    protected void checkRequireGuest(Method method) {
+    protected void checkRequireGuest(Account account, Method method) {
         RequireGuest annotation = ClassUtil.getAnnotation(method, RequireGuest.class);
         if (annotation != null) {
-            Account account = getAccount();
             account.checkGuest();
         }
     }
