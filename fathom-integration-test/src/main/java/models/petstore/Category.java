@@ -16,12 +16,15 @@
 
 package models.petstore;
 
-import fathom.rest.swagger.Tag;
+import fathom.rest.swagger.ApiProperty;
+import fathom.rest.swagger.ApiModel;
 
-@Tag(name="Category", description = "")
+@ApiModel
 public class Category {
 
+    @ApiProperty
     long id;
 
+    @ApiProperty
     String name;
 }

@@ -16,27 +16,34 @@
 
 package models.petstore;
 
-import fathom.rest.swagger.Desc;
-import fathom.rest.swagger.Tag;
+import fathom.rest.swagger.ApiProperty;
+import fathom.rest.swagger.ApiModel;
 
-@Tag(name = "User", description = "")
+@ApiModel
 public class User {
 
+    @ApiProperty
     long id;
 
+    @ApiProperty
     String firstName;
 
+    @ApiProperty
     String lastName;
 
+    @ApiProperty
     String username;
 
+    @ApiProperty
     String email;
 
+    @ApiProperty
     String password;
 
+    @ApiProperty
     String phone;
 
-    @Desc("User Status")
+    @ApiProperty(description = "User Status")
 //    @Values(allowedValues = { "1-registered", "2-active", "3-closed" })
-    int userStatus;
+            int userStatus;
 }

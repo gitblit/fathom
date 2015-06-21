@@ -16,28 +16,33 @@
 
 package models.petstore;
 
-import fathom.rest.swagger.Desc;
-import fathom.rest.swagger.Tag;
+import fathom.rest.swagger.ApiProperty;
+import fathom.rest.swagger.ApiModel;
 
 import java.util.Date;
 
 /**
  * @author James Moger
  */
-@Tag(name = "Order", description = "")
+@ApiModel
 public class Order {
 
+    @ApiProperty
     long id;
 
+    @ApiProperty
     long petId;
 
+    @ApiProperty
     int quantity;
 
-    @Desc("Order Status")
+    @ApiProperty(description = "Order Status")
     OrderStatus status;
 
+    @ApiProperty
     Date shipDate;
 
+    @ApiProperty
     boolean complete;
 
 }

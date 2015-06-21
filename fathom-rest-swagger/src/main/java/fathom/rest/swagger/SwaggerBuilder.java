@@ -30,6 +30,7 @@ import fathom.rest.controller.Header;
 import fathom.rest.controller.Local;
 import fathom.rest.controller.Max;
 import fathom.rest.controller.Min;
+import fathom.rest.controller.Param;
 import fathom.rest.controller.Produces;
 import fathom.rest.controller.Range;
 import fathom.rest.controller.Required;
@@ -84,6 +85,7 @@ import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -393,7 +395,7 @@ public class SwaggerBuilder {
      * @return the Swagger ref of the model
      */
     protected String registerModel(Swagger swagger, Class<?> modelClass) {
-        final Tag modelTag = SwaggerUtil.getModelRef(modelClass);
+        final Tag modelTag = SwaggerUtil.getModelTag(modelClass);
         final String ref = modelTag.getName();
 
         if (swagger.getDefinitions() != null && swagger.getDefinitions().containsKey(ref)) {
@@ -416,6 +418,11 @@ public class SwaggerBuilder {
                 continue;
             }
 
+            if (!field.isAnnotationPresent(ApiProperty.class) && !field.isAnnotationPresent(Param.class)) {
+                // not a documented model property
+                continue;
+            }
+
             Property property;
             Class<?> fieldType = field.getType();
             if (fieldType.isArray()) {
@@ -427,16 +434,29 @@ public class SwaggerBuilder {
             } else {
                 property = getSwaggerProperty(swagger, fieldType);
             }
-            property.setRequired(field.isAnnotationPresent(Required.class));
+            property.setRequired(field.isAnnotationPresent(Required.class) || field.isAnnotationPresent(NotNull.class));
 
-            if (field.isAnnotationPresent(Desc.class)) {
-                Desc desc = field.getAnnotation(Desc.class);
-                property.setDescription(desc.value());
-            }
+            if (field.isAnnotationPresent(ApiProperty.class)) {
+                ApiProperty apiProperty = field.getAnnotation(ApiProperty.class);
+                if (!Strings.isNullOrEmpty(apiProperty.name())) {
+                    property.setName(apiProperty.name());
+                }
 
-            if (field.isAnnotationPresent(Example.class)) {
-                Example example = field.getAnnotation(Example.class);
-                property.setExample(example.value());
+                if (!Strings.isNullOrEmpty(apiProperty.description())) {
+                    property.setDescription(apiProperty.description());
+                }
+
+                if (!Strings.isNullOrEmpty(apiProperty.example())) {
+                    property.setExample(apiProperty.example());
+                }
+
+                if (!Strings.isNullOrEmpty(apiProperty.defaultValue())) {
+                    property.setDefault(apiProperty.defaultValue());
+                }
+
+                if (apiProperty.readOnly()) {
+                    property.setReadOnly(true);
+                }
             }
 
             model.addProperty(field.getName(), property);

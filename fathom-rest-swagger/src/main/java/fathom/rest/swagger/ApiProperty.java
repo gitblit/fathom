@@ -13,35 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fathom.rest.swagger;
 
-package models.petstore;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import fathom.rest.swagger.ApiProperty;
-import fathom.rest.swagger.ApiModel;
+/**
+ * Annotation for a model property.
+ *
+ * @author James Moger
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface ApiProperty {
+    String name() default "";
 
-import javax.validation.constraints.NotNull;
+    String description() default "";
 
-@ApiModel
-public class Pet {
+    String defaultValue() default "";
 
-    @ApiProperty(description = "unique identifier for the pet")
-    public long id;
+    String example() default "";
 
-    @ApiProperty
-    public Category category;
-
-    @ApiProperty(example = "doggie")
-    @NotNull
-    public String name;
-
-    @ApiProperty
-    @NotNull
-    public String[] photoUrls;
-
-    @ApiProperty
-    public Tag[] tags;
-
-    @ApiProperty(description = "pet status in the store")
-    public PetStatus status;
-
+    boolean readOnly() default false;
 }

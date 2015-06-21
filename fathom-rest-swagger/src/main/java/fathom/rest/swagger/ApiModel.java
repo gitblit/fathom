@@ -21,12 +21,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for a parameter or field example.
+ * Annotation for a Model class.
  *
  * @author James Moger
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-public @interface Example {
-    String value();
+@Target(ElementType.TYPE)
+public @interface ApiModel {
+    String name() default "";
+    String description() default "";
 }

@@ -23,6 +23,7 @@ import fathom.rest.controller.Controller;
 import fathom.rest.controller.Required;
 import io.swagger.models.ExternalDocs;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Parameter;
 
 /**
@@ -38,7 +39,8 @@ public class SwaggerUtil {
      */
     public static boolean isRequired(Parameter parameter) {
         return parameter.isAnnotationPresent(Body.class)
-                || parameter.isAnnotationPresent(Required.class);
+                || parameter.isAnnotationPresent(Required.class)
+                || parameter.isAnnotationPresent(NotNull.class);
     }
 
     /**
@@ -62,9 +64,9 @@ public class SwaggerUtil {
      * @param modelClass
      * @return the ref of the model
      */
-    public static io.swagger.models.Tag getModelRef(Class<?> modelClass) {
-        if (modelClass.isAnnotationPresent(fathom.rest.swagger.Tag.class)) {
-            fathom.rest.swagger.Tag annotation = modelClass.getAnnotation(fathom.rest.swagger.Tag.class);
+    public static io.swagger.models.Tag getModelTag(Class<?> modelClass) {
+        if (modelClass.isAnnotationPresent(ApiModel.class)) {
+            ApiModel annotation = modelClass.getAnnotation(ApiModel.class);
             io.swagger.models.Tag tag = new io.swagger.models.Tag();
             tag.setName(Optional.fromNullable(Strings.emptyToNull(annotation.name())).or(modelClass.getSimpleName()));
             tag.setDescription(annotation.description());
