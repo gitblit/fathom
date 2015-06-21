@@ -23,6 +23,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import ro.pippo.core.route.RouteDispatcher;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class RequirePermissionInterceptor implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
 
-        List<String> permissions = SecurityUtil.collectPermissions(invocation.getMethod());
+        Collection<String> permissions = SecurityUtil.collectPermissions(invocation.getMethod());
         Context context = RouteDispatcher.getRouteContext();
         AuthExtractor extractor = new AuthExtractor();
         Account account = extractor.extract(context);

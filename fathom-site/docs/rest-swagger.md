@@ -257,8 +257,8 @@ You may use the `@Return` annotation to briefly describe method-specific respons
 
 ```java
 @GET("/{id}")
-@Return(status = 200, description = "Employee retrieved", onResult = Employee.class)
-@Return(status = 404, description = "Employee not found", onResult = Void.class)
+@Return(code = 200, description = "Employee retrieved", onResult = Employee.class)
+@Return(code = 404, description = "Employee not found", onResult = Void.class)
 public Employee getEmployee(@Desc("employee id") int id) {
   Employee employee = employeeDao.get(id);
   return employee;

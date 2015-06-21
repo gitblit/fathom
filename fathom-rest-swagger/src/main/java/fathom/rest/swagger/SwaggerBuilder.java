@@ -25,6 +25,7 @@ import fathom.rest.controller.Auth;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.ControllerHandler;
+import fathom.rest.controller.ControllerUtil;
 import fathom.rest.controller.Header;
 import fathom.rest.controller.Local;
 import fathom.rest.controller.Max;
@@ -33,7 +34,6 @@ import fathom.rest.controller.Produces;
 import fathom.rest.controller.Range;
 import fathom.rest.controller.Required;
 import fathom.rest.controller.Return;
-import fathom.rest.controller.Returns;
 import fathom.rest.controller.Session;
 import fathom.rest.security.aop.RequireToken;
 import fathom.utils.ClassUtil;
@@ -252,8 +252,8 @@ public class SwaggerBuilder {
             return false;
         }
 
-        List<String> produces = SwaggerUtil.getProduces(handler);
-        if (produces == null || produces.isEmpty()) {
+        List<String> produces = handler.getDeclaredProduces();
+        if (produces.isEmpty()) {
             log.debug("Skip {} {}, {} does not generate RESTful API content",
                     route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()));
             return false;
@@ -299,7 +299,7 @@ public class SwaggerBuilder {
         Class<? extends Controller> controller = handler.getControllerClass();
         Method method = handler.getControllerMethod();
 
-        List<String> produces = SwaggerUtil.getProduces(handler);
+        List<String> produces = handler.getDeclaredProduces();
 
         Operation operation = new Operation();
         if (Strings.isNullOrEmpty(route.getName())) {
@@ -345,13 +345,7 @@ public class SwaggerBuilder {
      * @param method
      */
     protected void registerResponses(Swagger swagger, Operation operation, Method method) {
-        if (method.isAnnotationPresent(Returns.class)) {
-            Returns returns = method.getAnnotation(Returns.class);
-            for (Return aReturn : returns.value()) {
-                registerResponse(swagger, operation, aReturn);
-            }
-        } else if (method.isAnnotationPresent(Return.class)) {
-            Return aReturn = method.getAnnotation(Return.class);
+        for (Return aReturn : ControllerUtil.collectReturns(method)) {
             registerResponse(swagger, operation, aReturn);
         }
     }
@@ -388,7 +382,7 @@ public class SwaggerBuilder {
             }
         }
 
-        operation.response(aReturn.status(), response);
+        operation.response(aReturn.code(), response);
     }
 
     /**
@@ -494,7 +488,7 @@ public class SwaggerBuilder {
         // identify body, header, query, & form parameters
         for (Parameter methodParameter : method.getParameters()) {
 
-            String methodParameterName = SwaggerUtil.getParameterName(methodParameter);
+            String methodParameterName = ControllerUtil.getParameterName(methodParameter);
 
             if (pathParameterPlaceholders.containsKey(methodParameterName)) {
                 // path parameter already accounted for
@@ -605,7 +599,7 @@ public class SwaggerBuilder {
 
         for (Parameter methodParameter : method.getParameters()) {
 
-            String methodParameterName = SwaggerUtil.getParameterName(methodParameter);
+            String methodParameterName = ControllerUtil.getParameterName(methodParameter);
 
             if (methodParameterName.equals(swaggerParameter.getName())) {
                 // determine Swagger property from type of method parameter

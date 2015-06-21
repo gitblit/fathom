@@ -47,17 +47,17 @@ public class StoreController extends ApiV2 {
     @DELETE("/order/{orderId}")
     @Named("Delete purchase order by ID")
     @Notes
-    @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
-    @Return(status = 404, description = "Order not found")
+    @Return(code = 400, description = "Invalid ID supplied", onResult = RangeException.class)
+    @Return(code = 404, description = "Order not found")
     public void deleteOrder(@Desc("ID of the order that needs to be deleted") @Max(5) @Min(1) long orderId) {
     }
 
     @GET("/order/{orderId}")
     @Named("Find purchase order by ID")
     @Notes
-    @Return(status = 200, description = "Valid order", onResult = Order.class)
-    @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
-    @Return(status = 404, description = "Order not found")
+    @Return(code = 200, description = "Valid order", onResult = Order.class)
+    @Return(code = 400, description = "Invalid ID supplied", onResult = RangeException.class)
+    @Return(code = 404, description = "Order not found")
     public Order getOrderById(@Desc("ID of the order that needs to be fetched") @Max(5) @Min(1) long orderId) {
         Order order = new Order();
         return order;
@@ -65,7 +65,7 @@ public class StoreController extends ApiV2 {
 
     @POST("/order")
     @Named("Place an order for a pet")
-    @Return(status = 400, description = "Invalid order", onResult = ValidationException.class)
+    @Return(code = 400, description = "Invalid order", onResult = ValidationException.class)
     public void placeOrder(@Desc("Order placed for purchasing the pet") @Body Order order) {
     }
 

@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 /**
  * Describes a possible response of a controller method.
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Returns.class)
 public @interface Return {
@@ -36,7 +36,7 @@ public @interface Return {
      * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP Status
      * Code Definitions</a>.
      */
-    int status();
+    int code();
 
     /**
      * Human-readable description to accompany a response.

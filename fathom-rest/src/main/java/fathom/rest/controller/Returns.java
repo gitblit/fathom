@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  *
  * @see Return
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Returns {
     /**

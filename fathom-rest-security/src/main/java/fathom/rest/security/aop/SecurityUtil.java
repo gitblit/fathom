@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class SecurityUtil {
 
-    public static List<String> collectPermissions(Method method) {
+    public static Collection<String> collectPermissions(Method method) {
         List<String> permissions = new ArrayList<>();
         permissions.addAll(collectPermissions(method.getAnnotation(RequirePermissions.class)));
         if (method.isAnnotationPresent(RequirePermission.class)) {
@@ -53,7 +53,7 @@ public class SecurityUtil {
         return permissions;
     }
 
-    public static List<String> collectRoles(Method method) {
+    public static Collection<String> collectRoles(Method method) {
         List<String> roles = new ArrayList<>();
         roles.addAll(collectRoles(method.getAnnotation(RequireRoles.class)));
         if (method.isAnnotationPresent(RequireRole.class)) {

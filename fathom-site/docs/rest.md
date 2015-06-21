@@ -284,9 +284,9 @@ This has a few benefits.
 
 ```java
 @GET("/{id}")
-@Return(status=200, description="Employee retrieved", onResult=Employee.class)
-@Return(status=400, description="Invalid id specified", onResult=ValidationException.class)
-@Return(status=404, description="Employee not found")
+@Return(code=200, description="Employee retrieved", onResult=Employee.class)
+@Return(code=400, description="Invalid id specified", onResult=ValidationException.class)
+@Return(code=404, description="Employee not found")
 public Employee getEmployee(@Min(1) @Max(5) int id) {
   Employee employee = employeeDao.get(id);
   return employee;

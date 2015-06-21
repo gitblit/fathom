@@ -47,6 +47,7 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * ControllerHandler executes controller methods.
@@ -62,6 +63,8 @@ public class ControllerHandler implements RouteHandler<Context> {
     protected final Method method;
     protected ArgumentExtractor[] extractors;
     protected String[] patterns;
+    protected List<String> declaredProduces;
+    protected Collection<Return> declaredReturns;
 
     public ControllerHandler(Injector injector, Class<? extends Controller> controllerClass, String methodName) {
         if (controllerClass.isAnnotationPresent(Singleton.class)
@@ -75,6 +78,9 @@ public class ControllerHandler implements RouteHandler<Context> {
 
         Preconditions.checkNotNull(method, "Failed to find method '%s'", Util.toString(controllerClass, methodName));
         log.trace("Obtained method for '{}'", Util.toString(method));
+
+        this.declaredProduces = ControllerUtil.collectProduces(method);
+        this.declaredReturns = ControllerUtil.collectReturns(method);
     }
 
     public Class<? extends Controller> getControllerClass() {
@@ -83,6 +89,14 @@ public class ControllerHandler implements RouteHandler<Context> {
 
     public Method getControllerMethod() {
         return method;
+    }
+
+    public List<String> getDeclaredProduces() {
+        return declaredProduces;
+    }
+
+    public Collection<Return> getDeclaredReturns() {
+        return declaredReturns;
     }
 
     @Override
@@ -97,22 +111,12 @@ public class ControllerHandler implements RouteHandler<Context> {
             Controller controller = controllerProvider.get();
             controller.setContext(context);
 
-            if (method.isAnnotationPresent(Produces.class)) {
-                // controller method specifies Produces
-                Produces produces = method.getAnnotation(Produces.class);
-                String defaultContentType = produces.value()[0];
+            // set the response content type and optionally negotiate
+            if (!declaredProduces.isEmpty()) {
+                String defaultContentType = declaredProduces.get(0);
                 context.getResponse().contentType(defaultContentType);
 
-                if (produces.value().length > 1) {
-                    context.negotiateContentType();
-                }
-            } else if (method.getDeclaringClass().isAnnotationPresent(Produces.class)) {
-                // controller class specifies Produces
-                Produces produces = method.getDeclaringClass().getAnnotation(Produces.class);
-                String defaultContentType = produces.value()[0];
-                context.getResponse().contentType(defaultContentType);
-
-                if (produces.value().length > 1) {
+                if (declaredProduces.size() > 1) {
                     context.negotiateContentType();
                 }
             }
@@ -124,8 +128,8 @@ public class ControllerHandler implements RouteHandler<Context> {
                     // prepare a NOT FOUND (404)
                     context.getResponse().notFound();
 
-                    for (Return declaredReturn : getDeclaredReturns(method)) {
-                        if (declaredReturn.status() == HttpConstants.StatusCode.NOT_FOUND) {
+                    for (Return declaredReturn : declaredReturns) {
+                        if (declaredReturn.code() == HttpConstants.StatusCode.NOT_FOUND) {
                             if (!Strings.isNullOrEmpty(declaredReturn.description())) {
                                 context.setLocal("message", declaredReturn.description());
                             }
@@ -133,11 +137,11 @@ public class ControllerHandler implements RouteHandler<Context> {
                         }
                     }
                 } else {
-                    // prepare Declared Return
+                    // prepare declared Return
                     Class<?> resultClass = result.getClass();
-                    for (Return declaredReturn : getDeclaredReturns(method)) {
-                        if (declaredReturn.onResult() == resultClass) {
-                            context.status(declaredReturn.status());
+                    for (Return declaredReturn : declaredReturns) {
+                        if (declaredReturn.onResult().isAssignableFrom(resultClass)) {
+                            context.status(declaredReturn.code());
                             break;
                         }
                     }
@@ -178,11 +182,12 @@ public class ControllerHandler implements RouteHandler<Context> {
                     extractors = new ArgumentExtractor[types.length];
                     patterns = new String[types.length];
                     for (int i = 0; i < types.length; i++) {
+                        final Parameter parameter = method.getParameters()[i];
                         final Class<? extends Collection> collectionType;
                         final Class<?> objectType;
                         if (Collection.class.isAssignableFrom(types[i])) {
                             collectionType = (Class<? extends Collection>) types[i];
-                            objectType = getParameterGenericType(method, i);
+                            objectType = getParameterGenericType(parameter);
                         } else {
                             collectionType = null;
                             objectType = types[i];
@@ -193,7 +198,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                         if (FileItem.class == objectType) {
                             extractorType = FileItemExtractor.class;
                         } else {
-                            extractorType = getArgumentExtractor(controllerMethod, i);
+                            extractorType = getArgumentExtractor(parameter);
                         }
 
                         // instantiate the extractor
@@ -202,7 +207,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                         // configure the extractor
                         if (extractors[i] instanceof ConfigurableExtractor<?>) {
                             ConfigurableExtractor extractor = (ConfigurableExtractor) extractors[i];
-                            Annotation annotation = getAnnotation(controllerMethod, i, extractor.getAnnotationClass());
+                            Annotation annotation = ClassUtil.getAnnotation(parameter, extractor.getAnnotationClass());
                             if (annotation != null) {
                                 extractor.configure(annotation);
                             }
@@ -230,7 +235,6 @@ public class ControllerHandler implements RouteHandler<Context> {
                             if (Strings.isNullOrEmpty(namedExtractor.getName())) {
                                 // parameter is not named via annotation
                                 // try looking for the parameter name in the compiled .class file
-                                Parameter parameter = method.getParameters()[i];
                                 if (parameter.isNamePresent()) {
                                     namedExtractor.setName(parameter.getName());
                                 } else {
@@ -272,7 +276,7 @@ public class ControllerHandler implements RouteHandler<Context> {
             if (value == null || ClassUtil.isAssignable(value, type)) {
                 args[i] = value;
             } else {
-                String parameterName = getParameterName(method, i);
+                String parameterName = ControllerUtil.getParameterName(parameter);
                 throw new FathomException("Type for '{}' is actually '{}' but was specified as '{}'!",
                         parameterName, value.getClass().getName(), type.getName());
             }
@@ -283,7 +287,7 @@ public class ControllerHandler implements RouteHandler<Context> {
 
     protected void validateParameterValue(Parameter parameter, Object value) {
         if (value == null && parameter.isAnnotationPresent(Required.class)) {
-            throw new RequiredException("'{}' is a required parameter!", getParameterName(parameter));
+            throw new RequiredException("'{}' is a required parameter!", ControllerUtil.getParameterName(parameter));
         }
 
         if (value != null && value instanceof Number) {
@@ -293,7 +297,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                 // validate required minimum value
                 Min min = parameter.getAnnotation(Min.class);
                 if (number.longValue() < min.value()) {
-                    throw new RangeException("'{}' must be >= {}", getParameterName(parameter), min.value());
+                    throw new RangeException("'{}' must be >= {}", ControllerUtil.getParameterName(parameter), min.value());
                 }
             }
 
@@ -301,51 +305,27 @@ public class ControllerHandler implements RouteHandler<Context> {
                 // validate required maximum value
                 Max max = parameter.getAnnotation(Max.class);
                 if (number.longValue() > max.value()) {
-                    throw new RangeException("'{}' must be <= {}", getParameterName(parameter), max.value());
+                    throw new RangeException("'{}' must be <= {}", ControllerUtil.getParameterName(parameter), max.value());
                 }
             }
 
             if (parameter.isAnnotationPresent(Range.class)) {
                 Range range = parameter.getAnnotation(Range.class);
                 if (number.longValue() < range.min()) {
-                    throw new RangeException("'{}' must be >= {}", getParameterName(parameter), range.min());
+                    throw new RangeException("'{}' must be >= {}", ControllerUtil.getParameterName(parameter), range.min());
                 }
                 if (number.longValue() > range.max()) {
-                    throw new RangeException("'{}' must be <= {}", getParameterName(parameter), range.max());
+                    throw new RangeException("'{}' must be <= {}", ControllerUtil.getParameterName(parameter), range.max());
                 }
             }
         }
     }
 
-    protected String getParameterName(Method method, int i) {
-        Parameter parameter = method.getParameters()[i];
-        return getParameterName(parameter);
-    }
-
-    protected String getParameterName(Parameter parameter) {
-        String name = null;
-        Annotation annotation = parameter.getAnnotation(Param.class);
-        if (annotation != null) {
-            Param param = (Param) annotation;
-            name = param.value();
-        }
-
-        if (Strings.isNullOrEmpty(name)) {
-            // parameter is not named via annotation
-            // try looking for the parameter name in the compiled .class file
-            if (parameter.isNamePresent()) {
-                name = parameter.getName();
-            }
-        }
-
-        return name;
-    }
-
-    protected Class<?> getParameterGenericType(Method method, int i) {
-        Type parameterType = method.getGenericParameterTypes()[i];
+    protected Class<?> getParameterGenericType(Parameter parameter) {
+        Type parameterType = parameter.getParameterizedType();
         if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
-            throw new FathomException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
-                    method.getParameterTypes()[i].getName(), i, Util.toString(method));
+            throw new FathomException("Please specify a generic parameter type for '{}' of '{}'",
+                    ControllerUtil.getParameterName(parameter), Util.toString(method));
         }
 
         ParameterizedType parameterizedType = (ParameterizedType) parameterType;
@@ -353,14 +333,13 @@ public class ControllerHandler implements RouteHandler<Context> {
             Class<?> genericClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
             return genericClass;
         } catch (ClassCastException e) {
-            throw new FathomException("Please specify a generic parameter type for '{}', parameter {} of '{}'",
-                    method.getParameterTypes()[i].getName(), i, Util.toString(method));
+            throw new FathomException("Please specify a generic parameter type for '{}' of '{}'",
+                    ControllerUtil.getParameterName(parameter), Util.toString(method));
         }
     }
 
-    protected Class<? extends ArgumentExtractor> getArgumentExtractor(Method method, int i) {
-        Annotation[] annotations = method.getParameterAnnotations()[i];
-        for (Annotation annotation : annotations) {
+    protected Class<? extends ArgumentExtractor> getArgumentExtractor(Parameter parameter) {
+        for (Annotation annotation : parameter.getAnnotations()) {
             if (annotation.annotationType().isAnnotationPresent(ExtractWith.class)) {
                 ExtractWith with = annotation.annotationType().getAnnotation(ExtractWith.class);
                 Class<? extends ArgumentExtractor> extractorClass = with.value();
@@ -369,16 +348,6 @@ public class ControllerHandler implements RouteHandler<Context> {
         }
         // if unspecified we use the ParamExtractor
         return ParamExtractor.class;
-    }
-
-    protected Annotation getAnnotation(Method method, int i, Class<?> annotationClass) {
-        Annotation[] annotations = method.getParameterAnnotations()[i];
-        for (Annotation annotation : annotations) {
-            if (annotation.annotationType() == annotationClass) {
-                return annotation;
-            }
-        }
-        return null;
     }
 
     protected String describeType(Class<? extends Collection> collectionType, Class<?> objectType) {
@@ -390,9 +359,9 @@ public class ControllerHandler implements RouteHandler<Context> {
 
     protected void handleDeclaredReturnException(Exception e, Method method, Context context) {
         Class<? extends Exception> exceptionClass = e.getClass();
-        for (Return declaredReturn : getDeclaredReturns(method)) {
+        for (Return declaredReturn : declaredReturns) {
             if (exceptionClass.isAssignableFrom(declaredReturn.onResult())) {
-                context.status(declaredReturn.status());
+                context.status(declaredReturn.code());
                 if (Strings.isNullOrEmpty(declaredReturn.description())) {
                     context.setLocal("message", e.getMessage());
                 } else {
@@ -410,16 +379,5 @@ public class ControllerHandler implements RouteHandler<Context> {
 
         // undeclared exception, wrap & throw
         throw new FathomException(e);
-    }
-
-    protected Return[] getDeclaredReturns(Method method) {
-        if (method.isAnnotationPresent(Returns.class)) {
-            Returns returns = method.getAnnotation(Returns.class);
-            return returns.value();
-        } else if (method.isAnnotationPresent(Return.class)) {
-            Return aReturn = method.getAnnotation(Return.class);
-            return new Return[]{aReturn};
-        }
-        return new Return[0];
     }
 }

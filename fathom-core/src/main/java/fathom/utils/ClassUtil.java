@@ -179,6 +179,15 @@ public class ClassUtil {
         return t;
     }
 
+    public static <T extends Annotation> T getAnnotation(Parameter parameter, Class<T> annotationClass) {
+        for (Annotation annotation : parameter.getAnnotations()) {
+            if (annotation.annotationType() == annotationClass) {
+                return (T) annotation;
+            }
+        }
+        return null;
+    }
+
     public static <T> T newInstance(Class<T> classOfT) {
         try {
             return (T) classOfT.getConstructor().newInstance();

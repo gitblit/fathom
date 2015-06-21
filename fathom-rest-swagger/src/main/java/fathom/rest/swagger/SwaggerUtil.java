@@ -20,38 +20,15 @@ import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.Controller;
-import fathom.rest.controller.ControllerHandler;
-import fathom.rest.controller.Param;
-import fathom.rest.controller.Produces;
 import fathom.rest.controller.Required;
 import io.swagger.models.ExternalDocs;
 
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author James Moger
  */
 public class SwaggerUtil {
-
-    /**
-     * Extracts the declared Produced content-types from the method and/or controller class.
-     *
-     * @param handler
-     * @return the list of produced content-types for the method
-     */
-    public static List<String> getProduces(ControllerHandler handler) {
-        if (handler.getControllerMethod().isAnnotationPresent(Produces.class)) {
-            Produces produces = handler.getControllerMethod().getAnnotation(Produces.class);
-            return new ArrayList<>(Arrays.asList(produces.value()));
-        } else if (handler.getControllerMethod().getDeclaringClass().isAnnotationPresent(Produces.class)) {
-            Produces produces = handler.getControllerMethod().getDeclaringClass().getAnnotation(Produces.class);
-            return new ArrayList<>(Arrays.asList(produces.value()));
-        }
-        return null;
-    }
 
     /**
      * Determines if a parameter is Required or not.
@@ -123,24 +100,6 @@ public class SwaggerUtil {
             }
         }
         return null;
-    }
-
-    /**
-     * Returns the name of a parameter.
-     *
-     * @param parameter
-     * @return the name of a parameter.
-     */
-    public static String getParameterName(Parameter parameter) {
-        // identify parameter name and pattern from method signature
-        String methodParameterName = parameter.getName();
-        if (parameter.isAnnotationPresent(Param.class)) {
-            Param param = parameter.getAnnotation(Param.class);
-            if (!Strings.isNullOrEmpty(param.value())) {
-                methodParameterName = param.value();
-            }
-        }
-        return methodParameterName;
     }
 
 }

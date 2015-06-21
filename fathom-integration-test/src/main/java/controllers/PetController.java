@@ -55,9 +55,9 @@ public class PetController extends ApiV2 {
     @PUT
     @Named("Update an existing pet")
     @RequirePermission("update:pet")
-    @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
-    @Return(status = 404, description = "Pet not found")
-    @Return(status = 405, description = "Validation exception", onResult = ValidationException.class)
+    @Return(code = 400, description = "Invalid ID supplied", onResult = RangeException.class)
+    @Return(code = 404, description = "Pet not found")
+    @Return(code = 405, description = "Validation exception", onResult = ValidationException.class)
     public void updatePet(@Desc("Pet object that needs to be updated in the store") @Body Pet pet) {
         if (pet.id < 1 || pet.id > 5) {
             throw new RangeException();
@@ -67,7 +67,7 @@ public class PetController extends ApiV2 {
     @POST
     @Named("Add a new pet to the store")
     @RequirePermission("add:pet")
-    @Return(status = 405, description = "Invalid input", onResult = ValidationException.class)
+    @Return(code = 405, description = "Invalid input", onResult = ValidationException.class)
     public void addPet(@Desc("Pet object that needs to be added to the store") @Body Pet pet) {
         getResponse().ok();
     }
@@ -75,8 +75,8 @@ public class PetController extends ApiV2 {
     @GET("/findByStatus")
     @Named("Finds pets by status")
     @Notes
-    @Return(status = 200, description = "Successful operation", onResult = Pet[].class)
-    @Return(status = 400, description = "Invalid status value", onResult = ValidationException.class)
+    @Return(code = 200, description = "Successful operation", onResult = Pet[].class)
+    @Return(code = 400, description = "Invalid status value", onResult = ValidationException.class)
     public Pet[] findPetsByStatus(@Desc("Status values that need to be considered for filter") @Required PetStatus[] status) {
         Pet[] pets = new Pet[0];
         return pets;
@@ -85,8 +85,8 @@ public class PetController extends ApiV2 {
     @GET("/findByTags")
     @Named("Finds pets by tags")
     @Notes
-    @Return(status = 200, description = "Successful operation", onResult = Pet[].class)
-    @Return(status = 400, description = "Invalid tag value", onResult = ValidationException.class)
+    @Return(code = 200, description = "Successful operation", onResult = Pet[].class)
+    @Return(code = 400, description = "Invalid tag value", onResult = ValidationException.class)
     public Pet[] findPetsByTags(@Desc("Tags to filter by") @Required String[] tag) {
         Pet[] pets = new Pet[0];
         return pets;
@@ -95,27 +95,27 @@ public class PetController extends ApiV2 {
     @POST("/{petId}")
     @Named("Updates a pet in the store with form data")
     @RequirePermission("update:pet")
-    @Return(status = 400, description = "Invalid ID supplied", onResult = RangeException.class)
-    @Return(status = 405, description = "Invalid input", onResult = ValidationException.class)
+    @Return(code = 400, description = "Invalid ID supplied", onResult = RangeException.class)
+    @Return(code = 405, description = "Invalid input", onResult = ValidationException.class)
     public void updatePetWithForm(
             @Desc("ID of pet that needs to be updated") @Range(min = 1, max = 5) long petId,
             @Desc("Updated name of the pet") @Form String name,
-            @Desc("Updated status of the pet") @Form PetStatus status) {
+            @Desc("Updated code of the pet") @Form PetStatus status) {
     }
 
     @DELETE("/{petId}")
     @Named("Deletes a pet")
     @RequirePermission("delete:pet")
-    @Return(status = 400, description = "Invalid pet id", onResult = RangeException.class)
+    @Return(code = 400, description = "Invalid pet id", onResult = RangeException.class)
     public void deletePet(@Desc("Pet id to delete") @Range(min = 1, max = 5) long petId, @Header String api_key) {
     }
 
     @GET("/{petId}")
     @Named("Finds pet by ID")
     @Notes
-    @Return(status = 200, description = "Successful operation", onResult = Pet.class)
-    @Return(status = 400, description = "Invalid ID supplied value", onResult = RangeException.class)
-    @Return(status = 404, description = "Pet not found")
+    @Return(code = 200, description = "Successful operation", onResult = Pet.class)
+    @Return(code = 400, description = "Invalid ID supplied value", onResult = RangeException.class)
+    @Return(code = 404, description = "Pet not found")
     public Pet getPetById(@Desc("ID of pet that needs to be fetched") @Range(min = 1, max = 5) long petId) {
         Pet pet = new Pet();
         return pet;
@@ -125,7 +125,7 @@ public class PetController extends ApiV2 {
     @Named("uploads an image")
     @RequirePermission("update:pet")
     @Produces(Produces.JSON)
-    @Return(status = 200, description = "Successful operation")
+    @Return(code = 200, description = "Successful operation")
     public void uploadFile(
             @Desc("ID of pet to update") long petId,
             @Desc("Additional data to pass to server") @Form String additionalMetadata,

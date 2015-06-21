@@ -64,8 +64,8 @@ public class ApiController extends ApiV1 {
      */
     @GET("{id: [0-9]+}")
     @Metered
-    @Return(status = 200, description = "Item retrieved", onResult = Item.class)
-    @Return(status = 404, description = "Item does not exist")
+    @Return(code = 200, description = "Item retrieved", onResult = Item.class)
+    @Return(code = 404, description = "Item does not exist")
     public Item get(int id, @Auth Account account) {
 
         log.debug("GET item #{} for '{}'", id, account);

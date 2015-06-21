@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteDispatcher;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -106,7 +107,7 @@ public class ControllerInterceptor implements MethodInterceptor {
     }
 
     protected void checkRequireRoles(Method method) {
-        List<String> roles = SecurityUtil.collectRoles(method);
+        Collection<String> roles = SecurityUtil.collectRoles(method);
         if (!roles.isEmpty()) {
             Account account = getAccount();
             account.checkRoles(roles.toArray(new String[roles.size()]));
@@ -114,7 +115,7 @@ public class ControllerInterceptor implements MethodInterceptor {
     }
 
     protected void checkRequirePermissions(Method method) {
-        List<String> permissions = SecurityUtil.collectPermissions(method);
+        Collection<String> permissions = SecurityUtil.collectPermissions(method);
         if (!permissions.isEmpty()) {
             Account account = getAccount();
             account.checkPermissions(permissions.toArray(new String[permissions.size()]));

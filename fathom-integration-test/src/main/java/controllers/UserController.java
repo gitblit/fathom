@@ -49,21 +49,21 @@ public class UserController extends ApiV2 {
 
     @POST("/createWithArray")
     @Named("Create list of users with given input array")
-    @Return(status = 201, description = "Users created")
+    @Return(code = 201, description = "Users created")
     public void createUsersWithArrayInput(@Desc("List of User object") @Body User[] users) {
     }
 
     @POST("/createWithList")
     @Named("Create list of users with given input array")
-    @Return(status = 201, description = "Users created")
+    @Return(code = 201, description = "Users created")
     public void createUsersWithListInput(@Desc("List of User object") @Body List<User> users) {
     }
 
     @PUT("/{username}")
     @Named("Update user")
     @Notes("classpath:swagger/controllers/UserController/note.md")
-    @Return(status = 400, description = "Invalid username supplied", onResult = RequiredException.class)
-    @Return(status = 404, description = "User not found")
+    @Return(code = 400, description = "Invalid username supplied", onResult = RequiredException.class)
+    @Return(code = 404, description = "User not found")
     public void updateUser(@Desc("Username of User to be updated") @NotNull String username,
                            @Desc("Updated User object") @Body User user) {
     }
@@ -71,16 +71,16 @@ public class UserController extends ApiV2 {
     @DELETE("/{username}")
     @Named("Delete user")
     @Notes("classpath:swagger/controllers/UserController/note.md")
-    @Return(status = 400, description = "Invalid username supplied", onResult = RequiredException.class)
-    @Return(status = 404, description = "User not found")
+    @Return(code = 400, description = "Invalid username supplied", onResult = RequiredException.class)
+    @Return(code = 404, description = "User not found")
     public void deleteUser(@Desc("Username of User to be deleted") @NotNull String username) {
     }
 
     @GET("/{username}")
     @Named("Get user by username")
-    @Return(status = 200, description = "User", onResult = User.class)
-    @Return(status = 400, description = "Invalid username supplied", onResult = RequiredException.class)
-    @Return(status = 404, description = "User not found")
+    @Return(code = 200, description = "User", onResult = User.class)
+    @Return(code = 400, description = "Invalid username supplied", onResult = RequiredException.class)
+    @Return(code = 404, description = "User not found")
     public User getUserByName(@Desc("Username of User to be fetched. Use user1 for testing.") @NotNull String username) {
         User user = new User();
         return user;
@@ -88,8 +88,8 @@ public class UserController extends ApiV2 {
 
     @POST("/login")
     @Named("Log user into the system")
-    @Return(status = 200, description = "User logged in", onResult = String.class)
-    @Return(status = 400, description = "Invalid credentials", onResult = ValidationException.class)
+    @Return(code = 200, description = "User logged in", onResult = String.class)
+    @Return(code = 400, description = "Invalid credentials", onResult = ValidationException.class)
     public String loginUser(@Desc("The Username for login") @NotNull @Form String username,
                           @Desc("The password for login in clear text") @Form @Password @NotNull String password) {
         if (username.equals(password)) {
@@ -100,15 +100,15 @@ public class UserController extends ApiV2 {
 
     @POST("/logout")
     @Named("Log user out of the system")
-    @Return(status = 200, description = "User logged out")
+    @Return(code = 200, description = "User logged out")
     public void logoutUser() {
     }
 
     @POST("/")
     @Named("Create user")
     @Notes("classpath:swagger/controllers/UserController/note.md")
-    @Return(status = 400, description = "Invalid username supplied", onResult = RequiredException.class)
-    @Return(status = 404, description = "User not found")
+    @Return(code = 400, description = "Invalid username supplied", onResult = RequiredException.class)
+    @Return(code = 404, description = "User not found")
     public void createUser(@Desc("User object to create") @Body User user) {
     }
 
