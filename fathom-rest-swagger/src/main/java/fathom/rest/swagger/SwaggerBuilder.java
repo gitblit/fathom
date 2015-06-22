@@ -398,10 +398,9 @@ public class SwaggerBuilder {
 
         Class<?> resultType = aReturn.onResult();
         if (Exception.class.isAssignableFrom(resultType)) {
-            resultType = Error.class;
-        }
-
-        if (Void.class != resultType) {
+            Property errorProperty = registerErrorModel(swagger);
+            response.setSchema(errorProperty);
+        } else if (Void.class != resultType) {
             // Return type
             if (resultType.isArray()) {
                 // ARRAY[]
@@ -497,6 +496,45 @@ public class SwaggerBuilder {
         return ref;
     }
 
+    /**
+     * Manually register the Pippo Error class as  Swagger model.
+     *
+     * @param swagger
+     * @return a ref for the Error model
+     */
+    protected RefProperty registerErrorModel(Swagger swagger) {
+        String ref = Error.class.getSimpleName();
+        if (swagger.getDefinitions() != null && swagger.getDefinitions().containsKey(ref)) {
+            // model already registered
+            return new RefProperty(ref);
+        }
+
+        ModelImpl model = new ModelImpl();
+        swagger.addDefinition(ref, model);
+
+        model.setDescription("an error message");
+
+        model.addProperty("statusCode", new IntegerProperty().readOnly().description("http status code"));
+        model.addProperty("statusMessage", new StringProperty().readOnly().description("description of the http status code"));
+        model.addProperty("requestMethod", new StringProperty().readOnly().description("http request method"));
+        model.addProperty("requestUri", new StringProperty().readOnly().description("http request path"));
+        model.addProperty("message", new StringProperty().readOnly().description("application message"));
+
+        if (settings.isDev()) {
+            // in DEV mode the stacktrace is returned in the error message
+            model.addProperty("stacktrace", new StringProperty().readOnly().description("application stacktrace"));
+        }
+
+        return new RefProperty(ref);
+    }
+
+    /**
+     * Register authentication security.
+     *
+     * @param swagger
+     * @param operation
+     * @param method
+     */
     protected void registerSecurity(Swagger swagger, Operation operation, Method method) {
         RequireToken requireToken = ClassUtil.getAnnotation(method, RequireToken.class);
         if (requireToken != null) {
