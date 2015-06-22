@@ -16,9 +16,11 @@
 
 package fathom.rest.swagger;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import fathom.conf.Settings;
+import fathom.rest.RestModule;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.ControllerHandler;
 import fathom.rest.controller.Produces;
@@ -39,6 +41,10 @@ import static org.junit.Assert.assertNotNull;
  */
 public class SwaggerBuilderTest {
 
+    final Settings settings = new Settings();
+
+    final PippoSettings pippoSettings = RestModule.getPippoSettings(settings);
+
     @Test
     public void testGenerate() throws Exception {
         DefaultRouter router = new DefaultRouter();
@@ -46,13 +52,19 @@ public class SwaggerBuilderTest {
             router.addRoute(route);
         }
 
-        SwaggerBuilder sb = new SwaggerBuilder(new Settings(), router);
+        SwaggerBuilder sb = new SwaggerBuilder(settings, router);
         String json = sb.generateJSON(router.getRoutes());
         assertNotNull(json);
     }
 
     private List<Route> getRoutes() {
-        Injector injector = Guice.createInjector();
+        Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            public void configure() {
+                bind(Messages.class).toInstance(new Messages(new Languages(pippoSettings)));
+                bind(Settings.class).toInstance(settings);
+            }
+        });
 
         List<Route> routes = new ArrayList<>();
         routes.add(route(injector, "GET", "/api/{id}", TestController.class));

@@ -19,6 +19,7 @@ package fathom.rest;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import fathom.ServletsModule;
+import fathom.conf.Settings;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.ErrorHandler;
@@ -46,31 +47,7 @@ public class RestModule extends ServletsModule {
         String basePath = Strings.nullToEmpty(getSettings().getString(RestServlet.SETTING_URL, null)).trim();
         serve(basePath + "/*").with(RestServlet.class);
 
-        RuntimeMode runtimeMode = RuntimeMode.PROD;
-        for (RuntimeMode mode : RuntimeMode.values()) {
-            if (mode.name().equalsIgnoreCase(getSettings().getMode().toString())) {
-                runtimeMode = mode;
-            }
-        }
-
-        final Properties properties = getSettings().toProperties();
-
-        final PippoSettings pippoSettings = new PippoSettings(runtimeMode);
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            Object value = entry.getValue();
-            String propertyValue;
-            if (value instanceof Collection) {
-                // strip brackets from collection [en,de,ru]
-                propertyValue = Optional.fromNullable(value).or("").toString();
-                propertyValue = propertyValue.substring(1, propertyValue.length() - 1);
-            } else {
-                // Object.toString()
-                propertyValue = Optional.fromNullable(value).or("").toString();
-            }
-            String propertyName = entry.getKey().toString();
-            pippoSettings.overrideSetting(propertyName, propertyValue);
-        }
-
+        final PippoSettings pippoSettings = getPippoSettings(getSettings());
         final Application application = new Application(pippoSettings);
 
         // must set context path before starting application
@@ -96,6 +73,41 @@ public class RestModule extends ServletsModule {
 
         bind(RestService.class);
 
+    }
+
+    /**
+     * Convert Fathom Settings into PippoSettings
+     *
+     * @param settings
+     * @return PippoSettings
+     */
+    public static PippoSettings getPippoSettings(Settings settings) {
+        RuntimeMode runtimeMode = RuntimeMode.PROD;
+        for (RuntimeMode mode : RuntimeMode.values()) {
+            if (mode.name().equalsIgnoreCase(settings.getMode().toString())) {
+                runtimeMode = mode;
+            }
+        }
+
+        final Properties properties = settings.toProperties();
+
+        final PippoSettings pippoSettings = new PippoSettings(runtimeMode);
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            Object value = entry.getValue();
+            String propertyValue;
+            if (value instanceof Collection) {
+                // strip brackets from collection [en,de,ru]
+                propertyValue = Optional.fromNullable(value).or("").toString();
+                propertyValue = propertyValue.substring(1, propertyValue.length() - 1);
+            } else {
+                // Object.toString()
+                propertyValue = Optional.fromNullable(value).or("").toString();
+            }
+            String propertyName = entry.getKey().toString();
+            pippoSettings.overrideSetting(propertyName, propertyValue);
+        }
+
+        return pippoSettings;
     }
 
 }
