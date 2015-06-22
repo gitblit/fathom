@@ -8,6 +8,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
 
+#### Added
+
+#### Removed
+
+### [0.5.2] - 2015-06-22
+
+#### Changed
+
 - [fathom-rest] Refined controllers to be more declarative
 - [fathom-core] Added more system information to startup log
 - [fathom-core] Update Undertow to 1.2.8
@@ -18,8 +26,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest] Added simple validation of controller arguments
 - [fathom-rest] Added HeaderFilter and CORSFilter
 - [fathom-core] Added Undertow performance tuning settings
-
-#### Removed
 
 ### [0.5.1] - 2015-06-11
 
@@ -61,7 +67,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.5.1...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.5.2...HEAD
+[0.5.2]: https://github.com/gitblit/fathom/compare/release-0.5.1...release-0.5.2
 [0.5.1]: https://github.com/gitblit/fathom/compare/release-0.5.0...release-0.5.1
 
 [fathom-core]: https://github.com/gitblit/fathom/tree/master/fathom-core
