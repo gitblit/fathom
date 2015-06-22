@@ -23,18 +23,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Describes a possible response of a controller method.
+ * Describes a possible response of a Fathom Controller method.
+ * This annotation my be applied to a Fathom Controller class or method.
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Returns.class)
 public @interface Return {
+
     /**
-     * The HTTP status code of the response.
-     * <p>
-     * The value should be one of the formal <a target="_blank"
-     * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">HTTP Status
-     * Code Definitions</a>.
+     * The HTTP status code to send in the response.
      */
     int code();
 
@@ -42,6 +40,14 @@ public @interface Return {
      * Human-readable description to accompany a response.
      */
     String description() default "";
+
+    /**
+     * Description localization key for messages.properties lookup.
+     *
+     * If this value is non-empty, a localized variant of the description will be retrieved
+     * from messages.properties with a fallback to value().
+     */
+    String descriptionKey() default "";
 
     /**
      * Describes an expected result type or a expected thrown exception.

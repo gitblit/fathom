@@ -31,7 +31,7 @@ import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Form;
 import fathom.rest.swagger.ApiNotes;
 import fathom.rest.swagger.Password;
-import fathom.rest.swagger.ApiTag;
+import fathom.rest.swagger.ApiOperations;
 import models.petstore.User;
 
 import javax.validation.constraints.NotNull;
@@ -43,7 +43,7 @@ import java.util.List;
  * @author James Moger
  */
 @Path("/user")
-@ApiTag(name = "user", description = "Operations about user")
+@ApiOperations(tag = "user", description = "Operations about user")
 @Produces({Produces.JSON, Produces.XML})
 public class UserController extends ApiV2 {
 

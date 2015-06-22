@@ -281,12 +281,13 @@ This has a few benefits.
 1. it allows you to implement the logic of your controller without directly relying on the request/response/context objects.
 2. it makes the intended results of your controller method execution clear
 3. it facilitates api documentation generators or other static analysis tools
+4. it allows you to send localized messages on error responses based on the `Accept-Language` of the request
 
 ```java
 @GET("/{id}")
 @Return(code=200, description="Employee retrieved", onResult=Employee.class)
 @Return(code=400, description="Invalid id specified", onResult=ValidationException.class)
-@Return(code=404, description="Employee not found")
+@Return(code=404, description="Employee not found", descriptionKey="error.employeeNotFound")
 public Employee getEmployee(@Min(1) @Max(5) int id) {
   Employee employee = employeeDao.get(id);
   return employee;

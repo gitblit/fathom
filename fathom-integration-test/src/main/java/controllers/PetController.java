@@ -32,7 +32,7 @@ import fathom.rest.controller.exceptions.ValidationException;
 import fathom.rest.security.aop.RequirePermission;
 import fathom.rest.security.aop.RequireToken;
 import fathom.rest.swagger.ApiSummary;
-import fathom.rest.swagger.ApiTag;
+import fathom.rest.swagger.ApiOperations;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.Form;
 import fathom.rest.swagger.ApiNotes;
@@ -46,7 +46,7 @@ import ro.pippo.core.FileItem;
  * @author James Moger
  */
 @Path("/pet")
-@ApiTag(name = "pet", description = "Operations about pets")
+@ApiOperations(tag = "pet", description = "Operations about pets")
 @Produces({Produces.JSON, Produces.XML})
 @RequireToken
 @RequirePermission("read:pet")

@@ -21,14 +21,36 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for an controller Tag.
+ * Annotation that defines a group of API Operations.
+ * This annotation is applied to Fathom Controllers.
  *
  * @author James Moger
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface ApiTag {
-    String name() default "";
+public @interface ApiOperations {
+
+    /**
+     * The tag to apply to all Operations.
+     * e.g. @ApiOperations(tag="products", description="Operations about products")
+     */
+    String tag() default "";
+
+    /**
+     * Brief description of the group of API Operations.
+     */
     String description();
+
+    /**
+     * Description localization key for messages.properties lookup.
+     *
+     * If this value is non-empty, a localized variant of the description will be retrieved
+     * from messages.properties with a fallback to description().
+     */
+    String descriptionKey() default "";
+
+    /**
+     * URL for external documentation about this group of API Operations.
+     */
     String externalDocs() default "";
 }

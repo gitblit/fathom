@@ -28,5 +28,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface Desc {
+
+    /**
+     * A brief description.
+     */
     String value();
+
+    /**
+     * Description localization key for messages.properties lookup.
+     *
+     * If this value is non-empty, a localized variant of the description will be retrieved
+     * from messages.properties with a fallback to value().
+     */
+    String key() default "";
+
 }

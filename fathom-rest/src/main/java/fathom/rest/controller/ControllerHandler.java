@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.FileItem;
 import ro.pippo.core.HttpConstants;
+import ro.pippo.core.Messages;
 import ro.pippo.core.route.RouteHandler;
 
 import java.lang.annotation.Annotation;
@@ -61,6 +62,7 @@ public class ControllerHandler implements RouteHandler<Context> {
     protected final Class<? extends Controller> controllerClass;
     protected final Provider<? extends Controller> controllerProvider;
     protected final Method method;
+    protected final Messages messages;
     protected ArgumentExtractor[] extractors;
     protected String[] patterns;
     protected List<String> declaredProduces;
@@ -75,6 +77,7 @@ public class ControllerHandler implements RouteHandler<Context> {
         this.controllerClass = controllerClass;
         this.controllerProvider = injector.getProvider(controllerClass);
         this.method = findMethod(injector, controllerClass, methodName);
+        this.messages = injector.getInstance(Messages.class);
 
         Preconditions.checkNotNull(method, "Failed to find method '%s'", Util.toString(controllerClass, methodName));
         log.trace("Obtained method for '{}'", Util.toString(method));
@@ -130,8 +133,15 @@ public class ControllerHandler implements RouteHandler<Context> {
 
                     for (Return declaredReturn : declaredReturns) {
                         if (declaredReturn.code() == HttpConstants.StatusCode.NOT_FOUND) {
-                            if (!Strings.isNullOrEmpty(declaredReturn.description())) {
-                                context.setLocal("message", declaredReturn.description());
+                            String message = declaredReturn.description();
+
+                            if (!Strings.isNullOrEmpty(declaredReturn.descriptionKey())) {
+                                // retrieve localized message, fallback to declared message
+                                message = messages.getWithDefault(declaredReturn.descriptionKey(), message, context);
+                            }
+
+                            if (!Strings.isNullOrEmpty(message)) {
+                                context.setLocal("message", message);
                             }
                             break;
                         }
@@ -362,11 +372,19 @@ public class ControllerHandler implements RouteHandler<Context> {
         for (Return declaredReturn : declaredReturns) {
             if (exceptionClass.isAssignableFrom(declaredReturn.onResult())) {
                 context.status(declaredReturn.code());
-                if (Strings.isNullOrEmpty(declaredReturn.description())) {
-                    context.setLocal("message", e.getMessage());
-                } else {
-                    context.setLocal("message", declaredReturn.description());
+
+                // prefer declared message to exception message
+                String message = Strings.isNullOrEmpty(declaredReturn.description()) ? e.getMessage() : declaredReturn.description();
+
+                if (!Strings.isNullOrEmpty(declaredReturn.descriptionKey())) {
+                    // retrieve localized message, fallback to declared message
+                    message = messages.getWithDefault(declaredReturn.descriptionKey(), message, context);
                 }
+
+                if (!Strings.isNullOrEmpty(message)) {
+                    context.setLocal("message", message);
+                }
+
                 log.warn("Handling declared return exception '{}' for '{}'", e.getMessage(), Util.toString(method));
                 return;
             }

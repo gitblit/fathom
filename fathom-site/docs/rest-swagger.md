@@ -165,26 +165,26 @@ public void getEmployee(int id) {
 
 However, there is always room for improvement.  Your generated specification, while functional, can not fully showcase your API without some hints from you.
 
-### @ApiTag
+### @ApiOperations
 
-You may use the `@ApiTag` annotation to briefly describe a controller and it's set of methods/operations.  In Swagger, operations are grouped together by their *tag* and those operations share a common base path (*e.g. /api/employee*).
+You may use the `@ApiOperations` annotation to briefly describe a controller and it's set of methods.  In Swagger, operations are grouped together by their *tag* and those operations usually share a common base path (*e.g. /api/employee*).  You may optionally localize the `@ApiOperations` description.
 
 ```java
 @Path("/api/employee")
 @Produces({Produces.JSON, Produces.XML})
-@ApiTag(name="employees", description="Employees API")
+@ApiOperations(tag="employees", description="Employees API", descriptionKey="api.description.employees")
 public class EmployeeController extends Controller {
 }
 ```
 
 ### @Named and/or @ApiSummary
 
-You may name your controller routes using the `@Named` annotation.  This information is used in the *Summary* field of the Swagger specification and may also be used for normal runtime logging of route dispatching.  Alternatively, you may use the `@ApiSummary` annotation which is only used as the summary in your generated Swagger specification.
+You may name your controller routes using the `@Named` annotation.  This information is used in the *Summary* field of the Swagger specification and may also be used for normal runtime logging of route dispatching.  Alternatively, you may use the `@ApiSummary` annotation which is only used as the summary in your generated Swagger specification.  You may optionally localize `@ApiSummary`.
 
 ```java
 @GET("/{id}")
 @Named("GetEmployeeById")
-@ApiSummary("Get employee by id")
+@ApiSummary(value="Get employee by id", key="api.employee.getById")
 public Employee getEmployee(int id) {
   Employee employee = employeeDao.get(id);
   return employee;
@@ -196,7 +196,7 @@ public Employee getEmployee(int id) {
 
 ### @ApiNotes
 
-The `@ApiNotes` annotation adds a brief description to an operation in addition to the `@Named` or `@ApiSummary` (*Summary*) information.
+The `@ApiNotes` annotation adds a brief description to an operation in addition to the `@Named` or `@ApiSummary` (*Summary*) information. You may optionally localize `@ApiNotes`.
 
 You can use `@ApiNotes` to load a classpath resource notes file.  [GFM] syntax may be used.
 These two examples are equivalent for a given controller method.
@@ -217,10 +217,10 @@ public Employee getEmployee(int id) {
 }
 ```
 
-Or you may directly specify your note text:
+Or you may directly specify your note text with an optional translation:
 
 ```java
-@ApiNotes("This method requires a **valid** employee id")
+@ApiNotes(value="This method requires a **valid** employee id", key="api.notes.getEmployeeById")
 public Employee getEmployee(int id) {
   Employee employee = employeeDao.get(id);
   return employee;
@@ -229,7 +229,7 @@ public Employee getEmployee(int id) {
 
 ### @Desc
 
-You may use the `@Desc` annotation to briefly describe a controller method parameter.
+You may use the `@Desc` annotation to briefly describe a controller method parameter. You may optionally localize `@Desc`.
 
 ```java
 @GET("/{id}")
@@ -237,6 +237,11 @@ public Employee getEmployee(@Desc("employee id") int id) {
   Employee employee = employeeDao.get(id);
   return employee;
 }
+
+@DELETE("/{id}")
+public Employee deleteEmployee(@Desc(key="api.employee.idParameter") int id) {
+}
+
 ```
 
 ### @Form

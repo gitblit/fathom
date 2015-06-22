@@ -28,7 +28,7 @@ import fathom.rest.controller.exceptions.RangeException;
 import fathom.rest.controller.exceptions.ValidationException;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.ApiNotes;
-import fathom.rest.swagger.ApiTag;
+import fathom.rest.swagger.ApiOperations;
 import models.petstore.Order;
 
 import javax.validation.constraints.Max;
@@ -41,7 +41,7 @@ import javax.validation.constraints.Min;
  */
 @Path("/store")
 @Produces({Produces.JSON, Produces.XML})
-@ApiTag(name = "store", description = "Access to Petstore orders")
+@ApiOperations(tag = "store", description = "Access to Petstore orders")
 public class StoreController extends ApiV2 {
 
     @DELETE("/order/{orderId}")

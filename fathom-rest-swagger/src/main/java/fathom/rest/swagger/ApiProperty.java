@@ -28,13 +28,37 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ApiProperty {
+
+    /**
+     * Name of the property.
+     */
     String name() default "";
 
+    /**
+     * Brief description of the property.
+     */
     String description() default "";
 
+    /**
+     * Description localization key for messages.properties lookup.
+     *
+     * If this value is non-empty, a localized variant of the description will be retrieved
+     * from messages.properties with a fallback to value().
+     */
+    String descriptionKey() default "";
+
+    /**
+     * The default value of the property.
+     */
     String defaultValue() default "";
 
+    /**
+     * A brief example of the property.
+     */
     String example() default "";
 
+    /**
+     * Identifies properties that may not be updated through a POST, PUT, or PATCH request.
+     */
     boolean readOnly() default false;
 }

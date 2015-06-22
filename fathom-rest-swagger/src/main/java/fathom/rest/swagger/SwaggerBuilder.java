@@ -81,6 +81,7 @@ import org.slf4j.LoggerFactory;
 import ro.pippo.core.Error;
 import ro.pippo.core.FileItem;
 import ro.pippo.core.HttpConstants;
+import ro.pippo.core.Messages;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.util.StringUtils;
@@ -120,11 +121,22 @@ public class SwaggerBuilder {
 
     private final Router router;
 
+    private final Messages messages;
+
+    private final String defaultLanguage;
+
     private final String relativeSwaggerBasePath;
 
     public SwaggerBuilder(Settings settings, Router router) {
+        this(settings, router, null);
+    }
+
+    public SwaggerBuilder(Settings settings, Router router, Messages messages) {
         this.settings = settings;
         this.router = router;
+        this.messages = messages;
+        List<String> languages = settings.getStrings("application.languages");
+        this.defaultLanguage = languages.isEmpty() ? "en" : languages.get(0);
         this.relativeSwaggerBasePath = Optional.fromNullable(Strings.emptyToNull(settings.getString("swagger.basePath", null))).or("/");
     }
 
@@ -294,7 +306,6 @@ public class SwaggerBuilder {
         return true;
     }
 
-
     /**
      * Registers a ControllerHandler as a Swagger Operation.
      * If the path for the operation is unrecognized, a new Swagger Path is created.
@@ -313,14 +324,26 @@ public class SwaggerBuilder {
         Operation operation = new Operation();
         if (method.isAnnotationPresent(ApiSummary.class)) {
             ApiSummary apiSummary = method.getAnnotation(ApiSummary.class);
-            operation.setSummary(apiSummary.value());
+            String summary = translate(apiSummary.key(), apiSummary.value());
+            if (Strings.isNullOrEmpty(summary)) {
+                operation.setSummary(Util.toString(method));
+            } else {
+                operation.setSummary(summary);
+            }
         } else if (Strings.isNullOrEmpty(route.getName())) {
             operation.setSummary(Util.toString(method));
         } else {
             operation.setSummary(route.getName());
         }
 
-        operation.setDescription(getNotes(method));
+        if (operation.getSummary().length() > 120) {
+            log.warn("'{}' api summary exceeds 120 characters", Util.toString(method));
+        }
+
+        String notes = getNotes(method);
+        if (!Strings.isNullOrEmpty(notes)) {
+            operation.setDescription(notes);
+        }
         operation.setOperationId(Util.toString(method));
         operation.setConsumes(produces);
         operation.setProduces(produces);
@@ -330,7 +353,7 @@ public class SwaggerBuilder {
         registerResponses(swagger, operation, method);
         registerSecurity(swagger, operation, method);
 
-        Tag tag = SwaggerUtil.getTag(controller);
+        Tag tag = getControllerTag(controller);
         if (tag == null) {
             operation.addTag(controller.getSimpleName());
         } else {
@@ -371,7 +394,7 @@ public class SwaggerBuilder {
      */
     protected void registerResponse(Swagger swagger, Operation operation, Return aReturn) {
         Response response = new Response();
-        response.setDescription(aReturn.description());
+        response.setDescription(translate(aReturn.descriptionKey(), aReturn.description()));
 
         Class<?> resultType = aReturn.onResult();
         if (Exception.class.isAssignableFrom(resultType)) {
@@ -405,7 +428,7 @@ public class SwaggerBuilder {
      * @return the Swagger ref of the model
      */
     protected String registerModel(Swagger swagger, Class<?> modelClass) {
-        final Tag modelTag = SwaggerUtil.getModelTag(modelClass);
+        final Tag modelTag = getModelTag(modelClass);
         final String ref = modelTag.getName();
 
         if (swagger.getDefinitions() != null && swagger.getDefinitions().containsKey(ref)) {
@@ -452,9 +475,7 @@ public class SwaggerBuilder {
                     property.setName(apiProperty.name());
                 }
 
-                if (!Strings.isNullOrEmpty(apiProperty.description())) {
-                    property.setDescription(apiProperty.description());
-                }
+                property.setDescription(translate(apiProperty.descriptionKey(), apiProperty.description()));
 
                 if (!Strings.isNullOrEmpty(apiProperty.example())) {
                     property.setExample(apiProperty.example());
@@ -545,7 +566,7 @@ public class SwaggerBuilder {
                 // BODY
                 BodyParameter bodyParameter = new BodyParameter();
                 bodyParameter.setName(methodParameterName);
-                bodyParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
+                bodyParameter.setDescription(getDescription(methodParameter));
                 bodyParameter.setRequired(true);
 
                 if (methodParameter.getType().isArray()) {
@@ -583,7 +604,7 @@ public class SwaggerBuilder {
                     headerParameter.setName(header.value());
                 }
 
-                headerParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
+                headerParameter.setDescription(getDescription(methodParameter));
                 setPropertyType(swagger, headerParameter, method);
 
                 operation.addParameter(headerParameter);
@@ -593,7 +614,7 @@ public class SwaggerBuilder {
                 // FORM
                 FormParameter formParameter = new FormParameter();
                 formParameter.setName(methodParameterName);
-                formParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
+                formParameter.setDescription(getDescription(methodParameter));
                 setPropertyType(swagger, formParameter, method);
 
                 operation.addParameter(formParameter);
@@ -611,7 +632,7 @@ public class SwaggerBuilder {
                 // QUERY
                 QueryParameter queryParameter = new QueryParameter();
                 queryParameter.setName(methodParameterName);
-                queryParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
+                queryParameter.setDescription(getDescription(methodParameter));
                 setPropertyType(swagger, queryParameter, method);
 
                 operation.addParameter(queryParameter);
@@ -654,8 +675,8 @@ public class SwaggerBuilder {
                 }
 
                 if (swaggerProperty != null) {
-                    swaggerParameter.setDescription(SwaggerUtil.getDescription(methodParameter));
-                    swaggerParameter.setRequired(SwaggerUtil.isRequired(methodParameter));
+                    swaggerParameter.setDescription(getDescription(methodParameter));
+                    swaggerParameter.setRequired(isRequired(methodParameter));
                     swaggerParameter.setProperty(swaggerProperty);
 
                     if (swaggerProperty instanceof StringProperty) {
@@ -767,6 +788,53 @@ public class SwaggerBuilder {
         return swaggerProperty;
     }
 
+    /**
+     * Returns the Tag for a controller.
+     *
+     * @param controllerClass
+     * @return a controller tag or null
+     */
+    protected Tag getControllerTag(Class<? extends Controller> controllerClass) {
+        if (controllerClass.isAnnotationPresent(ApiOperations.class)) {
+            ApiOperations annotation = controllerClass.getAnnotation(ApiOperations.class);
+            io.swagger.models.Tag tag = new io.swagger.models.Tag();
+            tag.setName(Optional.fromNullable(Strings.emptyToNull(annotation.tag())).or(controllerClass.getSimpleName()));
+            tag.setDescription(translate(annotation.descriptionKey(), annotation.description()));
+
+            if (!Strings.isNullOrEmpty(annotation.externalDocs())) {
+                ExternalDocs docs = new ExternalDocs();
+                docs.setUrl(annotation.externalDocs());
+                tag.setExternalDocs(docs);
+            }
+
+            if (!Strings.isNullOrEmpty(tag.getDescription())) {
+                return tag;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the tag of the model.
+     * This ref is either explicitly named or it is generated from the model class name.
+     *
+     * @param modelClass
+     * @return the tag of the model
+     */
+    protected Tag getModelTag(Class<?> modelClass) {
+        if (modelClass.isAnnotationPresent(ApiModel.class)) {
+            ApiModel annotation = modelClass.getAnnotation(ApiModel.class);
+            Tag tag = new Tag();
+            tag.setName(Optional.fromNullable(Strings.emptyToNull(annotation.name())).or(modelClass.getSimpleName()));
+            tag.setDescription(translate(annotation.descriptionKey(), annotation.description()));
+            return tag;
+        }
+
+        Tag tag = new Tag();
+        tag.setName(modelClass.getName());
+        return tag;
+    }
+
     protected String getNotes(Method method) {
         if (method.isAnnotationPresent(ApiNotes.class)) {
             ApiNotes apiNotes = method.getAnnotation(ApiNotes.class);
@@ -784,10 +852,37 @@ public class SwaggerBuilder {
                 }
                 return content;
             } else {
-                return resource;
+                String notes = translate(apiNotes.key(), apiNotes.value());
+                return notes;
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the description of a parameter.
+     *
+     * @param parameter
+     * @return the parameter description
+     */
+    protected String getDescription(Parameter parameter) {
+        if (parameter.isAnnotationPresent(Desc.class)) {
+            Desc annotation = parameter.getAnnotation(Desc.class);
+            return translate(annotation.key(), annotation.value());
+        }
+        return null;
+    }
+
+    /**
+     * Determines if a parameter is Required or not.
+     *
+     * @param parameter
+     * @return true if the parameter is required
+     */
+    protected boolean isRequired(Parameter parameter) {
+        return parameter.isAnnotationPresent(Body.class)
+                || parameter.isAnnotationPresent(Required.class)
+                || parameter.isAnnotationPresent(NotNull.class);
     }
 
     protected List<String> getUriParameterNames(String uriPattern) {
@@ -799,6 +894,20 @@ public class SwaggerBuilder {
         }
 
         return list;
+    }
+
+    /**
+     * Attempts to provide a localized message.
+     *
+     * @param messageKey
+     * @param defaultMessage
+     * @return the default message or a localized message or null
+     */
+    protected String translate(String messageKey, String defaultMessage) {
+        if (messages == null || Strings.isNullOrEmpty(messageKey)) {
+            return Strings.emptyToNull(defaultMessage);
+        }
+        return Strings.emptyToNull(messages.getWithDefault(messageKey, defaultMessage, defaultLanguage));
     }
 
 }

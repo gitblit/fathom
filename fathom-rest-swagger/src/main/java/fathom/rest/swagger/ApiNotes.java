@@ -32,5 +32,20 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ApiNotes {
+
+    /**
+     * Markdown text notes OR a classpath resource file.
+     *
+     * @ApiNotes("this is my note")
+     * @ApiNotes("classpath:swagger/info.md"
+     */
     String value() default "";
+
+    /**
+     * Notes localization key for messages.properties lookup.
+     *
+     * If this value is non-empty, a localized variant of the notes will be retrieved
+     * from messages.properties with a fallback to value().
+     */
+    String key() default "";
 }

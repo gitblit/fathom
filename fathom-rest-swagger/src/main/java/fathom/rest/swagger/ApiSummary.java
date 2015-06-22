@@ -28,5 +28,17 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ApiSummary {
-    String value();
+
+    /**
+     * Brief summary/description of an operation.  Should not exceed 120 characters.
+     */
+    String value() default "";
+
+    /**
+     * Summary localization key for messages.properties lookup.
+     *
+     * If this value is non-empty, a localized variant of the summary will be retrieved
+     * from messages.properties with a fallback to value().
+     */
+    String key() default "";
 }

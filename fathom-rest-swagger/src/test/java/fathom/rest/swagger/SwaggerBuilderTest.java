@@ -23,6 +23,9 @@ import fathom.rest.controller.Controller;
 import fathom.rest.controller.ControllerHandler;
 import fathom.rest.controller.Produces;
 import org.junit.Test;
+import ro.pippo.core.Languages;
+import ro.pippo.core.Messages;
+import ro.pippo.core.PippoSettings;
 import ro.pippo.core.route.DefaultRouter;
 import ro.pippo.core.route.Route;
 

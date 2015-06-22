@@ -28,6 +28,22 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ApiModel {
+
+    /**
+     * Name of the model.
+     */
     String name() default "";
+
+    /**
+     * Brief description of the model.
+     */
     String description() default "";
+
+    /**
+     * Description localization key for messages.properties lookup.
+     *
+     * If this value is non-empty, a localized variant of the description will be retrieved
+     * from messages.properties with a fallback to value().
+     */
+    String descriptionKey() default "";
 }
