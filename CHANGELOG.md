@@ -14,10 +14,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Added
 
-- [fathom-rest-swagger] Added new module for Swagger
+- [fathom-rest-swagger] Added new module for automatic Swagger specification generation
 - [fathom-rest] Added simple validation of controller arguments
 - [fathom-rest] Added HeaderFilter and CORSFilter
-- [fathom-core] Added Undertow tunning settings
+- [fathom-core] Added Undertow performance tuning settings
 
 #### Removed
 
