@@ -19,7 +19,7 @@ package models.petstore;
 import fathom.rest.swagger.ApiProperty;
 import fathom.rest.swagger.ApiModel;
 
-@ApiModel
+@ApiModel(description = "a petstore user")
 public class User {
 
     @ApiProperty
@@ -44,6 +44,5 @@ public class User {
     String phone;
 
     @ApiProperty(description = "User Status")
-//    @Values(allowedValues = { "1-registered", "2-active", "3-closed" })
-            int userStatus;
+    int userStatus;
 }

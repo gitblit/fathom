@@ -21,7 +21,7 @@ import fathom.rest.swagger.ApiModel;
 
 import javax.validation.constraints.NotNull;
 
-@ApiModel
+@ApiModel(description = "a pet in the store")
 public class Pet {
 
     @ApiProperty(description = "unique identifier for the pet")

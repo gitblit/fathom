@@ -24,7 +24,7 @@ import java.util.Date;
 /**
  * @author James Moger
  */
-@ApiModel
+@ApiModel(description = "an order for one or more pets")
 public class Order {
 
     @ApiProperty
