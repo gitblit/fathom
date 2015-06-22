@@ -143,6 +143,8 @@ public class ControllerHandler implements RouteHandler<Context> {
                             if (!Strings.isNullOrEmpty(message)) {
                                 context.setLocal("message", message);
                             }
+
+                            validateResponseHeaders(declaredReturn, context);
                             break;
                         }
                     }
@@ -152,6 +154,8 @@ public class ControllerHandler implements RouteHandler<Context> {
                     for (Return declaredReturn : declaredReturns) {
                         if (declaredReturn.onResult().isAssignableFrom(resultClass)) {
                             context.status(declaredReturn.code());
+
+                            validateResponseHeaders(declaredReturn, context);
                             break;
                         }
                     }
@@ -385,6 +389,8 @@ public class ControllerHandler implements RouteHandler<Context> {
                     context.setLocal("message", message);
                 }
 
+                validateResponseHeaders(declaredReturn, context);
+
                 log.warn("Handling declared return exception '{}' for '{}'", e.getMessage(), Util.toString(method));
                 return;
             }
@@ -398,4 +404,25 @@ public class ControllerHandler implements RouteHandler<Context> {
         // undeclared exception, wrap & throw
         throw new FathomException(e);
     }
+
+    protected void validateResponseHeaders(Return aReturn, Context context) {
+        for (Class<? extends ReturnHeader> returnHeader : aReturn.headers()) {
+            ReturnHeader header = ClassUtil.newInstance(returnHeader);
+            String name = header.getHeaderName();
+            String defaultValue = header.getDefaultValue();
+            // FIXME need to expose getHeader in Pippo Response
+            String value = null; //context.getHeader(name);
+
+            if (value == null) {
+                if (Strings.isNullOrEmpty(defaultValue)) {
+                    log.warn("No value specified for the declared response header '{}'", name);
+                } else {
+                    context.setHeader(name, defaultValue);
+                    log.debug("No value specified for the declared response header '{}', defaulting to '{}'", name, defaultValue);
+                }
+            }
+
+        }
+    }
+
 }

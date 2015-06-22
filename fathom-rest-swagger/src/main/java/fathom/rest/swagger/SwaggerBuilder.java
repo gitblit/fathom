@@ -35,6 +35,7 @@ import fathom.rest.controller.Produces;
 import fathom.rest.controller.Range;
 import fathom.rest.controller.Required;
 import fathom.rest.controller.Return;
+import fathom.rest.controller.ReturnHeader;
 import fathom.rest.controller.Session;
 import fathom.rest.security.aop.RequireToken;
 import fathom.utils.ClassUtil;
@@ -414,6 +415,19 @@ public class SwaggerBuilder {
                 Property returnProperty = getSwaggerProperty(swagger, resultType);
                 response.setSchema(returnProperty);
             }
+        }
+
+        for (Class<? extends ReturnHeader> returnHeader : aReturn.headers()) {
+            Tag headerTag = getModelTag(returnHeader);
+            ReturnHeader header = ClassUtil.newInstance(returnHeader);
+            Property property = getSwaggerProperty(swagger, header.getHeaderType());
+            if (property instanceof ArrayProperty) {
+                // FIXME swagger-core has incomplete response header specification methods :(
+                ArrayProperty arrayProperty = (ArrayProperty) property;
+            }
+            property.setName(headerTag.getName());
+            property.setDescription(headerTag.getDescription());
+            response.addHeader(property.getName(), property);
         }
 
         operation.response(aReturn.code(), response);

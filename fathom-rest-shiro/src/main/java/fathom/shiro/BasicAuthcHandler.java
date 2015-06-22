@@ -56,7 +56,7 @@ public final class BasicAuthcHandler extends AbstractAuthcHandler implements Rou
         }
 
         // unauthenticated request
-        String authorization = context.getHeader("Authorization");
+        String authorization = context.getRequest().getHeader("Authorization");
         if (!Strings.isNullOrEmpty(authorization) && authorization.startsWith("Basic")) {
 
             // Authorization: Basic BASE64PACKET

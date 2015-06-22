@@ -32,6 +32,7 @@ import fathom.rest.swagger.Form;
 import fathom.rest.swagger.ApiNotes;
 import fathom.rest.swagger.Password;
 import fathom.rest.swagger.ApiOperations;
+import models.petstore.ApiKeyHeader;
 import models.petstore.User;
 
 import javax.validation.constraints.NotNull;
@@ -88,7 +89,7 @@ public class UserController extends ApiV2 {
 
     @POST("/login")
     @Named("Log user into the system")
-    @Return(code = 200, description = "User logged in", onResult = String.class)
+    @Return(code = 200, description = "User logged in", onResult = String.class, headers = ApiKeyHeader.class)
     @Return(code = 400, description = "Invalid credentials", onResult = ValidationException.class)
     public String loginUser(@Desc("The Username for login") @NotNull @Form String username,
                           @Desc("The password for login in clear text") @Form @Password @NotNull String password) {

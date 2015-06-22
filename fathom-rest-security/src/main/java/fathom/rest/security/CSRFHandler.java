@@ -111,7 +111,7 @@ public class CSRFHandler implements RouteHandler<Context> {
         if (HttpMethod.POST.equals(httpSerlvetRequestMethod)) {
 
             // Verify the content-type is guarded
-            String contentType = context.getHeader("Content-Type").toLowerCase();
+            String contentType = context.getRequest().getHeader("Content-Type").toLowerCase();
             if (!guardedTypes.contains(contentType)) {
                 log.debug("Ignoring '{}' request for {} '{}'", contentType, context.getRequestMethod(),
                         context.getRequestUri());
@@ -119,7 +119,7 @@ public class CSRFHandler implements RouteHandler<Context> {
             }
 
             // Permit "nocheck" Csrf-Token headers
-            String requestToken = context.getHeader(HEADER);
+            String requestToken = context.getRequest().getHeader(HEADER);
             if ("nocheck".equals(requestToken)) {
                 log.debug("Ignoring 'nocheck' request for {} '{}'", context.getRequestMethod(), context.getRequestUri());
                 return;

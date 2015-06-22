@@ -54,4 +54,9 @@ public @interface Return {
      */
     Class<?> onResult() default Void.class;
 
+    /**
+     * A list of headers that are returned with the response.
+     */
+    Class<? extends ReturnHeader> [] headers() default {};
+
 }

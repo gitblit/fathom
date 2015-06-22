@@ -68,7 +68,7 @@ public final class BasicAuthenticationHandler extends StandardCredentialsHandler
         }
 
         // unauthenticated request
-        String authorization = context.getHeader("Authorization");
+        String authorization = context.getRequest().getHeader("Authorization");
         if (!Strings.isNullOrEmpty(authorization) && authorization.startsWith("Basic")) {
 
             // Authorization: Basic BASE64PACKET

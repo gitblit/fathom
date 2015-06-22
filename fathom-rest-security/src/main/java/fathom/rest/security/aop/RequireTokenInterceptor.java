@@ -53,7 +53,7 @@ public class RequireTokenInterceptor extends SecurityInterceptor {
 
         Context context = RouteDispatcher.getRouteContext();
         // extract the named token from a header or a query parameter
-        String token = Strings.emptyToNull(context.getHeader(tokenName));
+        String token = Strings.emptyToNull(context.getRequest().getHeader(tokenName));
         token = Optional.fromNullable(token).or(context.getParameter(tokenName).toString(""));
 
         if (Strings.isNullOrEmpty(token)) {

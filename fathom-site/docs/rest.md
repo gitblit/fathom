@@ -282,15 +282,24 @@ This has a few benefits.
 2. it makes the intended results of your controller method execution clear
 3. it facilitates api documentation generators or other static analysis tools
 4. it allows you to send localized messages on error responses based on the `Accept-Language` of the request
+5. it allows you to declare returned headers, validate them, and optionally inject default values
 
 ```java
 @GET("/{id}")
 @Return(code=200, description="Employee retrieved", onResult=Employee.class)
 @Return(code=400, description="Invalid id specified", onResult=ValidationException.class)
 @Return(code=404, description="Employee not found", descriptionKey="error.employeeNotFound")
+@Return(code=404, description="Employee not found", descriptionKey="error.employeeNotFound")
 public Employee getEmployee(@Min(1) @Max(5) int id) {
   Employee employee = employeeDao.get(id);
   return employee;
+}
+
+@POST("/login")
+@Return(code=200, description="Login successful", headers={ApiKeyHeader.class})
+public void login(@Form String username, @Form @Password String password) {  
+  Account account = securityManager.check(username, password);
+  getContext().setHeader(ApiKeyHeader.NAME, account.getToken());
 }
 ```
 

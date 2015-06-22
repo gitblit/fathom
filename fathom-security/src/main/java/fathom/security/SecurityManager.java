@@ -27,8 +27,8 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import fathom.Constants;
 import fathom.Service;
+import fathom.authc.AuthenticationException;
 import fathom.authc.AuthenticationToken;
-import fathom.authz.Role;
 import fathom.conf.Settings;
 import fathom.exception.FathomException;
 import fathom.realm.Account;
@@ -143,6 +143,20 @@ public class SecurityManager implements Service {
                 log.error("Failed to stop realm '{}'", realm.getRealmName(), e);
             }
         }
+    }
+
+    /**
+     * Tries to authenticate an AuthenticationToken.
+     *
+     * @param authenticationToken
+     * @return an Account instance if authentication is successful, otherwise throws an AuthenticationException
+     */
+    public Account check(AuthenticationToken authenticationToken) {
+        Account account = authenticate(authenticationToken);
+        if (account == null) {
+            throw new AuthenticationException("Invalid credentials");
+        }
+        return account;
     }
 
     /**
