@@ -16,58 +16,13 @@
 
 package ${package}.controllers;
 
-import ${package}.dao.ItemDao;
-import ${package}.models.Item;
-
-import com.google.inject.Inject;
-import fathom.metrics.Metered;
-import fathom.realm.Account;
-import fathom.rest.controller.Auth;
 import fathom.rest.controller.Controller;
-import fathom.rest.controller.GET;
 import fathom.rest.controller.Path;
-import fathom.rest.controller.Produces;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * To be discoverable, a controller must be annotated with {@code @Path}.
  */
 @Path("/api")
-@Produces({Produces.JSON, Produces.XML})
-public class ApiController extends Controller {
-
-    private final Logger log = LoggerFactory.getLogger(ApiController.class);
-
-    @Inject
-    ItemDao dao;
-
-    /**
-     * Responds to a GET request of an integer id like "/api/1".
-     * <p>
-     * Notice that the <code>id</code> parameter is specified in the
-     * <code>@GET</code> annotation but not in the method signature.
-     * </p>
-     * <p>
-     * This technique is relying on use of the Java 8 {@code -parameters}
-     * flag passed to <{@code javac}.  That flag preserves method parameter
-     * names in the compiled class files.
-     * </p>
-     *
-     * @param id
-     * @param account
-     */
-    @GET("/{id: [0-9]+}")
-    @Metered
-    public void get(int id, @Auth Account account) {
-
-        log.debug("GET item #{} for '{}'", id, account);
-        Item item = dao.get(id);
-        if (item == null) {
-            getResponse().notFound().send("Item #{} does not exist", id);
-        } else {
-            getResponse().ok().send(item);
-        }
-    }
+public abstract class ApiController extends Controller {
 
 }

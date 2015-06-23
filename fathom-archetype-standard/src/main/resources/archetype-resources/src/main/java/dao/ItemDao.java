@@ -47,6 +47,11 @@ public class ItemDao {
             put(3, new Item(3, "Strawberries"));
             put(4, new Item(4, "Grapes"));
             put(5, new Item(5, "Kiwi"));
+            put(6, new Item(6, "Watermelon"));
+            put(7, new Item(7, "Pineapple"));
+            put(8, new Item(8, "Apricot"));
+            put(9, new Item(9, "Blueberry"));
+            put(10, new Item(10, "Orange"));
         }};
     }
 

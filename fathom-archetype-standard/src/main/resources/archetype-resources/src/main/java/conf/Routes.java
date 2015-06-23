@@ -60,14 +60,6 @@ public class Routes extends RoutesModule {
         final String appFilter = getResourceExclusionExpression();
 
         /*
-         * Register a language filter which processes a lang=? query parameter,
-         * sets the preferred language in the Context, and sets a Response cookie.
-         *
-         * This filter only applies to GET requests.
-         */
-        addLanguageFilter(appFilter, true, true).named("language filter");
-
-        /*
          * Register a handler that binds some values to use on GET requests
          */
         GET(appFilter, (ctx) -> {
@@ -99,7 +91,7 @@ public class Routes extends RoutesModule {
          /*
          * Register an CSRF token generator and validator.
          */
-        ALL("/secure/.*", new CSRFHandler()).named("CSRF handler");
+        ALL("/ui/?.*", new CSRFHandler()).named("CSRF handler");
 
         /*
          * Create a form authentication guard for secure routes.
@@ -107,8 +99,8 @@ public class Routes extends RoutesModule {
          * to the login url.
          */
         FormAuthenticationGuard guard = new FormAuthenticationGuard("/login");
-        GET("/secure/.*", guard);
-        POST("/secure/.*", guard);
+        GET("/ui/?.*", guard);
+        POST("/ui/?.*", guard);
 
         /*
          * Root page
@@ -117,13 +109,6 @@ public class Routes extends RoutesModule {
             ctx.setLocal("items", dao.getAll());
             ctx.render("index");
         }).named("root page");
-
-        /*
-         * Add a route that throws an exception
-         */
-        GET("/internalError", (ctx) -> {
-            throw new FathomException("This is an example exception");
-        });
 
         /*
          * Discover and add annotated controllers

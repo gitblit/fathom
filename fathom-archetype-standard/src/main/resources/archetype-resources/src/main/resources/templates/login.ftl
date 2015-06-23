@@ -30,40 +30,4 @@
         </form>
     </div>
 </div>
-
-<div class="row">
-    <div class="large-6 columns large-offset-3" style="padding-top:20px;">
-        <div class="panel">
-            <h4>Test Accounts</h4>
-            <table role="grid" width="100%">
-                <thead>
-                <tr>
-                    <th>
-                    ${i18n('fathom.username')}</td>
-                    <td>${i18n('fathom.password')}</td>
-                    <th>Permission</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>admin</td>
-                    <td>admin</td>
-                    <td>authorized</td>
-                </tr>
-                <tr>
-                    <td>user</td>
-                    <td>user</td>
-                    <td>disabled</td>
-                </tr>
-                <tr>
-                    <td>guest</td>
-                    <td>guest</td>
-                    <td>forbidden</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-</div>
 </@base.page>

@@ -40,7 +40,9 @@
                 <include>**/*.xml</include>
                 <include>**/*.properties</include>
                 <include>**/*.css</include>
+                <include>**/*.js</include>
                 <include>**/*.ftl</include>
+                <include>**/*.md</include>
             </includes>
         </fileSet>
         <!-- Copy filtered default.conf -->

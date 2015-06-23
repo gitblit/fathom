@@ -22,29 +22,36 @@ import ${package}.models.Item;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fathom.metrics.Metered;
-import fathom.realm.Account;
-import fathom.rest.controller.Auth;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
+import fathom.rest.controller.Return;
 import fathom.rest.security.aop.RequirePermission;
+import fathom.rest.security.aop.RequireToken;
+import fathom.rest.swagger.ApiOperations;
+import fathom.rest.swagger.ApiSummary;
+import fathom.rest.swagger.Desc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * To be discoverable, a controller must be annotated with {@code @Path}
  */
-@Path("/secure")
-public class SecureApiController extends Controller {
+@Path("/items")
+@Produces({Produces.JSON, Produces.XML})
+@RequireToken
+@RequirePermission("license:view")
+@ApiOperations(tag = "items", description = "Item operations")
+public class ItemsController extends ApiController {
 
-    private final Logger log = LoggerFactory.getLogger(SecureApiController.class);
+    private final Logger log = LoggerFactory.getLogger(ItemsController.class);
 
     @Inject
     ItemDao dao;
 
     /**
-     * Responds to a GET request of an integer id like "/secure/1".
+     * Responds to a GET request of an integer id like "/api/items/1".
      * <p>
      * Notice that the {@code id} parameter is specified in the
      * {@link @GET} annotation and in the method signature.
@@ -54,33 +61,17 @@ public class SecureApiController extends Controller {
      * flag passed to {@code javac}.  That flag preserves method parameter
      * names in the compiled class files.
      * </p>
-     * <p>
-     * This same technique is applied to the {@code @Auth} annotation which
-     * references an object in the request session named "account".
-     * </p>
      *
      * @param id
-     * @param account
      */
     @GET("/{id: [0-9]+}")
-    @Produces({Produces.JSON, Produces.XML})
+    @ApiSummary("Get an item by id")
+    @Return(code = 200, description = "Successful operation", onResult = Item.class)
+    @Return(code = 404, description = "Item not found")
     @Metered
-    @RequirePermission("secure:view")
-    public void get(int id, @Auth Account account) {
-
-        // Enforce a required permission (see Components.java).
-        // Alternatively we could skip @RequirePermission and
-        // check manually:
-
-        // account.checkPermission("secure:view");
-
-        log.debug("GET item #{} for '{}'", id, account);
+    public Item get(@Desc("ID of the item to retrieve") int id) {
         Item item = dao.get(id);
-        if (item == null) {
-            getResponse().notFound().send("Item #{} does not exist", id);
-        } else {
-            getResponse().ok().send(item);
-        }
+        return item;
     }
 
 }

@@ -35,9 +35,4 @@ public class RoutesTest extends FathomTest {
 
     }
 
-    @Test
-    public void testException() {
-        get("/internalError").then().assertThat().statusCode(500);
-    }
-
 }
