@@ -41,6 +41,7 @@ import ro.pippo.core.HttpConstants;
 import ro.pippo.core.Messages;
 import ro.pippo.core.route.RouteHandler;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -172,7 +173,19 @@ public class ControllerHandler implements RouteHandler<Context> {
                                 break;
                             }
                         }
-                        context.send(result);
+
+                        if (result instanceof CharSequence) {
+                            // send a charsequence (e.g. pre-formatted JSON, XML, YAML, etc)
+                            CharSequence charSequence = (CharSequence) result;
+                            context.send(charSequence);
+                        } else if (result instanceof File) {
+                            // stream a File resource
+                            File file = (File) result;
+                            context.send(file);
+                        } else {
+                            // send an object using a ContentTypeEngine
+                            context.send(result);
+                        }
                     }
                 }
             }
