@@ -61,7 +61,7 @@ This will compile your application and run through the generated unit tests.  So
 
 #### Execution
 
-You may also want to run your application and browse it.  Generally you would do this from your IDE by running the generated `App` class in your specified *application package*.  However there may be some value to compiling and running it from a console through Maven.
+You may also want to run your application and browse it.  Generally you would do this from your IDE by running the generated `Launcher` class in your specified *application package*.  However there may be some value to compiling and running it from a console through Maven.
 
 From your project directory...
 
