@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
 
+- [fathom-archetype-standard] Improved archetype by integrating Swagger and dropping niche modules
+
 #### Added
 
 #### Removed

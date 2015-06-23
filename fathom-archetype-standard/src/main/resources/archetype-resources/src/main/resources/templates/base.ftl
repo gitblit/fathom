@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="${publicAt("css/custom.css")}">
 </head>
 <body>
+<div class="row">
 <nav class="top-bar" data-topbar role="navigation">
     <ul class="title-area">
         <li class="name">
@@ -44,6 +45,7 @@
         </ul>
     </section>
 </nav>
+</div>
 
 <div style="padding-top:10px;">
     <#nested/>
