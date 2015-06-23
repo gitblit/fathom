@@ -125,42 +125,55 @@ public class ControllerHandler implements RouteHandler<Context> {
             }
 
             Object result = method.invoke(controller, args);
-            if (Void.class != method.getReturnType()) {
-                // method declares a return value
-                if (result == null) {
-                    // prepare a NOT FOUND (404)
-                    context.getResponse().notFound();
 
+            if (context.getResponse().isCommitted()) {
+                log.debug("Response committed in {}", Util.toString(method));
+            } else {
+                if (Void.class == method.getReturnType()) {
+                    // nothing to return, prepare declared Return for Void type
                     for (Return declaredReturn : declaredReturns) {
-                        if (declaredReturn.code() == HttpConstants.StatusCode.NOT_FOUND) {
-                            String message = declaredReturn.description();
-
-                            if (!Strings.isNullOrEmpty(declaredReturn.descriptionKey())) {
-                                // retrieve localized message, fallback to declared message
-                                message = messages.getWithDefault(declaredReturn.descriptionKey(), message, context);
-                            }
-
-                            if (!Strings.isNullOrEmpty(message)) {
-                                context.setLocal("message", message);
-                            }
-
+                        if (Void.class == declaredReturn.onResult()) {
+                            context.status(declaredReturn.code());
                             validateResponseHeaders(declaredReturn, context);
                             break;
                         }
                     }
                 } else {
-                    // prepare declared Return
-                    Class<?> resultClass = result.getClass();
-                    for (Return declaredReturn : declaredReturns) {
-                        if (declaredReturn.onResult().isAssignableFrom(resultClass)) {
-                            context.status(declaredReturn.code());
+                    // method declares a Return Type
+                    if (result == null) {
+                        // Null Result, prepare a NOT FOUND (404)
+                        context.getResponse().notFound();
 
-                            validateResponseHeaders(declaredReturn, context);
-                            break;
+                        for (Return declaredReturn : declaredReturns) {
+                            if (declaredReturn.code() == HttpConstants.StatusCode.NOT_FOUND) {
+                                String message = declaredReturn.description();
+
+                                if (!Strings.isNullOrEmpty(declaredReturn.descriptionKey())) {
+                                    // retrieve localized message, fallback to declared message
+                                    message = messages.getWithDefault(declaredReturn.descriptionKey(), message, context);
+                                }
+
+                                if (!Strings.isNullOrEmpty(message)) {
+                                    context.setLocal("message", message);
+                                }
+
+                                validateResponseHeaders(declaredReturn, context);
+                                break;
+                            }
                         }
-                    }
 
-                    context.send(result);
+                    } else {
+                        // send returned result
+                        Class<?> resultClass = result.getClass();
+                        for (Return declaredReturn : declaredReturns) {
+                            if (declaredReturn.onResult().isAssignableFrom(resultClass)) {
+                                context.status(declaredReturn.code());
+                                validateResponseHeaders(declaredReturn, context);
+                                break;
+                            }
+                        }
+                        context.send(result);
+                    }
                 }
             }
 

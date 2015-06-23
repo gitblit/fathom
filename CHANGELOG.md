@@ -8,11 +8,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
 
-- [fathom-archetype-standard] Improved archetype by integrating Swagger and dropping niche modules
-
 #### Added
 
 #### Removed
+
+### [0.5.3] - 2015-06-23
+
+#### Fixed
+
+- [fathom-rest] Fix buggy behavior in ControllerHandler on handling results
+
+#### Changed
+
+- [fathom-archetype-standard] Improved archetype by integrating Swagger and dropping niche modules
 
 ### [0.5.2] - 2015-06-22
 
@@ -69,7 +77,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.5.2...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.5.3...HEAD
+[0.5.3]: https://github.com/gitblit/fathom/compare/release-0.5.2...release-0.5.3
 [0.5.2]: https://github.com/gitblit/fathom/compare/release-0.5.1...release-0.5.2
 [0.5.1]: https://github.com/gitblit/fathom/compare/release-0.5.0...release-0.5.1
 
