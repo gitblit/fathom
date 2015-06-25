@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 - [fathom-rest-security] CSRF token was not bound as a local property making templates with forms & CSRF tokens generated in a POST handler fail.
+- [fathom-rest-swagger] Support collection fields in Model classes
 
 #### Changed
 

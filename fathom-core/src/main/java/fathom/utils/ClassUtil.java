@@ -313,6 +313,23 @@ public class ClassUtil {
         }
     }
 
+    public static Class<?> getGenericType(Field field) {
+        Type parameterType = field.getGenericType();
+        if (!ParameterizedType.class.isAssignableFrom(parameterType.getClass())) {
+            throw new FathomException("Please specify a generic parameter type for '{}' of '{}'",
+                    field.getName(), field.getDeclaringClass().getName());
+        }
+
+        ParameterizedType parameterizedType = (ParameterizedType) parameterType;
+        try {
+            Class<?> genericClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            return genericClass;
+        } catch (ClassCastException e) {
+            throw new FathomException("Please specify a generic parameter type for '{}' of '{}'",
+                    field.getName(), field.getDeclaringClass().getName());
+        }
+    }
+
     public static String loadStringResource(String resource) {
         try {
             URL url;

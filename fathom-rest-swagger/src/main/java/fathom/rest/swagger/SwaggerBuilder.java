@@ -472,12 +472,24 @@ public class SwaggerBuilder {
             Property property;
             Class<?> fieldType = field.getType();
             if (fieldType.isArray()) {
+                // ARRAY
                 Class<?> componentType = fieldType.getComponentType();
                 Property componentProperty = getSwaggerProperty(swagger, componentType);
                 ArrayProperty arrayProperty = new ArrayProperty();
                 arrayProperty.setItems(componentProperty);
                 property = arrayProperty;
+            } else if (Collection.class.isAssignableFrom(fieldType)) {
+                // COLLECTION
+                Class<?> componentClass = ClassUtil.getGenericType(field);
+                Property componentProperty = getSwaggerProperty(swagger, componentClass);
+                ArrayProperty arrayProperty = new ArrayProperty();
+                arrayProperty.setItems(componentProperty);
+                if (Set.class.isAssignableFrom(fieldType)) {
+                    arrayProperty.setUniqueItems(true);
+                }
+                property = arrayProperty;
             } else {
+                // OBJECT
                 property = getSwaggerProperty(swagger, fieldType);
             }
             property.setRequired(field.isAnnotationPresent(Required.class) || field.isAnnotationPresent(NotNull.class));
