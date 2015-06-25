@@ -16,6 +16,7 @@
 
 package fathom.rest.controller;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -26,6 +27,7 @@ import java.lang.annotation.Target;
  * Describes a possible response of a Fathom Controller method.
  * This annotation my be applied to a Fathom Controller class or method.
  */
+@Documented
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Returns.class)

@@ -18,6 +18,7 @@ package fathom.rest.controller;
 import fathom.rest.controller.extractors.ExtractWith;
 import fathom.rest.controller.extractors.ParamExtractor;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,6 +29,7 @@ import java.lang.annotation.Target;
  *
  * @author James Moger
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @ExtractWith(ParamExtractor.class)
