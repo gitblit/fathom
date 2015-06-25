@@ -121,7 +121,7 @@ public class ClassUtil {
                             JarEntry entry = null;
                             while ((entry = is.getNextJarEntry()) != null) {
                                 if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
-                                    String className = entry.getName().replace(".class", "").replace('$', '.').replace('/', '.');
+                                    String className = entry.getName().replace(".class", "").replace('/', '.');
                                     if (className.startsWith(packagePrefix)) {
                                         Class<?> aClass = getClass(className);
                                         classes.add(aClass);
@@ -141,9 +141,14 @@ public class ClassUtil {
                             classes.addAll(reader.lines()
                                     .filter(line -> line != null && line.endsWith(".class"))
                                     .map(line -> {
-                                        String className = line.replace(".class", "").replace('$', '.').replace('/', '.');
-                                        Class<?> aClass = getClass(packagePrefix + className);
-                                        return aClass;
+                                        String className = line.replace(".class", "").replace('/', '.');
+                                        try {
+                                            Class<?> aClass = getClass(packagePrefix + className);
+                                            return aClass;
+                                        } catch (Exception e) {
+                                            log.error("Failed to find {}", line, e);
+                                        }
+                                        return null;
                                     })
                                     .collect(Collectors.toList()));
                         }
