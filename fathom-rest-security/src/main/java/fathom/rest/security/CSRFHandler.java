@@ -141,6 +141,8 @@ public class CSRFHandler implements RouteHandler<Context> {
 
             log.debug("Validated '{}' for {} '{}'", PARAMETER, context.getRequestMethod(), context.getRequestUri());
 
+            context.setLocal(BINDING, sessionToken);
+
         } else if (HttpMethod.GET.equals(httpSerlvetRequestMethod)) {
 
             // Generate a CSRF session token on reads
