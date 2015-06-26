@@ -130,6 +130,11 @@ public class ControllerHandler implements RouteHandler<Context> {
             if (context.getResponse().isCommitted()) {
                 log.debug("Response committed in {}", Util.toString(method));
             } else {
+                if (ClassUtil.getAnnotation(method, NoCache.class) != null) {
+                    log.debug("NoCache detected, response may not be cached");
+                    context.getResponse().noCache();
+                }
+
                 if (Void.class == method.getReturnType()) {
                     // nothing to return, prepare declared Return for Void type
                     for (Return declaredReturn : declaredReturns) {
