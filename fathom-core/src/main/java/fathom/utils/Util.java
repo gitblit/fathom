@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -53,6 +54,14 @@ public class Util {
     public static String toString(Class<?> aClass, String method) {
         return aClass.getName() + "::" + method;
     }
+
+    public static String toString(Class<? extends Collection> collectionType, Class<?> objectType) {
+        if (collectionType == null) {
+            return objectType.getSimpleName();
+        }
+        return collectionType.getSimpleName() + "<" + objectType.getSimpleName() + ">";
+    }
+
 
     /**
      * Returns {@code true} if the resource path is not null and starts with one of the recognized

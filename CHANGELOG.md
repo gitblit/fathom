@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Added
 
+- [fathom-rest] Add @NoCache annotation for controller classes and methods to disable response caching
+
 #### Removed
 
 ### [0.5.4] - 2015-06-23

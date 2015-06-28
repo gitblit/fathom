@@ -16,7 +16,11 @@
 package fathom.rest.controller;
 
 import com.google.common.base.Strings;
+import fathom.rest.controller.extractors.ArgumentExtractor;
+import fathom.rest.controller.extractors.ExtractWith;
+import fathom.rest.controller.extractors.ParamExtractor;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -89,5 +93,23 @@ public class ControllerUtil {
             }
         }
         return methodParameterName;
+    }
+
+    /**
+     * Returns the appropriate ArgumentExtractor to use for the controller method parameter.
+     *
+     * @param parameter
+     * @return an argument extractor
+     */
+    public static Class<? extends ArgumentExtractor> getArgumentExtractor(Parameter parameter) {
+        for (Annotation annotation : parameter.getAnnotations()) {
+            if (annotation.annotationType().isAnnotationPresent(ExtractWith.class)) {
+                ExtractWith with = annotation.annotationType().getAnnotation(ExtractWith.class);
+                Class<? extends ArgumentExtractor> extractorClass = with.value();
+                return extractorClass;
+            }
+        }
+        // if unspecified we use the ParamExtractor
+        return ParamExtractor.class;
     }
 }

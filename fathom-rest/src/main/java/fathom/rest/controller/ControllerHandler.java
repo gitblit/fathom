@@ -22,15 +22,13 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import fathom.exception.FathomException;
 import fathom.rest.Context;
-import fathom.rest.controller.exceptions.RequiredException;
 import fathom.rest.controller.exceptions.RangeException;
+import fathom.rest.controller.exceptions.RequiredException;
 import fathom.rest.controller.extractors.ArgumentExtractor;
 import fathom.rest.controller.extractors.CollectionExtractor;
 import fathom.rest.controller.extractors.ConfigurableExtractor;
-import fathom.rest.controller.extractors.ExtractWith;
 import fathom.rest.controller.extractors.FileItemExtractor;
 import fathom.rest.controller.extractors.NamedExtractor;
-import fathom.rest.controller.extractors.ParamExtractor;
 import fathom.rest.controller.extractors.TypedExtractor;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
@@ -115,26 +113,14 @@ public class ControllerHandler implements RouteHandler<Context> {
             Controller controller = controllerProvider.get();
             controller.setContext(context);
 
-            // set the response content type and optionally negotiate
-            if (!declaredProduces.isEmpty()) {
-                String defaultContentType = declaredProduces.get(0);
-                context.getResponse().contentType(defaultContentType);
-
-                if (declaredProduces.size() > 1) {
-                    context.negotiateContentType();
-                }
-            }
+            specifyCacheControls(context);
+            specifyContentType(context);
 
             Object result = method.invoke(controller, args);
 
             if (context.getResponse().isCommitted()) {
                 log.debug("Response committed in {}", Util.toString(method));
             } else {
-                if (ClassUtil.getAnnotation(method, NoCache.class) != null) {
-                    log.debug("NoCache detected, response may not be cached");
-                    context.getResponse().noCache();
-                }
-
                 if (Void.class == method.getReturnType()) {
                     // nothing to return, prepare declared Return for Void type
                     for (Return declaredReturn : declaredReturns) {
@@ -202,7 +188,7 @@ public class ControllerHandler implements RouteHandler<Context> {
             Throwable t = e.getTargetException();
             if (t instanceof Exception) {
                 Exception target = (Exception) t;
-                handleDeclaredReturnException(target, method, context);
+                handleDeclaredThrownException(target, method, context);
             } else if (t instanceof Error) {
                 throw (Error) t;
             } else {
@@ -210,10 +196,18 @@ public class ControllerHandler implements RouteHandler<Context> {
             }
         } catch (Exception e) {
             // handles exceptions thrown within this handle() method
-            handleDeclaredReturnException(e, method, context);
+            handleDeclaredThrownException(e, method, context);
         }
     }
 
+    /**
+     * Finds the named controller method and configures the controller handler.
+     *
+     * @param injector
+     * @param controllerClass
+     * @param name
+     * @return the controller method or null
+     */
     protected Method findMethod(Injector injector, Class<?> controllerClass, String name) {
         // identify first method which matches the name
         Method controllerMethod = null;
@@ -243,7 +237,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                         if (FileItem.class == objectType) {
                             extractorType = FileItemExtractor.class;
                         } else {
-                            extractorType = getArgumentExtractor(parameter);
+                            extractorType = ControllerUtil.getArgumentExtractor(parameter);
                         }
 
                         // instantiate the extractor
@@ -265,7 +259,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                             } else {
                                 throw new FathomException(
                                         "Controller method '{}' parameter {} of type '{}' does not specify an argument extractor that supports collections!",
-                                        Util.toString(method), i + 1, describeType(collectionType, objectType));
+                                        Util.toString(method), i + 1, Util.toString(collectionType, objectType));
                             }
                         }
 
@@ -286,7 +280,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                                     log.error("Properly annotate your controller methods OR specify the '-parameters' flag for your Java compiler!");
                                     throw new FathomException(
                                             "Controller method '{}' parameter {} of type '{}' does not specify a name!",
-                                            Util.toString(method), i + 1, describeType(collectionType, objectType));
+                                            Util.toString(method), i + 1, Util.toString(collectionType, objectType));
                                 }
                             }
                         }
@@ -383,26 +377,41 @@ public class ControllerHandler implements RouteHandler<Context> {
         }
     }
 
-    protected Class<? extends ArgumentExtractor> getArgumentExtractor(Parameter parameter) {
-        for (Annotation annotation : parameter.getAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(ExtractWith.class)) {
-                ExtractWith with = annotation.annotationType().getAnnotation(ExtractWith.class);
-                Class<? extends ArgumentExtractor> extractorClass = with.value();
-                return extractorClass;
+    /**
+     * Specify Response cache controls.
+     *
+     * @param context
+     */
+    protected void specifyCacheControls(Context context) {
+        if (ClassUtil.getAnnotation(method, NoCache.class) != null) {
+            log.debug("NoCache detected, response may not be cached");
+            context.getResponse().noCache();
+        }
+    }
+
+    /**
+     * Specify the Response content-type by...
+     * <ol>
+     * <li>setting the first Produces content type</li>
+     * <li>negotiating with the Request if multiple content-types are specified in Produces</li>
+     * </ol>
+     *
+     * @param context
+     */
+    protected void specifyContentType(Context context) {
+        if (!declaredProduces.isEmpty()) {
+            // Specify first Produces content-type
+            String defaultContentType = declaredProduces.get(0);
+            context.getResponse().contentType(defaultContentType);
+
+            if (declaredProduces.size() > 1) {
+                // negotiate content-type from Request Accept/Content-Type
+                context.negotiateContentType();
             }
         }
-        // if unspecified we use the ParamExtractor
-        return ParamExtractor.class;
     }
 
-    protected String describeType(Class<? extends Collection> collectionType, Class<?> objectType) {
-        if (collectionType == null) {
-            return objectType.getSimpleName();
-        }
-        return collectionType.getSimpleName() + "<" + objectType.getSimpleName() + ">";
-    }
-
-    protected void handleDeclaredReturnException(Exception e, Method method, Context context) {
+    protected void handleDeclaredThrownException(Exception e, Method method, Context context) {
         Class<? extends Exception> exceptionClass = e.getClass();
         for (Return declaredReturn : declaredReturns) {
             if (exceptionClass.isAssignableFrom(declaredReturn.onResult())) {

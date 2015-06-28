@@ -272,6 +272,17 @@ public Employee getEmployee(int id) {
 }
 ```
 
+#### NoCache
+
+You can indicate that a controller response should not be cached by specifying the `@NoCache` annotation.
+
+```java
+@GET("/{id: [0-9]+}")
+@NoCache
+public Employee getEmployee(int id) {
+}
+```
+
 #### Declaring Responses Results
 
 You may use the `@Return` annotation to briefly declare method-specific responses.
