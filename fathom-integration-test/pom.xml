@@ -119,6 +119,12 @@
 
         <dependency>
             <groupId>ro.pippo</groupId>
+            <artifactId>pippo-jaxb</artifactId>
+            <version>${pippo.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ro.pippo</groupId>
             <artifactId>pippo-gson</artifactId>
             <version>${pippo.version}</version>
         </dependency>
@@ -136,9 +142,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.webjars</groupId>
+            <groupId>org.webjars.bower</groupId>
             <artifactId>font-awesome</artifactId>
-            <version>4.3.0-1</version>
+            <version>4.3.0</version>
         </dependency>
 
         <dependency>

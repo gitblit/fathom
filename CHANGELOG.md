@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
 
+- [fathom-rest] Update to Pippo 0.6.1
+
 #### Added
 
 - [fathom-rest] Add @NoCache annotation for controller classes and methods to disable response caching

@@ -21,9 +21,9 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import fathom.conf.Settings;
+import fathom.rest.controller.Controller;
 import fathom.rest.controller.ControllerHandler;
 import fathom.rest.controller.ControllerRegistrar;
-import fathom.rest.controller.Controller;
 import fathom.rest.controller.HttpMethod;
 import fathom.rest.route.LanguageHandler;
 import fathom.utils.RequireUtil;
@@ -37,7 +37,7 @@ import ro.pippo.core.route.PublicResourceHandler;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.Router;
-import ro.pippo.core.route.StaticResourceHandler;
+import ro.pippo.core.route.UrlResourceHandler;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
 import ro.pippo.core.util.MimeTypes;
@@ -212,9 +212,7 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.HEAD, controllerClass, methodName);
     }
 
-    protected RouteRegistration GET(StaticResourceHandler resourceHandler) {
-        resourceHandler.setMimeTypes(mimeTypes);
-        resourceHandler.setHttpCacheToolkit(httpCacheToolkit);
+    protected RouteRegistration GET(UrlResourceHandler resourceHandler) {
         return registerRoute(resourceHandler.getUriPattern(), HttpMethod.GET, resourceHandler);
     }
 

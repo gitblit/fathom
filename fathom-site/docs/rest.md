@@ -387,7 +387,7 @@ All standard [Pippo] content-type engines are supported.
 
 | Content-Type | Engine           | Artifact                     |
 |--------------|------------------|------------------------------|
-| XML          | JAXB             | *default, built-in*          |
+| XML          | [JAXB]           | [ro.pippo:pippo-jaxb]        |
 | XML          | [XStream]        | [ro.pippo:pippo-xstream]     |
 | JSON         | [GSON]           | [ro.pippo:pippo-gson]        |
 | JSON         | [FastJSON]       | [ro.pippo:pippo-fastjson]    |
@@ -407,6 +407,7 @@ All standard [Pippo] content-type engines are supported.
 [Trimou]: http://trimou.org
 [Groovy]: https://github.com/decebals/pippo/tree/master/pippo-groovy
 
+[JAXB]: https://jaxb.java.net
 [XStream]: https://github.com/x-stream/xstream
 [GSON]: https://github.com/google/gson
 [FastJSON]: https://github.com/alibaba/fastjson
@@ -419,6 +420,7 @@ All standard [Pippo] content-type engines are supported.
 [ro.pippo:pippo-trimou]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-trimou"
 [ro.pippo:pippo-groovy]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-groovy"
 
+[ro.pippo:pippo-jaxb]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-jaxb"
 [ro.pippo:pippo-xstream]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-xstream"
 [ro.pippo:pippo-gson]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-gson"
 [ro.pippo:pippo-fastjson]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-fastjson"

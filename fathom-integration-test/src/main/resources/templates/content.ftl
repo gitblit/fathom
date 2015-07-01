@@ -11,9 +11,9 @@
                     <textarea id="desserts" name="_content">${myDesserts}</textarea>
 
                     <!-- dress-up our textarea wth CodeMirror -->
-                    <link rel="stylesheet" href="${webjarsAt('codemirror/5.3/lib/codemirror.css')}">
-                    <script src="${webjarsAt('codemirror/5.3/lib/codemirror.js')}"></script>
-                    <script src="${webjarsAt('codemirror/5.3/mode/javascript/javascript.js')}"></script>
+                    <link rel="stylesheet" href="${webjarsAt('codemirror/lib/codemirror.css')}">
+                    <script src="${webjarsAt('codemirror/lib/codemirror.js')}"></script>
+                    <script src="${webjarsAt('codemirror/mode/javascript/javascript.js')}"></script>
                     <style>
                         .CodeMirror { height: 200px; border: 1px solid #ddd; margin-bottom: 20px;}
                         .CodeMirror-scroll { max-height: 200px; }

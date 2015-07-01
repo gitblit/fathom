@@ -2,27 +2,27 @@
 <html>
 <head>
     <title>${apiTitle}</title>
-    <link href="${webjarsAt('swagger-ui/2.1.0/images/favicon-32x32.png')}" sizes="32x32" rel="icon" type="image/png">
-    <link href="${webjarsAt('swagger-ui/2.1.0/images/favicon-16x16.png')}" sizes="16x16" rel="icon" type="image/png">
-    <link href="${webjarsAt('swagger-ui/2.1.0/css/typography.css')}" media='screen' rel="stylesheet" type='text/css'>
-    <link href="${webjarsAt('swagger-ui/2.1.0/css/reset.css')}" media='screen' rel='stylesheet'>
-    <link href="${webjarsAt('swagger-ui/2.1.0/css/screen.css')}" media='screen' rel='stylesheet'>
-    <link href="${webjarsAt('swagger-ui/2.1.0/css/reset.css')}" media='print' rel='stylesheet'>
-    <link href="${webjarsAt('swagger-ui/2.1.0/css/print.css')}" media='print' rel='stylesheet'>
+    <link href="${webjarsAt('swagger-ui/images/favicon-32x32.png')}" sizes="32x32" rel="icon" type="image/png">
+    <link href="${webjarsAt('swagger-ui/images/favicon-16x16.png')}" sizes="16x16" rel="icon" type="image/png">
+    <link href="${webjarsAt('swagger-ui/css/typography.css')}" media='screen' rel="stylesheet" type='text/css'>
+    <link href="${webjarsAt('swagger-ui/css/reset.css')}" media='screen' rel='stylesheet'>
+    <link href="${webjarsAt('swagger-ui/css/screen.css')}" media='screen' rel='stylesheet'>
+    <link href="${webjarsAt('swagger-ui/css/reset.css')}" media='print' rel='stylesheet'>
+    <link href="${webjarsAt('swagger-ui/css/print.css')}" media='print' rel='stylesheet'>
 
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/jquery-1.8.0.min.js')}"></script>
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/jquery.slideto.min.js')}"></script>
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/jquery.wiggle.min.js')}"></script>
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/jquery.ba-bbq.min.js')}"></script>
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/handlebars-2.0.0.js')}"></script>
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/underscore-min.js')}"></script>
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/backbone-min.js')}"></script>
-    <script src="${webjarsAt('swagger-ui/2.1.0/swagger-ui.js')}"></script>
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/highlight.7.3.pack.js')}"></script>
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/marked.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/jquery-1.8.0.min.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/jquery.slideto.min.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/jquery.wiggle.min.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/jquery.ba-bbq.min.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/handlebars-2.0.0.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/underscore-min.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/backbone-min.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/swagger-ui.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/highlight.7.3.pack.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/marked.js')}"></script>
 
     <!-- enabling this will enable oauth2 implicit scope support -->
-    <script src="${webjarsAt('swagger-ui/2.1.0/lib/swagger-oauth.js')}"></script>
+    <script src="${webjarsAt('swagger-ui/lib/swagger-oauth.js')}"></script>
 
     <script type="text/javascript">
         $(function () {

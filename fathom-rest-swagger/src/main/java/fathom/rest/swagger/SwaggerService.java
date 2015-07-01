@@ -40,7 +40,6 @@ import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.route.Router;
 import ro.pippo.core.route.WebjarsResourceHandler;
 import ro.pippo.core.util.HttpCacheToolkit;
-import ro.pippo.core.util.MimeTypes;
 import ro.pippo.core.util.StringUtils;
 
 import java.util.HashMap;
@@ -67,9 +66,6 @@ public class SwaggerService implements Service {
 
     @Inject
     HttpCacheToolkit httpCacheToolkit;
-
-    @Inject
-    MimeTypes mimeTypes;
 
     long startTime;
 
@@ -180,8 +176,6 @@ public class SwaggerService implements Service {
         String webJarsUri = router.uriPatternFor(WebjarsResourceHandler.class);
         if (webJarsUri == null) {
             WebjarsResourceHandler webjars = new WebjarsResourceHandler();
-            webjars.setHttpCacheToolkit(httpCacheToolkit);
-            webjars.setMimeTypes(mimeTypes);
             router.addRoute(new Route(webjars.getUriPattern(), HttpMethod.GET, webjars));
         }
     }

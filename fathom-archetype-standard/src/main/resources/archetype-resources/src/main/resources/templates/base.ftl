@@ -6,9 +6,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${appName}</title>
-    <link rel="stylesheet" href="${webjarsAt("normalize.css/3.0.1/normalize.css")}">
-    <link rel="stylesheet" href="${webjarsAt("foundation/5.5.2/css/foundation.min.css")}">
-    <link rel="stylesheet" href="${webjarsAt("font-awesome/4.3.0/css/font-awesome.min.css")}">
+    <link rel="stylesheet" href="${webjarsAt("normalize.css/normalize.css")}">
+    <link rel="stylesheet" href="${webjarsAt("foundation/css/foundation.min.css")}">
+    <link rel="stylesheet" href="${webjarsAt("font-awesome/css/font-awesome.min.css")}">
     <link rel="stylesheet" href="${publicAt("css/custom.css")}">
 </head>
 <body>
@@ -51,9 +51,9 @@
     <#nested/>
 </div>
 
-<script src="${webjarsAt("modernizr/2.8.3/modernizr.min.js")}"></script>
-<script src="${webjarsAt("jquery/2.1.1/jquery.min.js")}"></script>
-<script src="${webjarsAt("foundation/5.5.2/js/foundation.min.js")}"></script>
+<script src="${webjarsAt("modernizr/modernizr.min.js")}"></script>
+<script src="${webjarsAt("jquery/jquery.min.js")}"></script>
+<script src="${webjarsAt("foundation/js/foundation.min.js")}"></script>
 <script>
     $(document).foundation();
 </script>
