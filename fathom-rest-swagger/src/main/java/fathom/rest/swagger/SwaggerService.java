@@ -33,6 +33,7 @@ import io.swagger.util.Json;
 import io.swagger.util.Yaml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.Messages;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteContext;
@@ -60,6 +61,9 @@ public class SwaggerService implements Service {
 
     @Inject
     Router router;
+
+    @Inject
+    ContentTypeEngines engines;
 
     @Inject
     Messages messages;
@@ -97,7 +101,7 @@ public class SwaggerService implements Service {
      * @return a map of Swagger specifications
      */
     protected Map<String, String> buildSpecification() {
-        SwaggerBuilder builder = new SwaggerBuilder(settings, router, messages);
+        SwaggerBuilder builder = new SwaggerBuilder(settings, router, engines, messages);
         Swagger swagger = builder.build(router.getRoutes());
 
         Map<String, String> specs = new HashMap<>();

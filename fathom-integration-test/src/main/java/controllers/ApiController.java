@@ -21,6 +21,7 @@ import dao.ItemDao;
 import fathom.metrics.Metered;
 import fathom.realm.Account;
 import fathom.rest.controller.Auth;
+import fathom.rest.controller.ContentTypeBySuffix;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 @Path("/items")
 @Produces({Produces.JSON, Produces.XML})
+@ContentTypeBySuffix
 public class ApiController extends ApiV1 {
 
     private final Logger log = LoggerFactory.getLogger(ApiController.class);

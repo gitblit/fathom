@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 
 - [fathom-rest] Add @NoCache annotation for controller classes and methods to disable response caching
+- [fathom-rest] Add @ContentTypeBySuffix annotation for controller classes and methods to allow content-type control by a trailing suffix like `.json`
 
 #### Removed
 

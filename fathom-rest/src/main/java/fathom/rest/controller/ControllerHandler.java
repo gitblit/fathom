@@ -29,6 +29,7 @@ import fathom.rest.controller.extractors.CollectionExtractor;
 import fathom.rest.controller.extractors.ConfigurableExtractor;
 import fathom.rest.controller.extractors.FileItemExtractor;
 import fathom.rest.controller.extractors.NamedExtractor;
+import fathom.rest.controller.extractors.SuffixExtractor;
 import fathom.rest.controller.extractors.TypedExtractor;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
@@ -47,7 +48,10 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * ControllerHandler executes controller methods.
@@ -62,10 +66,11 @@ public class ControllerHandler implements RouteHandler<Context> {
     protected final Provider<? extends Controller> controllerProvider;
     protected final Method method;
     protected final Messages messages;
+    protected final List<String> declaredProduces;
+    protected final Collection<Return> declaredReturns;
+    protected final Set<String> contentTypeSuffixes;
     protected ArgumentExtractor[] extractors;
     protected String[] patterns;
-    protected List<String> declaredProduces;
-    protected Collection<Return> declaredReturns;
 
     public ControllerHandler(Injector injector, Class<? extends Controller> controllerClass, String methodName) {
         if (controllerClass.isAnnotationPresent(Singleton.class)
@@ -75,7 +80,7 @@ public class ControllerHandler implements RouteHandler<Context> {
 
         this.controllerClass = controllerClass;
         this.controllerProvider = injector.getProvider(controllerClass);
-        this.method = findMethod(injector, controllerClass, methodName);
+        this.method = findMethod(controllerClass, methodName);
         this.messages = injector.getInstance(Messages.class);
 
         Preconditions.checkNotNull(method, "Failed to find method '%s'", Util.toString(controllerClass, methodName));
@@ -83,6 +88,10 @@ public class ControllerHandler implements RouteHandler<Context> {
 
         this.declaredProduces = ControllerUtil.collectProduces(method);
         this.declaredReturns = ControllerUtil.collectReturns(method);
+        validateDeclaredReturns();
+
+        this.contentTypeSuffixes = configureContentTypeSuffixes(engines);
+        configureMethodArgs(injector);
     }
 
     public Class<? extends Controller> getControllerClass() {
@@ -201,90 +210,19 @@ public class ControllerHandler implements RouteHandler<Context> {
     }
 
     /**
-     * Finds the named controller method and configures the controller handler.
+     * Finds the named controller method.
      *
-     * @param injector
      * @param controllerClass
      * @param name
      * @return the controller method or null
      */
-    protected Method findMethod(Injector injector, Class<?> controllerClass, String name) {
+    protected Method findMethod(Class<?> controllerClass, String name) {
         // identify first method which matches the name
         Method controllerMethod = null;
         for (Method method : controllerClass.getMethods()) {
             if (method.getName().equals(name)) {
                 if (controllerMethod == null) {
                     controllerMethod = method;
-
-                    // mapped parameters
-                    Class<?>[] types = method.getParameterTypes();
-                    extractors = new ArgumentExtractor[types.length];
-                    patterns = new String[types.length];
-                    for (int i = 0; i < types.length; i++) {
-                        final Parameter parameter = method.getParameters()[i];
-                        final Class<? extends Collection> collectionType;
-                        final Class<?> objectType;
-                        if (Collection.class.isAssignableFrom(types[i])) {
-                            collectionType = (Class<? extends Collection>) types[i];
-                            objectType = getParameterGenericType(parameter);
-                        } else {
-                            collectionType = null;
-                            objectType = types[i];
-                        }
-
-                        // determine the appropriate extractor
-                        Class<? extends ArgumentExtractor> extractorType;
-                        if (FileItem.class == objectType) {
-                            extractorType = FileItemExtractor.class;
-                        } else {
-                            extractorType = ControllerUtil.getArgumentExtractor(parameter);
-                        }
-
-                        // instantiate the extractor
-                        extractors[i] = injector.getInstance(extractorType);
-
-                        // configure the extractor
-                        if (extractors[i] instanceof ConfigurableExtractor<?>) {
-                            ConfigurableExtractor extractor = (ConfigurableExtractor) extractors[i];
-                            Annotation annotation = ClassUtil.getAnnotation(parameter, extractor.getAnnotationClass());
-                            if (annotation != null) {
-                                extractor.configure(annotation);
-                            }
-                        }
-
-                        if (collectionType != null) {
-                            if (extractors[i] instanceof CollectionExtractor) {
-                                CollectionExtractor extractor = (CollectionExtractor) extractors[i];
-                                extractor.setCollectionType(collectionType);
-                            } else {
-                                throw new FathomException(
-                                        "Controller method '{}' parameter {} of type '{}' does not specify an argument extractor that supports collections!",
-                                        Util.toString(method), i + 1, Util.toString(collectionType, objectType));
-                            }
-                        }
-
-                        if (extractors[i] instanceof TypedExtractor) {
-                            TypedExtractor extractor = (TypedExtractor) extractors[i];
-                            extractor.setObjectType(objectType);
-                        }
-
-                        if (extractors[i] instanceof NamedExtractor) {
-                            // ensure that the extractor has a proper name
-                            NamedExtractor namedExtractor = (NamedExtractor) extractors[i];
-                            if (Strings.isNullOrEmpty(namedExtractor.getName())) {
-                                // parameter is not named via annotation
-                                // try looking for the parameter name in the compiled .class file
-                                if (parameter.isNamePresent()) {
-                                    namedExtractor.setName(parameter.getName());
-                                } else {
-                                    log.error("Properly annotate your controller methods OR specify the '-parameters' flag for your Java compiler!");
-                                    throw new FathomException(
-                                            "Controller method '{}' parameter {} of type '{}' does not specify a name!",
-                                            Util.toString(method), i + 1, Util.toString(collectionType, objectType));
-                                }
-                            }
-                        }
-                    }
                 } else {
                     throw new FathomException("Found overloaded controller method '{}'. Method names must be unique!",
                             Util.toString(method));
@@ -293,6 +231,110 @@ public class ControllerHandler implements RouteHandler<Context> {
         }
 
         return controllerMethod;
+    }
+
+    /**
+     * Configures the content-type suffixes
+     * @param engines
+     * @return acceptable content-type suffixes
+     */
+    protected Set<String> configureContentTypeSuffixes(ContentTypeEngines engines) {
+        if (null == ClassUtil.getAnnotation(method, ContentTypeBySuffix.class)) {
+            return Collections.emptySet();
+        }
+
+        Set<String> suffixes = new TreeSet<>();
+        for (String suffix : engines.getContentTypeSuffixes()) {
+            String contentType = engines.getContentTypeEngine(suffix).getContentType();
+            if (declaredProduces.contains(contentType)) {
+                suffixes.add(suffix);
+            }
+        }
+        return suffixes;
+    }
+
+    /**
+     * Configures the controller method arguments.
+     *
+     * @param injector
+     */
+    protected void configureMethodArgs(Injector injector) {
+
+        Class<?>[] types = method.getParameterTypes();
+        extractors = new ArgumentExtractor[types.length];
+        patterns = new String[types.length];
+        for (int i = 0; i < types.length; i++) {
+            final Parameter parameter = method.getParameters()[i];
+            final Class<? extends Collection> collectionType;
+            final Class<?> objectType;
+            if (Collection.class.isAssignableFrom(types[i])) {
+                collectionType = (Class<? extends Collection>) types[i];
+                objectType = getParameterGenericType(parameter);
+            } else {
+                collectionType = null;
+                objectType = types[i];
+            }
+
+            // determine the appropriate extractor
+            Class<? extends ArgumentExtractor> extractorType;
+            if (FileItem.class == objectType) {
+                extractorType = FileItemExtractor.class;
+            } else {
+                extractorType = ControllerUtil.getArgumentExtractor(parameter);
+            }
+
+            // instantiate the extractor
+            extractors[i] = injector.getInstance(extractorType);
+
+            // configure the extractor
+            if (extractors[i] instanceof ConfigurableExtractor<?>) {
+                ConfigurableExtractor extractor = (ConfigurableExtractor) extractors[i];
+                Annotation annotation = ClassUtil.getAnnotation(parameter, extractor.getAnnotationClass());
+                if (annotation != null) {
+                    extractor.configure(annotation);
+                }
+            }
+
+            if (extractors[i] instanceof SuffixExtractor) {
+                // the last parameter can be assigned content type suffixes
+                SuffixExtractor extractor = (SuffixExtractor) extractors[i];
+                extractor.setSuffixes(contentTypeSuffixes);
+            }
+
+            if (collectionType != null) {
+                if (extractors[i] instanceof CollectionExtractor) {
+                    CollectionExtractor extractor = (CollectionExtractor) extractors[i];
+                    extractor.setCollectionType(collectionType);
+                } else {
+                    throw new FathomException(
+                            "Controller method '{}' parameter {} of type '{}' does not specify an argument extractor that supports collections!",
+                            Util.toString(method), i + 1, Util.toString(collectionType, objectType));
+                }
+            }
+
+            if (extractors[i] instanceof TypedExtractor) {
+                TypedExtractor extractor = (TypedExtractor) extractors[i];
+                extractor.setObjectType(objectType);
+            }
+
+            if (extractors[i] instanceof NamedExtractor) {
+                // ensure that the extractor has a proper name
+                NamedExtractor namedExtractor = (NamedExtractor) extractors[i];
+                if (Strings.isNullOrEmpty(namedExtractor.getName())) {
+                    // parameter is not named via annotation
+                    // try looking for the parameter name in the compiled .class file
+                    if (parameter.isNamePresent()) {
+                        namedExtractor.setName(parameter.getName());
+                    } else {
+                        log.error("Properly annotate your controller methods OR specify the '-parameters' flag for your Java compiler!");
+                        throw new FathomException(
+                                "Controller method '{}' parameter {} of type '{}' does not specify a name!",
+                                Util.toString(method), i + 1, Util.toString(collectionType, objectType));
+                    }
+                }
+            }
+        }
+
     }
 
     protected Object[] prepareMethodArgs(Context context) {

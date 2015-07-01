@@ -16,19 +16,25 @@
 
 package fathom.rest.controller.extractors;
 
+import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import fathom.rest.Context;
 import fathom.rest.controller.Param;
 import ro.pippo.core.ParameterValue;
+
+import java.util.Set;
 
 /**
  * @author James Moger
  */
 public class ParamExtractor extends DefaultObjectExtractor
-        implements NamedExtractor, PatternExtractor, ConfigurableExtractor<Param> {
+        implements NamedExtractor, PatternExtractor, ConfigurableExtractor<Param>, SuffixExtractor {
 
     private String name;
 
     private String pattern;
+
+    private Set<String> suffixes;
 
     @Override
     public Class<Param> getAnnotationClass() {
@@ -62,8 +68,27 @@ public class ParamExtractor extends DefaultObjectExtractor
     }
 
     @Override
+    public void setSuffixes(Set<String> suffixes) {
+        this.suffixes = suffixes;
+    }
+
+    @Override
+    public Set<String> getSuffixes() {
+        return this.suffixes;
+    }
+
+    @Override
     public Object extract(Context context) {
         ParameterValue pv = context.getParameter(name);
+        if (suffixes != null) {
+            // automatically strip the suffix, if we can
+            String value = pv.toString();
+            String ext = Files.getFileExtension(pv.toString());
+            if (!Strings.isNullOrEmpty(ext) && suffixes.contains(ext.toLowerCase())) {
+                pv = new ParameterValue(Files.getNameWithoutExtension(value));
+            }
+        }
+
         if (collectionType == null) {
             Object o = pv.to(objectType, pattern);
             return o;

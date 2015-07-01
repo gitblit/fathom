@@ -152,9 +152,21 @@ public class ControllerRegistrar extends ControllerScanner {
     }
 
     private void configureRegistration(RouteRegistration registration, Method method) {
+        // specify optional route name
         if (method.isAnnotationPresent(Named.class)) {
             Named named = method.getAnnotation(Named.class);
             registration.setName(named.value());
+        }
+
+        // specify optional or required content-type suffixes
+        ContentTypeBySuffix bySuffix = ClassUtil.getAnnotation(method, ContentTypeBySuffix.class);
+        if (bySuffix != null) {
+            Collection<String> suffixes = ControllerUtil.collectSuffixes(method);
+            if (bySuffix.required()) {
+                registration.requireContentTypeSuffixes(suffixes);
+            } else {
+                registration.contentTypeSuffixes(suffixes);
+            }
         }
     }
 

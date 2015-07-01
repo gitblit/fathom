@@ -16,6 +16,7 @@
 
 package fathom.rest;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import fathom.Constants;
 import fathom.metrics.Counted;
@@ -25,7 +26,10 @@ import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author James Moger
@@ -41,6 +45,8 @@ public class RouteRegistration {
     private Class<? extends Annotation> metricClass;
     private String metricName;
     private EnumSet<Constants.Mode> modes;
+    private Set<String> contentTypeSuffixes;
+    private boolean contentTypeSuffixesRequired;
 
     public RouteRegistration(String requestMethod, String uriPattern, RouteHandler routeHandler) {
         this.requestMethod = requestMethod;
@@ -49,7 +55,17 @@ public class RouteRegistration {
     }
 
     public String getUriPattern() {
-        return uriPattern;
+        if (contentTypeSuffixes == null || contentTypeSuffixes.isEmpty()) {
+            return uriPattern;
+        }
+
+        // appends a content-type suffix expression
+        String suffixExpression = StringUtils.format("(\\.({}))", Joiner.on("|").join(contentTypeSuffixes));
+        if (!contentTypeSuffixesRequired) {
+            // content-type suffix is optional
+            suffixExpression += '?';
+        }
+        return uriPattern + suffixExpression;
     }
 
     public String getRequestMethod() {
@@ -145,6 +161,42 @@ public class RouteRegistration {
 
     public EnumSet<Constants.Mode> getModes() {
         return modes;
+    }
+
+    public RouteRegistration contentTypeSuffixes(String... suffixes) {
+        this.contentTypeSuffixes = new LinkedHashSet<>();
+        for (String suffix : suffixes) {
+            contentTypeSuffixes.add(StringUtils.removeStart(suffix.trim(), ".").toLowerCase());
+        }
+
+        return this;
+    }
+
+    public RouteRegistration contentTypeSuffixes(Collection<String> suffixes) {
+        this.contentTypeSuffixes = new LinkedHashSet<>();
+        for (String suffix : suffixes) {
+            contentTypeSuffixes.add(StringUtils.removeStart(suffix.trim(), ".").toLowerCase());
+        }
+
+        return this;
+    }
+
+    public RouteRegistration requireContentTypeSuffixes(String... suffixes) {
+        contentTypeSuffixes(suffixes);
+        this.contentTypeSuffixesRequired = true;
+
+        return this;
+    }
+
+    public RouteRegistration requireContentTypeSuffixes(Collection<String> suffixes) {
+        contentTypeSuffixes(suffixes);
+        this.contentTypeSuffixesRequired = true;
+
+        return this;
+    }
+
+    public Set<String> getContentTypeSuffixes() {
+        return contentTypeSuffixes;
     }
 
     @Override

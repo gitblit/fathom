@@ -19,16 +19,17 @@ import com.google.common.base.Strings;
 import fathom.rest.controller.extractors.ArgumentExtractor;
 import fathom.rest.controller.extractors.ExtractWith;
 import fathom.rest.controller.extractors.ParamExtractor;
+import ro.pippo.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -37,7 +38,7 @@ import java.util.TreeMap;
 public class ControllerUtil {
 
     public static List<String> collectProduces(Method method) {
-        List<String> contentTypes = new ArrayList<>();
+        Set<String> contentTypes = new LinkedHashSet<>();
         if (method.isAnnotationPresent(Produces.class)) {
             // controller method specifies Produces
             Produces produces = method.getAnnotation(Produces.class);
@@ -51,7 +52,17 @@ public class ControllerUtil {
                 contentTypes.add(value);
             }
         }
-        return contentTypes;
+        return new ArrayList<>(contentTypes);
+    }
+
+    public static Collection<String> collectSuffixes(Method method) {
+        Set<String> suffixes = new LinkedHashSet<>();
+        for (String produces : collectProduces(method)) {
+            int i = produces.lastIndexOf('/') + 1;
+            String type = StringUtils.removeStart(produces.substring(i).toLowerCase(), "x-");
+            suffixes.add(type);
+        }
+        return suffixes;
     }
 
     public static Collection<Return> collectReturns(Method method) {

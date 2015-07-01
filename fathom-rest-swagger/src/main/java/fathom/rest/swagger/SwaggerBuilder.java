@@ -79,6 +79,7 @@ import io.swagger.models.properties.UUIDProperty;
 import io.swagger.util.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.Error;
 import ro.pippo.core.FileItem;
 import ro.pippo.core.HttpConstants;
@@ -116,11 +117,17 @@ public class SwaggerBuilder {
 
     private static final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
 
+    private static final Pattern PATTERN_FOR_CONTENT_TYPE_SUFFIX = Pattern.compile("(\\(\\\\.\\([a-z\\|]+\\)\\)\\??)");
+
+    private static final Pattern PATTERN_FOR_SUFFIX_EXTRACTION = Pattern.compile("([a-z]+)");
+
     private static final List<String> METHODS = Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
 
     private final Settings settings;
 
     private final Router router;
+
+    private final ContentTypeEngines engines;
 
     private final Messages messages;
 
@@ -129,12 +136,13 @@ public class SwaggerBuilder {
     private final String relativeSwaggerBasePath;
 
     public SwaggerBuilder(Settings settings, Router router) {
-        this(settings, router, null);
+        this(settings, router, null, null);
     }
 
-    public SwaggerBuilder(Settings settings, Router router, Messages messages) {
+    public SwaggerBuilder(Settings settings, Router router, ContentTypeEngines engines, Messages messages) {
         this.settings = settings;
         this.router = router;
+        this.engines = engines;
         this.messages = messages;
         List<String> languages = settings.getStrings("application.languages");
         this.defaultLanguage = languages.isEmpty() ? "en" : languages.get(0);
@@ -341,10 +349,12 @@ public class SwaggerBuilder {
             log.warn("'{}' api summary exceeds 120 characters", Util.toString(method));
         }
 
+        StringBuilder sb = new StringBuilder();
         String notes = getNotes(method);
         if (!Strings.isNullOrEmpty(notes)) {
-            operation.setDescription(notes);
+            sb.append(notes);
         }
+
         operation.setOperationId(Util.toString(method));
         operation.setConsumes(produces);
         operation.setProduces(produces);
@@ -362,7 +372,59 @@ public class SwaggerBuilder {
             operation.addTag(tag.getName());
         }
 
+        // identify and extract suffixes to automatically document those
         String operationPath = StringUtils.removeStart(registerParameters(swagger, operation, route, method), swagger.getBasePath());
+        operationPath = stripContentTypeSuffixPattern(operationPath);
+
+        Matcher suffixesMatcher = PATTERN_FOR_CONTENT_TYPE_SUFFIX.matcher(route.getUriPattern());
+        boolean suffixRequired = false;
+        List<String> suffixes = new ArrayList<>();
+        while (suffixesMatcher.find()) {
+            String suffixExpression = suffixesMatcher.group(1);
+            suffixRequired = suffixExpression.charAt(suffixExpression.length() - 1) != '?';
+            Matcher suffixMatcher = PATTERN_FOR_SUFFIX_EXTRACTION.matcher(suffixExpression);
+            while (suffixMatcher.find()) {
+                String suffix = suffixMatcher.group(1);
+                suffixes.add(suffix);
+            }
+        }
+        if (!suffixes.isEmpty()) {
+            sb.append("\n\n");
+            if (suffixRequired) {
+                String message = "A Content-Type suffix is required.";
+                if (messages != null) {
+                    message = messages.getWithDefault("swagger.contentTypeSuffixRequired", message, "");
+                }
+                sb.append("**").append(message).append("**");
+            } else {
+                String message = "A Content-Type suffix is optional.";
+                if (messages != null) {
+                    message = messages.getWithDefault("swagger.contentTypeSuffixOptional", message, "");
+                }
+                sb.append("*").append(message).append("*");
+            }
+
+            sb.append("\n\n");
+            sb.append("| Content-Type | URI     |\n");
+            sb.append("|--------------|---------|\n");
+            if (!suffixRequired) {
+                sb.append("| ").append(produces.size() > 1 ? "**negotiated**" : produces.get(0)).append(" ");
+                sb.append("| ").append(operationPath).append(" ");
+                sb.append("|\n");
+            }
+            for (String suffix : suffixes) {
+                String contentType = engines == null ? "???" : engines.getContentTypeEngine(suffix).getContentType();
+                sb.append("| ").append(contentType).append(" ");
+                sb.append("| ").append(operationPath).append('.').append(suffix).append(" ");
+                sb.append("|\n");
+            }
+            sb.append('\n');
+        }
+
+        if (sb.length() > 0) {
+            operation.setDescription(sb.toString());
+        }
+
         if (swagger.getPath(operationPath) == null) {
             swagger.path(operationPath, new Path());
         }
@@ -958,6 +1020,23 @@ public class SwaggerBuilder {
         }
 
         return list;
+    }
+
+    protected String stripContentTypeSuffixPattern(String uriPattern) {
+        Matcher matcher = PATTERN_FOR_CONTENT_TYPE_SUFFIX.matcher(uriPattern);
+        if (matcher.find()) {
+            String suffix = uriPattern.substring(matcher.start(1));
+            uriPattern = uriPattern.substring(0, matcher.start(1));
+            if (suffix.charAt(suffix.length() - 1) != '?') {
+                // suffix is required, extract first one
+                Matcher suffixMatcher = PATTERN_FOR_SUFFIX_EXTRACTION.matcher(suffix);
+                if (suffixMatcher.find()) {
+                    String firstSuffix = suffixMatcher.group(1);
+                    uriPattern += "." + firstSuffix;
+                }
+            }
+        }
+        return uriPattern;
     }
 
     /**
