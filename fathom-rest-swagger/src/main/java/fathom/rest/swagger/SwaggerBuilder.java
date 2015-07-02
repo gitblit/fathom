@@ -390,18 +390,25 @@ public class SwaggerBuilder {
         }
         if (!suffixes.isEmpty()) {
             sb.append("\n\n");
+            sb.append("#### ");
+            String header = "Content-Type Suffixes";
+            if (messages != null) {
+                header = messages.getWithDefault("swagger.contentTypeSuffixHeader", header, "");
+            }
+            sb.append(header);
+            sb.append("\n\n");
             if (suffixRequired) {
-                String message = "A Content-Type suffix is required.";
+                String message = "A Content-Type suffix is **required**.";
                 if (messages != null) {
                     message = messages.getWithDefault("swagger.contentTypeSuffixRequired", message, "");
                 }
-                sb.append("**").append(message).append("**");
+                sb.append(message);
             } else {
-                String message = "A Content-Type suffix is optional.";
+                String message = "A Content-Type suffix is *optional*.";
                 if (messages != null) {
                     message = messages.getWithDefault("swagger.contentTypeSuffixOptional", message, "");
                 }
-                sb.append("*").append(message).append("*");
+                sb.append(message);
             }
 
             sb.append("\n\n");
