@@ -6,6 +6,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Fixed
 
+#### Changed
+
+#### Added
+
+#### Removed
+
+### [0.6.0] - 2015-07-02
+
+#### Fixed
+
 - [fathom-rest-security] CSRF token was not bound as a local property making templates with forms & CSRF tokens generated in a POST handler fail.
 - [fathom-rest-swagger] Support collection fields in Model classes
 - [fathom-core] An inner class in a controller broke the class collecting utility method
@@ -23,8 +33,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - [fathom-rest] Add @NoCache annotation for controller classes and methods to disable response caching
 - [fathom-rest] Add @ContentTypeBySuffix annotation for controller classes and methods to allow content-type control by a trailing suffix like `.json`
-
-#### Removed
 
 ### [0.5.4] - 2015-06-23
 
@@ -97,7 +105,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.5.4...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.6.0...HEAD
+[0.6.0]: https://github.com/gitblit/fathom/compare/release-0.5.4...release-0.6.0
 [0.5.4]: https://github.com/gitblit/fathom/compare/release-0.5.3...release-0.5.4
 [0.5.3]: https://github.com/gitblit/fathom/compare/release-0.5.2...release-0.5.3
 [0.5.2]: https://github.com/gitblit/fathom/compare/release-0.5.1...release-0.5.2
