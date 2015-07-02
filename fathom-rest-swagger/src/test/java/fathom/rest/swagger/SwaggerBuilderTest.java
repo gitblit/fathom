@@ -25,6 +25,9 @@ import fathom.rest.controller.Controller;
 import fathom.rest.controller.ControllerHandler;
 import fathom.rest.controller.Produces;
 import org.junit.Test;
+import ro.pippo.core.Application;
+import ro.pippo.core.ContentTypeEngine;
+import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.Languages;
 import ro.pippo.core.Messages;
 import ro.pippo.core.PippoSettings;
@@ -61,8 +64,12 @@ public class SwaggerBuilderTest {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             public void configure() {
+                ContentTypeEngines contentTypeEngines = new ContentTypeEngines();
+                contentTypeEngines.setContentTypeEngine(mockEngine(Produces.JSON));
+                contentTypeEngines.setContentTypeEngine(mockEngine(Produces.XML));
                 bind(Messages.class).toInstance(new Messages(new Languages(pippoSettings)));
                 bind(Settings.class).toInstance(settings);
+                bind(ContentTypeEngines.class).toInstance(contentTypeEngines);
             }
         });
 
@@ -102,6 +109,29 @@ public class SwaggerBuilderTest {
         public void delete(int id) {
         }
 
+    }
+
+    private ContentTypeEngine mockEngine(final String contentType) {
+        return new ContentTypeEngine() {
+            @Override
+            public void init(Application application) {
+            }
+
+            @Override
+            public String getContentType() {
+                return contentType;
+            }
+
+            @Override
+            public String toString(Object object) {
+                return null;
+            }
+
+            @Override
+            public <T> T fromString(String content, Class<T> classOfT) {
+                return null;
+            }
+        };
     }
 
 }

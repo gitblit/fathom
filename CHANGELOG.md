@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
 
 - [fathom-rest] Update to Pippo 0.6.1
+- [fathom-rest] Validate controller @Produces against registered content type engines
 - [fathom-metrics-librato] Update to Librato 4.0.1.9
 
 #### Added
