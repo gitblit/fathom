@@ -1,8 +1,10 @@
 ## About
 
-**Fathom-REST** is an opinionated, injectable, & thin scaffolding for the [Pippo Micro Webframework](http://pippo.ro).
+**Fathom-REST** is an opinionated & injectable scaffolding for the [Pippo Micro Webframework](http://pippo.ro).
 
-Pippo is a modest, hackable framework for writing RESTful web applications.  It provides easy-to-use filtering, routing, template engine integration, localization (i18n), [Webjars] support, and [pretty-time] datetime rendering.
+Pippo is a small framework for writing RESTful web applications.  It provides easy-to-use filtering, routing, template engine integration, localization (i18n), [Webjars] support, and [pretty-time] datetime rendering.
+
+**Fathom-REST** supports Pippo 0.6.x.
 
 ## Installation
 
@@ -152,6 +154,32 @@ ALL("/.*", (ctx) -> {
 }).modes(Mode.DEV, Mode.TEST);
 ```
 
+#### Content-Type by Suffix
+
+You can optionally declare the response *content-type* with a URI suffix by using the `contentTypeSuffixes` or `requireContentTypeSuffixes` methods.
+
+The suffixes are determined by parsing the *content-type* declarations of your registered *ContentTypeEngines*.
+
+```java
+// Register a route that optionally respects a content-type suffix
+// e.g. /executive/54
+//      /executive/54.json
+//      /executive/54.xml
+//      /executive/54.yaml
+GET("/employee/{id: [0-9]+}", (ctx) -> ctx.send(employee))
+   .contentTypeSuffixes("json", "xml", "yaml").;
+
+// Register a route that requires a content-type suffix
+// e.g. /executive/54.json
+//      /executive/54.xml
+//      /executive/54.yaml
+GET("/executive/{id: [0-9]+}", (ctx) -> ctx.send(employee))
+    .requireContentTypeSuffixes("json", "xml", "yaml").;
+```
+
+!!! Note
+    If you specify your parameter without a regex pattern (e.g. `{name}`) the value of *name* will include any suffix <u>unless</u> you *require* the suffix.
+
 ### Controllers
 
 **Fathom-REST** can be used like standard controllers in [Pippo] but they can also be used in a more declarative fashion.
@@ -175,12 +203,14 @@ public class MyController extends Controller {
   }
 
   @GET("/all")
+  @Return(code=200, onResult=List.class)
   public List<Employee> getAll() {
     List<Employee> list = employeeDao.getAll();
     return list;
   }
 
   @GET("/{id: [0-9]+}")
+  @Return(code=200, onResult=Employee.class)
   public Employee getEmployee(int id) {
     // The method parameter name "id" matches the url parameter name "id"
     Employee employee = employeeDao.get(id);
@@ -264,6 +294,7 @@ If you need deterministic *controller* method registration order you may specify
 
 ```java
 @GET("/{id: [0-9]+}")
+@Return(code=200, onResult=Employee.class)
 @Order(5)
 public Employee getEmployee(int id) {
 }
@@ -275,6 +306,7 @@ You may name your controller routes.  This information is used in the registered
 
 ```java
 @GET("/{id: [0-9]+}")
+@Return(code=200, onResult=Employee.class)
 @Named("Get employee by id")
 public Employee getEmployee(int id) {
 }
@@ -286,6 +318,7 @@ It's very easy to collect [Metrics](metrics.md) data about your *controllers*.  
 
 ```java
 @GET("/{id: [0-9]+}")
+@Return(code=200, onResult=Employee.class)
 @Metered
 public Employee getEmployee(int id) {
 }
@@ -297,23 +330,8 @@ You can indicate that a controller response should not be cached by specifying t
 
 ```java
 @GET("/{id: [0-9]+}")
+@Return(code=200, onResult=Employee.class)
 @NoCache
-public Employee getEmployee(int id) {
-}
-```
-
-#### ContentTypeBySuffix
-
-If your controller method can `@Produce` more than one *content-type* then you may allow overriding the negotiated *content-type* by the presence of a request URI suffix.
-
-When `@ContentTypeBySuffix` is detected, **Fathom-REST** will automatically append an appropriate regular expression suffix to your method URI for the `@Produces` *content-types*.
-
-For example, if our controller method `@Produces({"application/json", "application/x-yaml"})` and we specify `@ContentTypeBySuffix` then a request uri of `/fruit/1.yaml` would force the Request *accept-type* to be `application/x-yaml`.  Standard content-type negotiation will proceed with the result that the YAML ContentTypeEngine will marshall the Response object.
-
-```java
-@GET("/{id: [0-9]+}")
-@Produces({"application/json","application/x-yaml"})
-@ContentTypeBySuffix
 public Employee getEmployee(int id) {
 }
 ```
@@ -349,8 +367,17 @@ public void login(@Form String username, @Form @Password String password) {
 }
 ```
 
-!!! Note
-    You are not required to use the `@Return` annotation.
+#### Returning Objects from Controller Methods
+
+If your controller method declares a *non-void* return type you **must** declare a `@Return` annotation for this response.
+
+```java
+@GET("/{id: [0-9]+}")
+@Return(code=200, onResult=Employee.class)
+public Employee getEmployee(int id) {
+  return anEmployee
+}
+```
 
 #### Requiring Settings (Controller)
 
@@ -415,6 +442,7 @@ All standard [Pippo] template engines are supported.
 | [Pebble]       | [ro.pippo:pippo-pebble]      |
 | [Trimou]       | [ro.pippo:pippo-trimou]      |
 | [Groovy]       | [ro.pippo:pippo-groovy]      |
+| [Velocity]     | [ro.pippo:pippo-velocity]    |
 
 ## Content-Type Engines
 
@@ -441,6 +469,7 @@ All standard [Pippo] content-type engines are supported.
 [Pebble]: http://www.mitchellbosecke.com/pebble/home
 [Trimou]: http://trimou.org
 [Groovy]: https://github.com/decebals/pippo/tree/master/pippo-groovy
+[Velocity]: https://velocity.apache.org
 
 [JAXB]: https://jaxb.java.net
 [XStream]: https://github.com/x-stream/xstream
@@ -454,6 +483,7 @@ All standard [Pippo] content-type engines are supported.
 [ro.pippo:pippo-pebble]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-pebble"
 [ro.pippo:pippo-trimou]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-trimou"
 [ro.pippo:pippo-groovy]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-groovy"
+[ro.pippo:pippo-velocity]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-velocity"
 
 [ro.pippo:pippo-jaxb]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-jaxb"
 [ro.pippo:pippo-xstream]: http://search.maven.org/#search|ga|1|g:"ro.pippo"%20AND%20a:"pippo-xstream"

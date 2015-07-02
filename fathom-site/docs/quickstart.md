@@ -12,7 +12,7 @@ To create your app copy & paste the following command to your console:
 mvn -B archetype:generate \
   -DarchetypeGroupId=com.gitblit.fathom \
   -DarchetypeArtifactId=fathom-archetype-standard \
-  -DarchetypeVersion=0.5.2 \
+  -DarchetypeVersion=0.6.0 \
   -DgroupId=com.mycompany \
   -DartifactId=myapp \
   -Dversion=1.0.0-SNAPSHOT \
@@ -33,7 +33,7 @@ Make sure to substitute the *groupId*, *artifactId*, *version*, *packageName*, a
 The project you created from the Fathom Standard Archetype is not a barebones project.  The archetype starts you off with with a completely functional microservice based on:
 
 - [Fathom-Core](about.md)
-- [Fathom-REST](rest.md) + [pippo-freemarker] + [pippo-gson] for XML/JSON RESTful routing and HTML page generation
+- [Fathom-REST](rest.md) + [pippo-freemarker] + [pippo-jaxb] + [pippo-gson] for XML/JSON RESTful routing and HTML page generation
 - [Fathom-Security](security.md) + [Fathom-REST-Security](rest-security.md) for a complete authentication & authorization infrastructure
 - [Fathom-REST-Swagger](rest-swagger.md) for automatic API specification, documentation, and testing
 - [Fathom-JCache](jcache.md) + [Infinispan] for seamless caching
@@ -86,7 +86,6 @@ mvn clean package
 [Maven]: http://maven.apache.org/
 [Maven archetype]: https://maven.apache.org/guides/introduction/introduction-to-archetypes.html
 [pippo-freemarker]: http://www.pippo.ro/doc/templates.html
+[pippo-jaxb]: http://www.pippo.ro/doc/content-types.html
 [pippo-gson]: http://www.pippo.ro/doc/content-types.html
 [Infinispan]: http://infinispan.org
-[ZURB Foundation]: http://foundation.zurb.com/
-[Font-Awesome]: https://fortawesome.github.io/Font-Awesome/
