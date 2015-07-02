@@ -33,35 +33,13 @@ import org.junit.Before;
  *
  * @author James Moger
  */
-public abstract class FathomTest extends Assert {
+abstract class FathomTest extends Assert {
 
     protected static String XML = "application/xml";
 
     protected static String JSON = "application/json";
 
-    protected final TestBoot testBoot;
-
-    public FathomTest() {
-        testBoot = new TestBoot();
-    }
-
-    /**
-     * Starts Fathom in TEST mode and configures RestAssured with the base URL of the test instance.
-     */
-    @Before
-    public void startFathom() {
-        testBoot.start();
-        String url = testBoot.getSettings().getUrl();
-        RestAssured.baseURI = url;
-    }
-
-    /**
-     * Stops the Fathom test instance.
-     */
-    @After
-    public void stopFathom() {
-        testBoot.stop();
-    }
+    protected abstract TestBoot getTestBoot();
 
     /**
      * Returns the complete URL of the specified path for the running Fathom TEST instance.
@@ -81,7 +59,7 @@ public abstract class FathomTest extends Assert {
      * @return the Guice injector
      */
     protected Injector getInjector() {
-        return testBoot.getServer().getInjector();
+        return getTestBoot().getServer().getInjector();
     }
 
     /**

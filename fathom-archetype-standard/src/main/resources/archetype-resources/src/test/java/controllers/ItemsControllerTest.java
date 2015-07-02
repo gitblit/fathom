@@ -2,7 +2,7 @@ package ${package}.controllers;
 
 import com.jayway.restassured.response.Header;
 import fathom.rest.security.aop.RequireToken;
-import fathom.test.FathomTest;
+import fathom.test.FathomIntegrationTest;
 import org.junit.Test;
 
 import static com.jayway.restassured.RestAssured.*;
@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.*;
  * Tests that our simple items api controller generates JSON and XML.
  * Each unit test starts an instance of our Fathom app in TEST mode.
  */
-public class ItemsControllerTest extends FathomTest {
+public class ItemsControllerTest extends FathomIntegrationTest {
 
     private final Header testHeader = new Header(RequireToken.DEFAULT, "cafebabe");
 

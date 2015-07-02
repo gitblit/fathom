@@ -16,13 +16,13 @@
 
 package controllers;
 
-import fathom.test.FathomTest;
+import fathom.test.FathomIntegrationTest;
 import org.junit.Test;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-public class ApiControllerTest extends FathomTest {
+public class ApiControllerTest extends FathomIntegrationTest {
 
     @Test
     public void testGetJSON() {

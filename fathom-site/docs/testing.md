@@ -1,6 +1,8 @@
 ## About
 
-**Fathom-test-tools** provides a JUnit4 `FathomTest` class for starting your application in TEST mode on a randomly available http port.  
+**Fathom-test-tools** provides JUnit4 `FathomUnitTest` and `FathomIntegrationTest` classes for starting your application in TEST mode on a randomly available http port.
+
+ The `FathomUnitTest` class starts a new instance of Fathom for each **unit-test** while the `FathomIntegrationTest` class starts *and shares* one instance of Fathom for each **unit-test class**.
 
 [Rest-Assured](https://code.google.com/p/rest-assured) is automatically configured for this instance of your application allowing you to easily make http requests to your test instance and focus on unit and integration testing of your code.
 
@@ -22,12 +24,12 @@ Add the **fathom-test-tools** artifact.
 ```java
 package conf;
 
-import fathom.test.FathomTest;
+import fathom.test.FathomIntegrationTest;
 import org.junit.Test;
 
 import static com.jayway.restassured.RestAssured.*;
 
-public class RoutesTest extends FathomTest {
+public class RoutesTest extends FathomIntegrationTest {
 
     @Test
     public void testIndex() {

@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest] Validate controller @Produces against registered content type engines
 - [fathom-rest] Confirm controller methods which return objects declare a successful @Return. e.g. `@Return(code=200, onResult=MyObject.class)`
 - [fathom-metrics-librato] Update to Librato 4.0.1.9
+- [fathom-test-tools] Refactored FathomTest into `FathomUnitTest` for per-unit-test Fathom instances and `FathomIntegrationTest` for per-test-class Fathom instances.
 
 #### Added
 
