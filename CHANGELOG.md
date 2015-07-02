@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - [fathom-rest] Update to Pippo 0.6.1
 - [fathom-rest] Validate controller @Produces against registered content type engines
+- [fathom-rest] Confirm controller methods which return objects declare a successful @Return. e.g. `@Return(code=200, onResult=MyObject.class)`
 - [fathom-metrics-librato] Update to Librato 4.0.1.9
 
 #### Added

@@ -360,6 +360,24 @@ public class ControllerHandler implements RouteHandler<Context> {
         }
     }
 
+
+    /**
+     * Validates the declared Returns of the controller method.  If the controller method returns an object then
+     * it must also declare a successful @Return with a status code in the 200 range.
+     */
+    protected void validateDeclaredReturns() {
+        boolean returnsObject = void.class != method.getReturnType();
+        if (returnsObject) {
+            for (Return declaredReturn : declaredReturns) {
+                if (declaredReturn.code() >= 200 && declaredReturn.code() < 300) {
+                    return;
+                }
+            }
+            throw new FathomException("{} returns an object but does not declare a successful @{}(code=200, onResult={}.class)",
+                    Util.toString(method), Return.class.getSimpleName(), method.getReturnType().getSimpleName());
+        }
+    }
+
     protected Object[] prepareMethodArgs(Context context) {
         Parameter[] parameters = method.getParameters();
 
