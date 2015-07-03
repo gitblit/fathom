@@ -33,7 +33,7 @@ Make sure to substitute the *groupId*, *artifactId*, *version*, *packageName*, a
 The project you created from the Fathom Standard Archetype is not a barebones project.  The archetype starts you off with with a completely functional microservice based on:
 
 - [Fathom-Core](about.md)
-- [Fathom-REST](rest.md) + [pippo-freemarker] + [pippo-jaxb] + [pippo-gson] for XML/JSON RESTful routing and HTML page generation
+- [Fathom-REST](rest.md) + [pippo-pebble] + [pippo-jaxb] + [pippo-gson] for XML/JSON RESTful routing and HTML page generation
 - [Fathom-Security](security.md) + [Fathom-REST-Security](rest-security.md) for a complete authentication & authorization infrastructure
 - [Fathom-REST-Swagger](rest-swagger.md) for automatic API specification, documentation, and testing
 - [Fathom-JCache](jcache.md) + [Infinispan] for seamless caching

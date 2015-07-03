@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Changed
 
+- [fathom-archetype-standard] Switched to Pebble, while retaining Freemarker templates
+
 #### Added
 
 #### Removed

@@ -1,3 +1,17 @@
+<#-------------------------------------------------------
+    base.ftl
+
+    This Freemarker template demonstrates:
+      1. webjarsAt function
+      2. publicAt function
+      3. condition statements
+      4. localized messages
+      5. child block declaration
+
+    Freemarker documentation
+    http://freemarker.org
+
+-------------------------------------------------------->
 <#macro page>
 <!DOCTYPE html>
 <!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->

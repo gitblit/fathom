@@ -1,7 +1,7 @@
-<#-------------------------------------------------------
-    index.ftl
+{########################################################
+    index.peb
 
-    This Freemarker demonstrates:
+    This Pebble demonstrates:
       1. template inheritance
       2. variable binding
       3. localized messages
@@ -9,12 +9,13 @@
       5. localized date formatting
       6. looping
 
-    Freemarker documentation
-    http://freemarker.org
+    Pebble documentation
+    http://www.mitchellbosecke.com/pebble
 
--------------------------------------------------------->
-<#import "base.ftl" as base/>
-<@base.page>
+#########################################################}
+{% extends "base" %}
+
+{% block content %}
 <div class="row">
     <div class="large-12 columns">
         <h3>Your Microservice Foundation</h3>
@@ -29,9 +30,9 @@
                 <tr><th>ID</th><th>Item</th></tr>
             </thead>
             <tbody>
-                <#list items as item>
-                    <tr><td>${item.id}</td><td>${item.name}</td></tr>
-                </#list>
+                {% for item in items %}
+                    <tr><td>{{item.id}}</td><td>{{item.name}}</td></tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -39,7 +40,7 @@
         <h4>Bootstrapped</h4>
         <p>This quickstart demonstrates several capabilities:</p>
         <ul>
-            <li>Example Freemarker templates with inheritance, WebJars & localization</li>
+            <li>Example Pebble templates with inheritance, WebJars & localization</li>
             <li>Example JCache configuration backed by Infinispan</li>
             <li>Example Pippo Routes and Fathom RESTful Controllers</li>
             <li>Example Form authentication backed by a Memory Realm</li>
@@ -49,17 +50,17 @@
         </ul>
 
         <h4>Documented API</h4>
-        Your generated Swagger API specification is <a target="_blank" href="${appPath}/api/swagger.json">here</a>.<br/>
-        You can explore it with the integrated Swagger UI <a target="_blank" href="${appPath}/api">here</a>.<br/>
+        Your generated Swagger API specification is <a target="_blank" href="{{appPath}}/api/swagger.json">here</a>.<br/>
+        You can explore it with the integrated Swagger UI <a target="_blank" href="{{appPath}}/api">here</a>.<br/>
         And you can even use <a target="_blank" href="http://swagger.io/tools">Swagger.io tools</a> to generate clients from this specification!
     </div>
 </div>
 <footer>
     <div class="row">
         <hr/>
-        <b>${i18n('fathom.dispatchingSince')}</b> ${formatTime(bootDate, "full")}
-        (<i>${prettyTime(bootDate)}</i>)
+        <b>{{i18n('fathom.dispatchingSince')}}</b> {{ bootDate | formatTime("full") }}
+        (<i>{{ bootDate | prettyTime }}</i>)
     </div>
 </footer>
 
-</@base.page>
+{% endblock %}

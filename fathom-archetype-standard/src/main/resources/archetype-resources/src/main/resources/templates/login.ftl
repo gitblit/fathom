@@ -1,3 +1,16 @@
+<#-------------------------------------------------------
+    login.ftl
+
+    This Freemarker template demonstrates:
+      1. template inheritance
+      2. variable binding
+      3. localized messages
+      4. condition statements
+
+    Freemarker documentation
+    http://freemarker.org
+
+-------------------------------------------------------->
 <#import "base.ftl" as base/>
 <@base.page>
 <div class="row">
