@@ -42,6 +42,8 @@
                 <include>**/*.css</include>
                 <include>**/*.js</include>
                 <include>**/*.ftl</include>
+                <include>**/*.peb</include>
+                <include>**/*.mustache</include>
                 <include>**/*.md</include>
             </includes>
         </fileSet>
