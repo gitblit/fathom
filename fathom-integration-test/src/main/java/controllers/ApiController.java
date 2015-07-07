@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 /**
  * To be discoverable, a controller must be annotated with {@code @Path}.
  */
-@Path("/items")
+@Path
 @Produces({Produces.JSON, Produces.XML})
 @ContentTypeBySuffix
 public class ApiController extends ApiV1 {
@@ -66,7 +66,7 @@ public class ApiController extends ApiV1 {
      * @param account
      * @return Reply
      */
-    @GET("{id: [0-9]+}")
+    @GET("/items/{id: [0-9]+}")
     @Metered
     @Return(code = 200, description = "Item retrieved", onResult = Item.class)
     @Return(code = 404, description = "Item does not exist")
@@ -77,7 +77,7 @@ public class ApiController extends ApiV1 {
         return item;
     }
 
-    @GET("/basic/{id: [0-9]+}")
+    @GET("/items/basic/{id: [0-9]+}")
     @Metered
     @Return(code = 200, description = "Item retrieved", onResult = Item.class)
     @Return(code = 404, description = "Item does not exist")
@@ -89,7 +89,7 @@ public class ApiController extends ApiV1 {
         return item;
     }
 
-    @GET("/form/{id: [0-9]+}")
+    @GET("/items/form/{id: [0-9]+}")
     @Metered
     @Return(code = 200, description = "Item retrieved", onResult = Item.class)
     @Return(code = 404, description = "Item does not exist")

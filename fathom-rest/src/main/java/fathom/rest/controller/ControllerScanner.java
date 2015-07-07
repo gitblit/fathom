@@ -153,7 +153,7 @@ public abstract class ControllerScanner {
         Set<String> paths = new LinkedHashSet<>();
         Path controllerPath = controllerClass.getAnnotation(Path.class);
 
-        if (controllerPath != null) {
+        if (controllerPath != null && controllerPath.value().length > 0) {
             if (parentPaths.isEmpty()) {
                 // add all controller paths
                 paths.addAll(Arrays.asList(controllerPath.value()));
