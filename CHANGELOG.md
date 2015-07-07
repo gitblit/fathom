@@ -19,6 +19,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest] Add RouteInterceptor concept for controller routes
 - [fathom-rest-security] Add `@BasicAuth` and `@FormAuth` RouteInterceptors
 - [fathom-rest] Add `addAnnotatedControllers(Package... packages)` method
+- [fathom-rest] Add `@CSRF` RouteInterceptor to insert or validate a CSRF token on a controller method
 - [fathom-rest-swagger] Add support for BASIC authentication
 
 #### Removed

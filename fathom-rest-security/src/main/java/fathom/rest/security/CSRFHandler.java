@@ -18,6 +18,8 @@ package fathom.rest.security;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import fathom.exception.StatusCodeException;
 import fathom.rest.Context;
 import fathom.rest.controller.HttpMethod;
@@ -55,6 +57,7 @@ import java.util.Set;
  *
  * @author James Moger
  */
+@Singleton
 public class CSRFHandler implements RouteHandler<Context> {
 
     public static final String HEADER = "Csrf-Token";
@@ -71,6 +74,7 @@ public class CSRFHandler implements RouteHandler<Context> {
 
     private final String algorithm;
 
+    @Inject
     public CSRFHandler() {
         this(CryptoUtil.generateSecretKey());
     }
