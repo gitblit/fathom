@@ -16,6 +16,7 @@
 
 package controllers;
 
+import fathom.rest.controller.Consumes;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
@@ -45,6 +46,7 @@ import java.util.List;
  */
 @Path("/user")
 @ApiOperations(tag = "user", description = "Operations about user")
+@Consumes(Consumes.JSON)
 @Produces({Produces.JSON, Produces.XML})
 public class UserController extends ApiV2 {
 

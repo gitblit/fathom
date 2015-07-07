@@ -16,6 +16,7 @@
 
 package controllers;
 
+import fathom.rest.controller.Consumes;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
@@ -47,6 +48,7 @@ import ro.pippo.core.FileItem;
  */
 @Path("/pet")
 @ApiOperations(tag = "pet", description = "Operations about pets")
+@Consumes(Consumes.JSON)
 @Produces({Produces.JSON, Produces.XML})
 @RequireToken
 @RequirePermission("read:pet")

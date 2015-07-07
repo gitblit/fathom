@@ -19,6 +19,7 @@ package controllers;
 import com.google.inject.Inject;
 import dao.CollectionsDao;
 import fathom.metrics.Metered;
+import fathom.rest.controller.Consumes;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
@@ -39,6 +40,7 @@ public class CollectionsController extends Controller {
     private CollectionsDao dao;
 
     @GET("/")
+    @Consumes({Consumes.HTML})
     @Metered
     public void get() {
         getResponse()
@@ -49,6 +51,7 @@ public class CollectionsController extends Controller {
     }
 
     @PUT("/")
+    @Consumes({Consumes.FORM})
     @Metered
     public void put(Set<Integer> mySet, List<Integer> myList, TreeSet<String> myTreeSet) {
         dao.myInts = new ArrayList<>(mySet);

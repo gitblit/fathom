@@ -24,14 +24,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies Accept types.
+ * Specifies Consume types.
  *
  * @author James Moger
  */
 @Documented
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Accepts {
+public @interface Consumes {
     String [] value();
 
     public static final String XML = HttpConstants.ContentType.APPLICATION_XML;
@@ -40,9 +40,11 @@ public @interface Accepts {
 
     public static final String YAML = HttpConstants.ContentType.APPLICATION_X_YAML;
 
+    public static final String TEXT = HttpConstants.ContentType.TEXT_PLAIN;
+
     public static final String HTML = HttpConstants.ContentType.TEXT_HTML;
 
-    public static final String TEXT = HttpConstants.ContentType.TEXT_PLAIN;
+    public static final String XHTML = HttpConstants.ContentType.TEXT_XHTML;
 
     public static final String FORM = HttpConstants.ContentType.APPLICATION_FORM_URLENCODED;
 

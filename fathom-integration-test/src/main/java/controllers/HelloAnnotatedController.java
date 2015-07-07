@@ -17,6 +17,7 @@ package controllers;
 
 import com.google.common.base.Optional;
 import fathom.metrics.Timed;
+import fathom.rest.controller.Consumes;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.GET;
@@ -26,6 +27,7 @@ public class HelloAnnotatedController extends Controller {
 
     @Timed("hello.annotated")
     @GET("/")
+    @Consumes({Consumes.HTML})
     public void hello(String name) {
         getResponse().bind("greeting", "Hello " + Optional.fromNullable(name).or("World")).render("hello");
     }

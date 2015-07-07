@@ -330,7 +330,7 @@ public class SwaggerBuilder {
         Class<? extends Controller> controller = handler.getControllerClass();
         Method method = handler.getControllerMethod();
 
-        List<String> accepts = handler.getDeclaredAccepts();
+        List<String> accepts = handler.getDeclaredConsumes();
         List<String> produces = handler.getDeclaredProduces();
 
         Operation operation = new Operation();

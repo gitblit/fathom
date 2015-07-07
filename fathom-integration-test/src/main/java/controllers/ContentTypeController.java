@@ -19,6 +19,7 @@ package controllers;
 import com.google.inject.Inject;
 import dao.CollectionsDao;
 import fathom.metrics.Metered;
+import fathom.rest.controller.Consumes;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Controller;
@@ -42,6 +43,7 @@ public class ContentTypeController extends Controller {
     private ContentTypeEngines engines;
 
     @GET("/")
+    @Consumes({Consumes.HTML})
     @Metered
     public void get() {
         getResponse()
@@ -50,6 +52,7 @@ public class ContentTypeController extends Controller {
     }
 
     @PUT("/")
+    @Consumes({Consumes.JSON})
     @Metered
     public void put(@Body List<String> desserts) {
         dao.myDesserts = desserts;

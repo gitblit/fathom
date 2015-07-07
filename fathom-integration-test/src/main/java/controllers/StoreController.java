@@ -16,6 +16,7 @@
 
 package controllers;
 
+import fathom.rest.controller.Consumes;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.DELETE;
 import fathom.rest.controller.GET;
@@ -41,6 +42,7 @@ import javax.validation.constraints.Min;
  * @author James Moger
  */
 @Path("/store")
+@Consumes(Consumes.JSON)
 @Produces({Produces.JSON, Produces.XML})
 @BasicAuth
 @ApiOperations(tag = "store", description = "Access to Petstore orders")

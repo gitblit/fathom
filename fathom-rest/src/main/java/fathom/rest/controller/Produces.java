@@ -42,6 +42,8 @@ public @interface Produces {
 
     public static final String HTML = HttpConstants.ContentType.TEXT_HTML;
 
+    public static final String XHTML = HttpConstants.ContentType.TEXT_XHTML;
+
     public static final String TEXT = HttpConstants.ContentType.TEXT_PLAIN;
 
 }

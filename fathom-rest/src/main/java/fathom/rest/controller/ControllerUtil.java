@@ -57,18 +57,18 @@ public class ControllerUtil {
         return list;
     }
 
-    public static List<String> collectAccepts(Method method) {
+    public static List<String> collectConsumes(Method method) {
         Set<String> contentTypes = new LinkedHashSet<>();
-        if (method.isAnnotationPresent(Accepts.class)) {
+        if (method.isAnnotationPresent(Consumes.class)) {
             // controller method specifies Accepts
-            Accepts accepts = method.getAnnotation(Accepts.class);
-            for (String value : accepts.value()) {
+            Consumes consumes = method.getAnnotation(Consumes.class);
+            for (String value : consumes.value()) {
                 contentTypes.add(value);
             }
-        } else if (method.getDeclaringClass().isAnnotationPresent(Accepts.class)) {
+        } else if (method.getDeclaringClass().isAnnotationPresent(Consumes.class)) {
             // controller class specifies Accepts
-            Accepts accepts = method.getDeclaringClass().getAnnotation(Accepts.class);
-            for (String value : accepts.value()) {
+            Consumes consumes = method.getDeclaringClass().getAnnotation(Consumes.class);
+            for (String value : consumes.value()) {
                 contentTypes.add(value);
             }
         }

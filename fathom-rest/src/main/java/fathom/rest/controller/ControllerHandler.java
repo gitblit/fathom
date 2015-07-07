@@ -55,6 +55,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -73,7 +74,7 @@ public class ControllerHandler implements RouteHandler<Context> {
     protected final Method method;
     protected final Messages messages;
     protected final List<RouteHandler<Context>> routeInterceptors;
-    protected final List<String> declaredAccepts;
+    protected final List<String> declaredConsumes;
     protected final List<String> declaredProduces;
     protected final Collection<Return> declaredReturns;
     protected final Set<String> contentTypeSuffixes;
@@ -102,8 +103,8 @@ public class ControllerHandler implements RouteHandler<Context> {
 
         ContentTypeEngines engines = injector.getInstance(ContentTypeEngines.class);
 
-        this.declaredAccepts = ControllerUtil.collectAccepts(method);
-        validateAccepts(engines.getContentTypes());
+        this.declaredConsumes = ControllerUtil.collectConsumes(method);
+        validateConsumes(engines.getContentTypes());
 
         this.declaredProduces = ControllerUtil.collectProduces(method);
         validateProduces(engines.getContentTypes());
@@ -123,8 +124,8 @@ public class ControllerHandler implements RouteHandler<Context> {
         return method;
     }
 
-    public List<String> getDeclaredAccepts() {
-        return declaredAccepts;
+    public List<String> getDeclaredConsumes() {
+        return declaredConsumes;
     }
 
     public List<String> getDeclaredProduces() {
@@ -138,6 +139,11 @@ public class ControllerHandler implements RouteHandler<Context> {
     @Override
     public void handle(Context context) {
         try {
+            if (!canConsume(context)) {
+                context.next();
+                return;
+            }
+
             log.trace("Processing '{}' RouteInterceptors", Util.toString(method));
             int preInterceptStatus = context.getResponse().getStatus();
             processRouteInterceptors(context);
@@ -378,25 +384,28 @@ public class ControllerHandler implements RouteHandler<Context> {
     }
 
     /**
-     * Validates that the declared accepts can actually be processed by Fathom.
+     * Validates that the declared consumes can actually be processed by Fathom.
      *
      * @param fathomContentTypes
      */
-    protected void validateAccepts(Collection<String> fathomContentTypes) {
-        Set<String> ignoreAccepts = new TreeSet<>();
-        ignoreAccepts.add(Accepts.TEXT);
-        ignoreAccepts.add(Accepts.HTML);
-        ignoreAccepts.add(Accepts.FORM);
-        ignoreAccepts.add(Accepts.MULTIPART);
+    protected void validateConsumes(Collection<String> fathomContentTypes) {
+        Set<String> ignoreConsumes = new TreeSet<>();
+        // these are handled by the TemplateEngine
+        ignoreConsumes.add(Consumes.HTML);
+        ignoreConsumes.add(Consumes.XHTML);
 
-        for (String accept : declaredAccepts) {
-            if (ignoreAccepts.contains(accept)) {
+        // these are handled by the Servlet layer
+        ignoreConsumes.add(Consumes.FORM);
+        ignoreConsumes.add(Consumes.MULTIPART);
+
+        for (String consumes : declaredConsumes) {
+            if (ignoreConsumes.contains(consumes)) {
                 continue;
             }
 
-            if (!fathomContentTypes.contains(accept)) {
+            if (!fathomContentTypes.contains(consumes)) {
                 throw new FathomException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for that type!",
-                        Util.toString(method), Accepts.class.getSimpleName(), accept);
+                        Util.toString(method), Consumes.class.getSimpleName(), consumes);
             }
         }
     }
@@ -410,6 +419,7 @@ public class ControllerHandler implements RouteHandler<Context> {
         Set<String> ignoreProduces = new TreeSet<>();
         ignoreProduces.add(Produces.TEXT);
         ignoreProduces.add(Produces.HTML);
+        ignoreProduces.add(Produces.XHTML);
 
         for (String produces : declaredProduces) {
             if (ignoreProduces.contains(produces)) {
@@ -439,6 +449,36 @@ public class ControllerHandler implements RouteHandler<Context> {
             throw new FathomException("{} returns an object but does not declare a successful @{}(code=200, onResult={}.class)",
                     Util.toString(method), Return.class.getSimpleName(), method.getReturnType().getSimpleName());
         }
+    }
+
+    /**
+     * Determines if the incoming request is sending content this route understands.
+     *
+     * @param context
+     * @return true if the route handles the request accept/content-type
+     */
+    protected boolean canConsume(Context context) {
+        Set<String> contentTypes = context.getContentTypes();
+
+        if (!declaredConsumes.isEmpty()) {
+            Set<String> types = new LinkedHashSet<>(contentTypes);
+            if (types.isEmpty()) {
+                // Request does not specify a Content-Type so add Accept type(s)
+                types.addAll(context.getAcceptTypes());
+            }
+
+            for (String type : types) {
+                if (declaredConsumes.contains(type)) {
+                    log.debug("{} consumes '{}'", Util.toString(method), type);
+                    return true;
+                }
+            }
+
+            log.debug("{} can not consume Request for '{}'", Util.toString(method), types);
+            return false;
+        }
+
+        return true;
     }
 
     protected void processRouteInterceptors(Context context) {
