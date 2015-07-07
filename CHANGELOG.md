@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Fixed
 
+- [fathom-rest] Fixed ParamExtractor NPE on optional parameters
+
 #### Changed
 
 - [fathom-archetype-standard] Switched to Pebble, while retaining Freemarker templates

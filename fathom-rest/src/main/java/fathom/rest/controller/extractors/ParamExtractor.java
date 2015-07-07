@@ -83,9 +83,11 @@ public class ParamExtractor extends DefaultObjectExtractor
         if (suffixes != null) {
             // automatically strip the suffix, if we can
             String value = pv.toString();
-            String ext = Files.getFileExtension(pv.toString());
-            if (!Strings.isNullOrEmpty(ext) && suffixes.contains(ext.toLowerCase())) {
-                pv = new ParameterValue(Files.getNameWithoutExtension(value));
+            if (value != null) {
+                String ext = Files.getFileExtension(value);
+                if (!Strings.isNullOrEmpty(ext) && suffixes.contains(ext.toLowerCase())) {
+                    pv = new ParameterValue(Files.getNameWithoutExtension(value));
+                }
             }
         }
 
