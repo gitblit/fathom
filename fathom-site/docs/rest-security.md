@@ -22,7 +22,7 @@ See [Fathom-Security](security/#configuration).
 
 ## Authenication
 
-### Basic Authentication
+### Basic Authentication (Routes)
 
 [Basic Authentication] is suitable for simple webpages and RESTful APIs.
 
@@ -48,7 +48,7 @@ public class Routes extends RoutesModule {
 }
 ```
 
-### Form Authentication
+### Form Authentication (Routes)
 
 [Form Authentication] is suitable for complex webpages rendered with a browser.  Form authentication requires maintaining a [Session].
 
@@ -131,6 +131,58 @@ public class EmployeesController extends Controller {
       getResponse().notFound().send("Failed to find employee {}!", id);
     } else {
       getResponse().ok().send(employee);
+    }
+  }
+}
+```
+
+### Controller Method Basic Authentication
+
+If you want to quickly guard a controller or controller method with HTTP BASIC authentication, annotate it with `@BasicAuth`.
+
+```java
+@Path("/employees")
+public class EmployeesController extends Controller {
+
+  @GET("/{id: [0-9]+}")  
+  @Produces({Produces.JSON, Produces.XML})  
+  @BasicAuth
+  public void viewEmployee(int id, @Auth Account account) {
+    // authorize the request
+    account.checkPermission("employee:view:" + id);
+
+    // The method parameter name "id" matches the url parameter name "id"
+    Employee employee = employeeDao.get(id);
+    if (employee == null) {
+      getResponse().notFound().send("Failed to find employee {}!", id);
+    } else {
+      getResponse().bind("employee", employee).render("view/employee");
+    }
+  }
+}
+```
+
+### Controller Method Form Authentication
+
+If you want to quickly guard a controller or controller method with HTTP FORM authentication, annotate it with `@FormAuth`.
+
+```java
+@Path("/employees")
+public class EmployeesController extends Controller {
+
+  @GET("/{id: [0-9]+}")  
+  @Produces({Produces.JSON, Produces.XML})  
+  @FormAuth
+  public void viewEmployee(int id, @Auth Account account) {
+    // authorize the request
+    account.checkPermission("employee:view:" + id);
+
+    // The method parameter name "id" matches the url parameter name "id"
+    Employee employee = employeeDao.get(id);
+    if (employee == null) {
+      getResponse().notFound().send("Failed to find employee {}!", id);
+    } else {
+      getResponse().bind("employee", employee).render("view/employee");
     }
   }
 }
