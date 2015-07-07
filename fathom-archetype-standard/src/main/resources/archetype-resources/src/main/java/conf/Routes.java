@@ -7,6 +7,7 @@ import fathom.conf.Fathom;
 import fathom.exception.FathomException;
 import fathom.realm.Account;
 import fathom.rest.RoutesModule;
+import fathom.rest.security.AuthConstants;
 import fathom.rest.security.CSRFHandler;
 import fathom.rest.security.FormAuthenticationGuard;
 import fathom.rest.security.FormAuthenticationHandler;
@@ -57,9 +58,9 @@ public class Routes extends RoutesModule {
             ctx.setLocal("appVersion", getSettings().getApplicationVersion());
             ctx.setLocal("bootDate", ftm.getBootDate());
 
-            Account account = ctx.getSession("account");
+            Account account = ctx.getSession(AuthConstants.ACCOUNT_ATTRIBUTE);
             if (account != null) {
-                ctx.setLocal("account", account);
+                ctx.setLocal(AuthConstants.ACCOUNT_ATTRIBUTE, account);
             }
 
             ctx.next();
