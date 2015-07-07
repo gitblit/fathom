@@ -192,6 +192,12 @@ public abstract class RoutesModule {
         routeRegistrations.addAll(registrar.getRouteRegistrations());
     }
 
+    protected void addAnnotatedControllers(Package... packages) {
+        ControllerRegistrar registrar = new ControllerRegistrar(injector, settings);
+        registrar.init(packages);
+        routeRegistrations.addAll(registrar.getRouteRegistrations());
+    }
+
     protected RouteRegistration ALL(String uriPattern, RouteHandler<Context> handler) {
         return registerRoute(uriPattern, HttpMethod.ALL, handler);
     }

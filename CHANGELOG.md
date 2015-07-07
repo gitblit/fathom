@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - [fathom-rest] Allow declaration of @Accepts separately from @Produces
 - [fathom-rest] Add RouteInterceptor concept for controller routes
+- [fathom-rest] Add `addAnnotatedControllers(Package... packages)` method
 
 #### Removed
 

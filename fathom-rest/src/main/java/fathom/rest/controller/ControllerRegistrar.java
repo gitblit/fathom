@@ -55,6 +55,14 @@ public class ControllerRegistrar extends ControllerScanner {
         this.routeRegistrations = new ArrayList<>();
     }
 
+    public final void init(Package... packages) {
+        List<String> names = new ArrayList<>();
+        for (Package pkg : packages) {
+            names.add(pkg.getName());
+        }
+        init(names.toArray(new String[names.size()]));
+    }
+
     /**
      * Scans, identifies, and registers annotated controller methods for the
      * current runtime settings.
