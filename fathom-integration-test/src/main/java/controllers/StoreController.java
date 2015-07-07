@@ -26,6 +26,7 @@ import fathom.rest.controller.Produces;
 import fathom.rest.controller.Return;
 import fathom.rest.controller.exceptions.RangeException;
 import fathom.rest.controller.exceptions.ValidationException;
+import fathom.rest.controller.interceptors.BasicAuth;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.ApiNotes;
 import fathom.rest.swagger.ApiOperations;
@@ -41,6 +42,7 @@ import javax.validation.constraints.Min;
  */
 @Path("/store")
 @Produces({Produces.JSON, Produces.XML})
+@BasicAuth
 @ApiOperations(tag = "store", description = "Access to Petstore orders")
 public class StoreController extends ApiV2 {
 

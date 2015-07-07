@@ -14,9 +14,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Added
 
-- [fathom-rest] Allow declaration of @Accepts separately from @Produces
+- [fathom-rest] Allow declaration of `@Accepts` separately from `@Produces`
 - [fathom-rest] Add RouteInterceptor concept for controller routes
+- [fathom-rest-security] Add `@BasicAuth` and `@FormAuth` RouteInterceptors
 - [fathom-rest] Add `addAnnotatedControllers(Package... packages)` method
+- [fathom-rest-swagger] Add support for BASIC authentication
 
 #### Removed
 

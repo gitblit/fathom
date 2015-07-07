@@ -37,6 +37,7 @@ import fathom.rest.controller.Required;
 import fathom.rest.controller.Return;
 import fathom.rest.controller.ReturnHeader;
 import fathom.rest.controller.Session;
+import fathom.rest.controller.interceptors.BasicAuth;
 import fathom.rest.security.aop.RequireToken;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
@@ -54,6 +55,7 @@ import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
 import io.swagger.models.auth.ApiKeyAuthDefinition;
+import io.swagger.models.auth.BasicAuthDefinition;
 import io.swagger.models.auth.In;
 import io.swagger.models.parameters.AbstractSerializableParameter;
 import io.swagger.models.parameters.BodyParameter;
@@ -644,6 +646,16 @@ public class SwaggerBuilder {
             }
 
             operation.addSecurity(apiKeyName, Collections.emptyList());
+        }
+
+        BasicAuth basicAuth = ClassUtil.getAnnotation(method, BasicAuth.class);
+        if (basicAuth != null) {
+            if (swagger.getSecurityDefinitions() == null || !swagger.getSecurityDefinitions().containsKey("basic")) {
+                BasicAuthDefinition security = new BasicAuthDefinition();
+                swagger.addSecurityDefinition("basic", security);
+            }
+
+            operation.addSecurity("basic", Collections.emptyList());
         }
     }
 
