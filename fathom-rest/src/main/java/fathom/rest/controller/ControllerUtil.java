@@ -37,6 +37,24 @@ import java.util.TreeMap;
  */
 public class ControllerUtil {
 
+    public static List<String> collectAccepts(Method method) {
+        Set<String> contentTypes = new LinkedHashSet<>();
+        if (method.isAnnotationPresent(Accepts.class)) {
+            // controller method specifies Accepts
+            Accepts accepts = method.getAnnotation(Accepts.class);
+            for (String value : accepts.value()) {
+                contentTypes.add(value);
+            }
+        } else if (method.getDeclaringClass().isAnnotationPresent(Accepts.class)) {
+            // controller class specifies Accepts
+            Accepts accepts = method.getDeclaringClass().getAnnotation(Accepts.class);
+            for (String value : accepts.value()) {
+                contentTypes.add(value);
+            }
+        }
+        return new ArrayList<>(contentTypes);
+    }
+
     public static List<String> collectProduces(Method method) {
         Set<String> contentTypes = new LinkedHashSet<>();
         if (method.isAnnotationPresent(Produces.class)) {

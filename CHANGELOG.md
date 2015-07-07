@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 #### Added
 
+- [fathom-rest] Allow declaration of @Accepts separately from @Produces
+
 #### Removed
 
 ### [0.6.0] - 2015-07-02

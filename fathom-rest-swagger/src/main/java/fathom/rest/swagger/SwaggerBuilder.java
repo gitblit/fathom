@@ -328,6 +328,7 @@ public class SwaggerBuilder {
         Class<? extends Controller> controller = handler.getControllerClass();
         Method method = handler.getControllerMethod();
 
+        List<String> accepts = handler.getDeclaredAccepts();
         List<String> produces = handler.getDeclaredProduces();
 
         Operation operation = new Operation();
@@ -356,7 +357,7 @@ public class SwaggerBuilder {
         }
 
         operation.setOperationId(Util.toString(method));
-        operation.setConsumes(produces);
+        operation.setConsumes(accepts.isEmpty() ? produces : accepts);
         operation.setProduces(produces);
         operation.setDeprecated(method.isAnnotationPresent(Deprecated.class)
                 || controller.isAnnotationPresent(Deprecated.class));
