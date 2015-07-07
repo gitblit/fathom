@@ -16,9 +16,12 @@
 package fathom.rest.controller;
 
 import com.google.common.base.Strings;
+import fathom.rest.Context;
 import fathom.rest.controller.extractors.ArgumentExtractor;
 import fathom.rest.controller.extractors.ExtractWith;
 import fathom.rest.controller.extractors.ParamExtractor;
+import fathom.rest.controller.interceptors.RouteInterceptor;
+import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -36,6 +39,23 @@ import java.util.TreeMap;
  * @author James Moger
  */
 public class ControllerUtil {
+
+    public static List<Class<? extends RouteHandler<Context>>> collectRouteInterceptors(Method method) {
+        List<Class<? extends RouteHandler<Context>>> list = new ArrayList<>();
+        for (Annotation annotation : method.getDeclaredAnnotations()) {
+            if (annotation.annotationType().isAnnotationPresent(RouteInterceptor.class)) {
+                RouteInterceptor routeInterceptor = annotation.annotationType().getAnnotation(RouteInterceptor.class);
+                list.add(routeInterceptor.value());
+            }
+        }
+        for (Annotation annotation : method.getDeclaringClass().getDeclaredAnnotations()) {
+            if (annotation.annotationType().isAnnotationPresent(RouteInterceptor.class)) {
+                RouteInterceptor routeInterceptor = annotation.annotationType().getAnnotation(RouteInterceptor.class);
+                list.add(routeInterceptor.value());
+            }
+        }
+        return list;
+    }
 
     public static List<String> collectAccepts(Method method) {
         Set<String> contentTypes = new LinkedHashSet<>();

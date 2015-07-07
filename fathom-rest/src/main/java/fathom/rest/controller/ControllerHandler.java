@@ -31,6 +31,7 @@ import fathom.rest.controller.extractors.FileItemExtractor;
 import fathom.rest.controller.extractors.NamedExtractor;
 import fathom.rest.controller.extractors.SuffixExtractor;
 import fathom.rest.controller.extractors.TypedExtractor;
+import fathom.rest.controller.interceptors.RouteInterceptor;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
 import org.slf4j.Logger;
@@ -39,7 +40,10 @@ import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.FileItem;
 import ro.pippo.core.HttpConstants;
 import ro.pippo.core.Messages;
+import ro.pippo.core.route.Route;
 import ro.pippo.core.route.RouteHandler;
+import ro.pippo.core.route.RouteMatch;
+import ro.pippo.core.util.StringUtils;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -48,6 +52,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -67,6 +72,7 @@ public class ControllerHandler implements RouteHandler<Context> {
     protected final Provider<? extends Controller> controllerProvider;
     protected final Method method;
     protected final Messages messages;
+    protected final List<RouteHandler<Context>> routeInterceptors;
     protected final List<String> declaredAccepts;
     protected final List<String> declaredProduces;
     protected final Collection<Return> declaredReturns;
@@ -87,6 +93,12 @@ public class ControllerHandler implements RouteHandler<Context> {
 
         Preconditions.checkNotNull(method, "Failed to find method '%s'", Util.toString(controllerClass, methodName));
         log.trace("Obtained method for '{}'", Util.toString(method));
+
+        this.routeInterceptors = new ArrayList<>();
+        for (Class<? extends RouteHandler<Context>> handlerClass : ControllerUtil.collectRouteInterceptors(method)) {
+            RouteHandler<Context> handler = injector.getInstance(handlerClass);
+            this.routeInterceptors.add(handler);
+        }
 
         ContentTypeEngines engines = injector.getInstance(ContentTypeEngines.class);
 
@@ -125,8 +137,22 @@ public class ControllerHandler implements RouteHandler<Context> {
 
     @Override
     public void handle(Context context) {
-
         try {
+            log.trace("Processing '{}' RouteInterceptors", Util.toString(method));
+            int preInterceptStatus = context.getResponse().getStatus();
+            processRouteInterceptors(context);
+            int postInterceptStatus = context.getResponse().getStatus();
+            if (context.getResponse().isCommitted()) {
+                log.debug("Response committed by RouteInterceptor");
+                context.next();
+                return;
+            } else if (preInterceptStatus != postInterceptStatus && postInterceptStatus >= 300) {
+                log.debug("RouteInterceptor set status code to {}, committing response",
+                        context.getResponse().getStatus());
+                context.getResponse().commit();
+                context.next();
+                return;
+            }
 
             log.trace("Preparing '{}' arguments from request", Util.toString(method));
             Object[] args = prepareMethodArgs(context);
@@ -248,6 +274,7 @@ public class ControllerHandler implements RouteHandler<Context> {
 
     /**
      * Configures the content-type suffixes
+     *
      * @param engines
      * @return acceptable content-type suffixes
      */
@@ -412,6 +439,22 @@ public class ControllerHandler implements RouteHandler<Context> {
             throw new FathomException("{} returns an object but does not declare a successful @{}(code=200, onResult={}.class)",
                     Util.toString(method), Return.class.getSimpleName(), method.getReturnType().getSimpleName());
         }
+    }
+
+    protected void processRouteInterceptors(Context context) {
+        if (routeInterceptors.isEmpty()) {
+            return;
+        }
+        List<RouteMatch> chain = new ArrayList<>();
+        for (RouteHandler<Context> interceptor : routeInterceptors) {
+            Route route = new Route(context.getRequestUri(), context.getRequestMethod(), interceptor);
+            route.setName(StringUtils.format("{}<{}>", RouteInterceptor.class.getSimpleName(),
+                    route.getRouteHandler().getClass().getSimpleName()));
+            RouteMatch match = new RouteMatch(route, null);
+            chain.add(match);
+        }
+        Context subContext = new Context(context, chain);
+        subContext.next();
     }
 
     protected Object[] prepareMethodArgs(Context context) {

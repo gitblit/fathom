@@ -26,6 +26,8 @@ import fathom.rest.controller.GET;
 import fathom.rest.controller.Path;
 import fathom.rest.controller.Produces;
 import fathom.rest.controller.Return;
+import fathom.rest.controller.interceptors.BasicAuth;
+import fathom.rest.controller.interceptors.FormAuth;
 import models.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +71,30 @@ public class ApiController extends ApiV1 {
     @Return(code = 200, description = "Item retrieved", onResult = Item.class)
     @Return(code = 404, description = "Item does not exist")
     public Item get(int id, @Auth Account account) {
+
+        log.debug("GET item #{} for '{}'", id, account);
+        Item item = dao.get(id);
+        return item;
+    }
+
+    @GET("/basic/{id: [0-9]+}")
+    @Metered
+    @Return(code = 200, description = "Item retrieved", onResult = Item.class)
+    @Return(code = 404, description = "Item does not exist")
+    @BasicAuth
+    public Item getBasic(int id, @Auth Account account) {
+
+        log.debug("GET item #{} for '{}'", id, account);
+        Item item = dao.get(id);
+        return item;
+    }
+
+    @GET("/form/{id: [0-9]+}")
+    @Metered
+    @Return(code = 200, description = "Item retrieved", onResult = Item.class)
+    @Return(code = 404, description = "Item does not exist")
+    @FormAuth
+    public Item getForm(int id, @Auth Account account) {
 
         log.debug("GET item #{} for '{}'", id, account);
         Item item = dao.get(id);

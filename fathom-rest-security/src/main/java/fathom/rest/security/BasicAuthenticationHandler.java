@@ -18,6 +18,7 @@ package fathom.rest.security;
 
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import fathom.conf.Settings;
 import fathom.realm.Account;
 import fathom.rest.Context;
@@ -32,6 +33,7 @@ import java.util.Base64;
  *
  * @author James Moger
  */
+@Singleton
 public final class BasicAuthenticationHandler extends StandardCredentialsHandler implements RouteHandler<Context> {
 
     private final boolean createSessions;

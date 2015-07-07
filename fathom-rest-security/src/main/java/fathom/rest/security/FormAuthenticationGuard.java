@@ -18,6 +18,7 @@ package fathom.rest.security;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import fathom.conf.Settings;
 import fathom.rest.Context;
 import ro.pippo.core.route.RouteHandler;
 
@@ -25,7 +26,7 @@ import ro.pippo.core.route.RouteHandler;
  * A guard that requires an authenticated session and redirects
  * to a form login url if the session is unauthenticated.
  * <p>
- * This is used in conjunction with {@see FormAuthcHandler}.
+ * This is used in conjunction with {@see FormAuthenticationHandler}.
  * </p>
  *
  * @author James Moger
@@ -33,11 +34,15 @@ import ro.pippo.core.route.RouteHandler;
 @Singleton
 public class FormAuthenticationGuard implements RouteHandler<Context> {
 
-    protected final String loginUrl;
+    protected final String loginPath;
 
     @Inject
-    public FormAuthenticationGuard(String loginUrl) {
-        this.loginUrl = loginUrl;
+    public FormAuthenticationGuard(Settings settings) {
+        this.loginPath = settings.getString("fathom.formLoginPath", "/login");
+    }
+
+    public FormAuthenticationGuard(String loginPath) {
+        this.loginPath = loginPath;
     }
 
     @Override
@@ -47,7 +52,7 @@ public class FormAuthenticationGuard implements RouteHandler<Context> {
             // unauthenticated session, save request & redirect to login url
             String requestUri = context.getRequest().getApplicationUriWithQuery();
             context.setSession(AuthConstants.DESTINATION_ATTRIBUTE, requestUri);
-            context.redirect(loginUrl);
+            context.redirect(loginPath);
         } else {
             // session already authenticated
             context.next();

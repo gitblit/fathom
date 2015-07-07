@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fathom.rest.controller.interceptors;
 
-package fathom.rest;
-
-import ro.pippo.core.Application;
-import ro.pippo.core.Request;
-import ro.pippo.core.Response;
-import ro.pippo.core.route.DefaultRouteContext;
+import fathom.rest.Context;
 import ro.pippo.core.route.RouteHandler;
-import ro.pippo.core.route.RouteMatch;
 
-import java.util.List;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author James Moger
  */
-public class Context extends DefaultRouteContext {
+@Target(ElementType.ANNOTATION_TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface RouteInterceptor {
 
-    public Context(Application application, Request request, Response response, List<RouteMatch> routeMatches) {
-        super(application, request, response, routeMatches);
-    }
-
-    public Context(Context context, List<RouteMatch> routeMatches) {
-        this(context.getApplication(), context.getRequest(), context.getResponse(), routeMatches);
-    }
-
+    Class<? extends RouteHandler<Context>> value();
 }
