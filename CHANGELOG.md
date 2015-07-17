@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
 
 - [fathom-archetype-standard] Switched to Pebble, while retaining Freemarker templates
+- [fathom-core] Update to Undertow 1.2.9
+- [fathom-security-jdbc] Update to HikariCP 2.3.9
 
 #### Added
 
