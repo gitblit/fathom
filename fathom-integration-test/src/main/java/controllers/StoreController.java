@@ -27,7 +27,7 @@ import fathom.rest.controller.Produces;
 import fathom.rest.controller.Return;
 import fathom.rest.controller.exceptions.RangeException;
 import fathom.rest.controller.exceptions.ValidationException;
-import fathom.rest.controller.interceptors.BasicAuth;
+import fathom.rest.controller.BasicAuth;
 import fathom.rest.swagger.Desc;
 import fathom.rest.swagger.ApiNotes;
 import fathom.rest.swagger.ApiOperations;

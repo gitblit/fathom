@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fathom.rest.controller.interceptors;
+package fathom.rest.controller;
 
 import fathom.rest.security.BasicAuthenticationHandler;
 

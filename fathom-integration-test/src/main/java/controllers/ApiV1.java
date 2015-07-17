@@ -16,11 +16,15 @@
 
 package controllers;
 
+import fathom.rest.controller.ContentTypeBySuffix;
 import fathom.rest.controller.Path;
+import fathom.rest.controller.Produces;
 
 /**
  * @author James Moger
  */
 @Path("/v1")
+@Produces({Produces.JSON, Produces.XML})
+@ContentTypeBySuffix
 public abstract class ApiV1 extends Api {
 }

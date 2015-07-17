@@ -21,13 +21,11 @@ import dao.ItemDao;
 import fathom.metrics.Metered;
 import fathom.realm.Account;
 import fathom.rest.controller.Auth;
-import fathom.rest.controller.ContentTypeBySuffix;
 import fathom.rest.controller.GET;
 import fathom.rest.controller.Path;
-import fathom.rest.controller.Produces;
 import fathom.rest.controller.Return;
-import fathom.rest.controller.interceptors.BasicAuth;
-import fathom.rest.controller.interceptors.FormAuth;
+import fathom.rest.controller.BasicAuth;
+import fathom.rest.controller.FormAuth;
 import models.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +34,6 @@ import org.slf4j.LoggerFactory;
  * To be discoverable, a controller must be annotated with {@code @Path}.
  */
 @Path
-@Produces({Produces.JSON, Produces.XML})
-@ContentTypeBySuffix
 public class ApiController extends ApiV1 {
 
     private final Logger log = LoggerFactory.getLogger(ApiController.class);

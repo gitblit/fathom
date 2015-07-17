@@ -37,7 +37,7 @@ import fathom.rest.controller.Required;
 import fathom.rest.controller.Return;
 import fathom.rest.controller.ReturnHeader;
 import fathom.rest.controller.Session;
-import fathom.rest.controller.interceptors.BasicAuth;
+import fathom.rest.controller.BasicAuth;
 import fathom.rest.security.aop.RequireToken;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
@@ -279,7 +279,7 @@ public class SwaggerBuilder {
 
         List<String> produces = handler.getDeclaredProduces();
         if (produces.isEmpty()) {
-            log.debug("Skip {} {}, {} does not generate RESTful API content",
+            log.debug("Skip {} {}, {} does not declare @Produces",
                     route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()));
             return false;
         }
@@ -288,8 +288,9 @@ public class SwaggerBuilder {
         produces.remove(Produces.TEXT);
 
         if (produces.isEmpty()) {
-            log.debug("Skip {} {}, {} does not generate RESTful API content",
-                    route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()));
+            log.debug("Skip {} {}, {} does not generate RESTful API content '{}",
+                    route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()),
+                    handler.getDeclaredProduces());
             return false;
         }
 
@@ -453,7 +454,7 @@ public class SwaggerBuilder {
      * @param method
      */
     protected void registerResponses(Swagger swagger, Operation operation, Method method) {
-        for (Return aReturn : ControllerUtil.collectReturns(method)) {
+        for (Return aReturn : ControllerUtil.getReturns(method)) {
             registerResponse(swagger, operation, aReturn);
         }
     }

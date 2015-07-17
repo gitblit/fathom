@@ -81,7 +81,7 @@ public class Context extends DefaultRouteContext {
                 type = type.substring(0, type.indexOf(';'));
             }
 
-            set.add(type);
+            set.add(type.trim().toLowerCase());
         }
 
         return set;

@@ -118,6 +118,7 @@ class RestService implements Service {
             ctx.setLocal("message", statusCodeException.getMessage());
             application.getErrorHandler().handle(statusCodeException.getStatusCode(), ctx);
         });
+
     }
 
     private void logEngines() {

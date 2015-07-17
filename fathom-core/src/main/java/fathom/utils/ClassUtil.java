@@ -179,7 +179,7 @@ public class ClassUtil {
     public static <T extends Annotation> T getAnnotation(Method method, Class<T> annotationClass) {
         T t = method.getAnnotation(annotationClass);
         if (t == null) {
-            t = method.getDeclaringClass().getAnnotation(annotationClass);
+            t = getAnnotation(method.getDeclaringClass(), annotationClass);
         }
         return t;
     }
@@ -191,6 +191,47 @@ public class ClassUtil {
             }
         }
         return null;
+    }
+
+    public static <T extends Annotation> T getAnnotation(Class<?> objectClass, Class<T> annotationClass) {
+        if (objectClass == null || Object.class == objectClass) {
+            return null;
+        }
+
+        T annotation = objectClass.getAnnotation(annotationClass);
+        if (annotation != null) {
+            return annotation;
+        }
+
+        return getAnnotation(objectClass.getSuperclass(), annotationClass);
+    }
+
+    public static <T extends Annotation> List<T> collectNestedAnnotation(Method method, Class<T> annotationClass) {
+        List<T> list = new ArrayList<>();
+        for (Annotation annotation : method.getDeclaredAnnotations()) {
+            if (annotation.annotationType().isAnnotationPresent(annotationClass)) {
+                T nestedAnnotation = annotation.annotationType().getAnnotation(annotationClass);
+                list.add(nestedAnnotation);
+            }
+        }
+        list.addAll(collectNestedAnnotation(method.getDeclaringClass(), annotationClass));
+        return list;
+    }
+
+    public static <T extends Annotation> List<T> collectNestedAnnotation(Class<?> objectClass, Class<T> annotationClass) {
+        if (objectClass == null || objectClass == Object.class) {
+            return Collections.emptyList();
+        }
+
+        List<T> list = new ArrayList<>();
+        for (Annotation annotation : objectClass.getDeclaredAnnotations()) {
+            if (annotation.annotationType().isAnnotationPresent(annotationClass)) {
+                T nestedAnnotation = annotation.annotationType().getAnnotation(annotationClass);
+                list.add(nestedAnnotation);
+            }
+        }
+        list.addAll(collectNestedAnnotation(objectClass.getSuperclass(), annotationClass));
+        return list;
     }
 
     public static <T> T newInstance(Class<T> classOfT) {

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fathom.rest.controller.interceptors;
+package fathom.rest.controller;
 
-import fathom.rest.security.CSRFHandler;
+import fathom.rest.security.FormAuthenticationGuard;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -24,13 +24,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Intercepts routes and ensures valid CSRF tokens.
+ * Intercepts routes and ensures valid authentication using HTTP FORM.
  *
  * @author James Moger
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-@RouteInterceptor(CSRFHandler.class)
-public @interface CSRF {
+@RouteInterceptor(FormAuthenticationGuard.class)
+public @interface FormAuth {
 }

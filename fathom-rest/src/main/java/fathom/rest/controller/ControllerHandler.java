@@ -31,7 +31,6 @@ import fathom.rest.controller.extractors.FileItemExtractor;
 import fathom.rest.controller.extractors.NamedExtractor;
 import fathom.rest.controller.extractors.SuffixExtractor;
 import fathom.rest.controller.extractors.TypedExtractor;
-import fathom.rest.controller.interceptors.RouteInterceptor;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
 import org.slf4j.Logger;
@@ -78,6 +77,7 @@ public class ControllerHandler implements RouteHandler<Context> {
     protected final List<String> declaredProduces;
     protected final Collection<Return> declaredReturns;
     protected final Set<String> contentTypeSuffixes;
+    protected final boolean isNoCache;
     protected ArgumentExtractor[] extractors;
     protected String[] patterns;
 
@@ -103,17 +103,19 @@ public class ControllerHandler implements RouteHandler<Context> {
 
         ContentTypeEngines engines = injector.getInstance(ContentTypeEngines.class);
 
-        this.declaredConsumes = ControllerUtil.collectConsumes(method);
+        this.declaredConsumes = ControllerUtil.getConsumes(method);
         validateConsumes(engines.getContentTypes());
 
-        this.declaredProduces = ControllerUtil.collectProduces(method);
+        this.declaredProduces = ControllerUtil.getProduces(method);
         validateProduces(engines.getContentTypes());
 
-        this.declaredReturns = ControllerUtil.collectReturns(method);
+        this.declaredReturns = ControllerUtil.getReturns(method);
         validateDeclaredReturns();
 
         this.contentTypeSuffixes = configureContentTypeSuffixes(engines);
         configureMethodArgs(injector);
+
+        this.isNoCache = ClassUtil.getAnnotation(method, NoCache.class) != null;
     }
 
     public Class<? extends Controller> getControllerClass() {
@@ -465,6 +467,12 @@ public class ControllerHandler implements RouteHandler<Context> {
             if (types.isEmpty()) {
                 // Request does not specify a Content-Type so add Accept type(s)
                 types.addAll(context.getAcceptTypes());
+
+                // Request can handle any type, so consume the Request
+                if (types.contains("*") || types.contains("*/*")) {
+                    log.debug("{} consumes '{}'", Util.toString(method), "*/*");
+                    return true;
+                }
             }
 
             for (String type : types) {
@@ -585,7 +593,7 @@ public class ControllerHandler implements RouteHandler<Context> {
      * @param context
      */
     protected void specifyCacheControls(Context context) {
-        if (ClassUtil.getAnnotation(method, NoCache.class) != null) {
+        if (isNoCache) {
             log.debug("NoCache detected, response may not be cached");
             context.getResponse().noCache();
         }
@@ -638,9 +646,9 @@ public class ControllerHandler implements RouteHandler<Context> {
             }
         }
 
-        if (e instanceof FathomException) {
+        if (e instanceof RuntimeException) {
             // pass-through the thrown exception
-            throw (FathomException) e;
+            throw (RuntimeException) e;
         }
 
         // undeclared exception, wrap & throw

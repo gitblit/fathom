@@ -20,7 +20,7 @@ import fathom.rest.Context;
 import fathom.rest.controller.extractors.ArgumentExtractor;
 import fathom.rest.controller.extractors.ExtractWith;
 import fathom.rest.controller.extractors.ParamExtractor;
-import fathom.rest.controller.interceptors.RouteInterceptor;
+import fathom.utils.ClassUtil;
 import ro.pippo.core.route.RouteHandler;
 import ro.pippo.core.util.StringUtils;
 
@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * @author James Moger
@@ -41,61 +42,38 @@ import java.util.TreeMap;
 public class ControllerUtil {
 
     public static List<Class<? extends RouteHandler<Context>>> collectRouteInterceptors(Method method) {
-        List<Class<? extends RouteHandler<Context>>> list = new ArrayList<>();
-        for (Annotation annotation : method.getDeclaredAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(RouteInterceptor.class)) {
-                RouteInterceptor routeInterceptor = annotation.annotationType().getAnnotation(RouteInterceptor.class);
-                list.add(routeInterceptor.value());
-            }
-        }
-        for (Annotation annotation : method.getDeclaringClass().getDeclaredAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(RouteInterceptor.class)) {
-                RouteInterceptor routeInterceptor = annotation.annotationType().getAnnotation(RouteInterceptor.class);
-                list.add(routeInterceptor.value());
-            }
-        }
-        return list;
+        List<Class<? extends RouteHandler<Context>>> classList =
+                ClassUtil.collectNestedAnnotation(method, RouteInterceptor.class).stream()
+                        .map(RouteInterceptor::value)
+                        .collect(Collectors.toList());
+        return classList;
     }
 
-    public static List<String> collectConsumes(Method method) {
-        Set<String> contentTypes = new LinkedHashSet<>();
-        if (method.isAnnotationPresent(Consumes.class)) {
-            // controller method specifies Accepts
-            Consumes consumes = method.getAnnotation(Consumes.class);
+    public static List<String> getConsumes(Method method) {
+        Set<String> types = new LinkedHashSet<>();
+        Consumes consumes = ClassUtil.getAnnotation(method, Consumes.class);
+        if (consumes != null) {
             for (String value : consumes.value()) {
-                contentTypes.add(value);
+                types.add(value.trim());
             }
-        } else if (method.getDeclaringClass().isAnnotationPresent(Consumes.class)) {
-            // controller class specifies Accepts
-            Consumes consumes = method.getDeclaringClass().getAnnotation(Consumes.class);
-            for (String value : consumes.value()) {
-                contentTypes.add(value);
+        }
+        return new ArrayList<>(types);
+    }
+
+    public static List<String> getProduces(Method method) {
+        Set<String> contentTypes = new LinkedHashSet<>();
+        Produces produces = ClassUtil.getAnnotation(method, Produces.class);
+        if (produces != null) {
+            for (String value : produces.value()) {
+                contentTypes.add(value.trim());
             }
         }
         return new ArrayList<>(contentTypes);
     }
 
-    public static List<String> collectProduces(Method method) {
-        Set<String> contentTypes = new LinkedHashSet<>();
-        if (method.isAnnotationPresent(Produces.class)) {
-            // controller method specifies Produces
-            Produces produces = method.getAnnotation(Produces.class);
-            for (String value : produces.value()) {
-                contentTypes.add(value);
-            }
-        } else if (method.getDeclaringClass().isAnnotationPresent(Produces.class)) {
-            // controller class specifies Produces
-            Produces produces = method.getDeclaringClass().getAnnotation(Produces.class);
-            for (String value : produces.value()) {
-                contentTypes.add(value);
-            }
-        }
-        return new ArrayList<>(contentTypes);
-    }
-
-    public static Collection<String> collectSuffixes(Method method) {
+    public static Collection<String> getSuffixes(Method method) {
         Set<String> suffixes = new LinkedHashSet<>();
-        for (String produces : collectProduces(method)) {
+        for (String produces : getProduces(method)) {
             int i = produces.lastIndexOf('/') + 1;
             String type = StringUtils.removeStart(produces.substring(i).toLowerCase(), "x-");
             suffixes.add(type);
@@ -103,7 +81,7 @@ public class ControllerUtil {
         return suffixes;
     }
 
-    public static Collection<Return> collectReturns(Method method) {
+    public static Collection<Return> getReturns(Method method) {
         Map<Integer, Return> returns = new TreeMap<>();
         if (method.getDeclaringClass().isAnnotationPresent(Returns.class)) {
             for (Return aReturn : method.getDeclaringClass().getAnnotation(Returns.class).value()) {

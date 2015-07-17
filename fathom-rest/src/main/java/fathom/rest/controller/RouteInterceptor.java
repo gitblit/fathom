@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fathom.rest.controller.interceptors;
+package fathom.rest.controller;
 
 import fathom.rest.Context;
 import ro.pippo.core.route.RouteHandler;
@@ -31,6 +31,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface RouteInterceptor {
-
     Class<? extends RouteHandler<Context>> value();
 }

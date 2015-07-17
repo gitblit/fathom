@@ -169,7 +169,7 @@ public class ControllerRegistrar extends ControllerScanner {
         // specify optional or required content-type suffixes
         ContentTypeBySuffix bySuffix = ClassUtil.getAnnotation(method, ContentTypeBySuffix.class);
         if (bySuffix != null) {
-            Collection<String> suffixes = ControllerUtil.collectSuffixes(method);
+            Collection<String> suffixes = ControllerUtil.getSuffixes(method);
             if (bySuffix.required()) {
                 registration.requireContentTypeSuffixes(suffixes);
             } else {
