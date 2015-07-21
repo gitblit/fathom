@@ -96,9 +96,9 @@ public class Routes extends RoutesModule {
         }).named("root page");
 
         /*
-         * Discover and add annotated controllers
+         * Discover and add controllers
          */
-        addAnnotatedControllers();
+        addControllers();
 
         /*
          * Add some ignore path definitions

@@ -238,7 +238,7 @@ public class Routes extends RoutesModule {
         /*
          * Discover and add annotated controllers
          */
-        addAnnotatedControllers();
+        addControllers();
 
         /*
          * Add some ignore path definitions

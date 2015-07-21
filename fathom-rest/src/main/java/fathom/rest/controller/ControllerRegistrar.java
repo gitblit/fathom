@@ -79,10 +79,24 @@ public class ControllerRegistrar extends ControllerScanner {
 
         log.debug("Found {} controller classes in {} package(s)", classes.size(), packageNames.length);
 
+        init(classes);
+    }
+
+    /**
+     * Register all methods in the specified controller classes.
+     *
+     * @param controllers
+     */
+    public final void init(Class<? extends Controller>... controllers) {
+        List<Class<?>> classes = Arrays.asList(controllers);
+        init(classes);
+    }
+
+    private final void init(Collection<Class<?>> classes) {
         Map<Method, Class<? extends Annotation>> discoveredMethods = discoverMethods(classes);
         if (discoveredMethods.isEmpty()) {
             // if we are using the registrar we expect to discover controllers!
-            log.warn("No annotated methods found in package(s) '{}'", Arrays.toString(packageNames));
+            log.warn("No annotated controller methods found in classes(s) '{}'", classes);
             return;
         }
 
@@ -90,8 +104,7 @@ public class ControllerRegistrar extends ControllerScanner {
 
         registerControllerMethods(discoveredMethods);
 
-        log.debug("Added {} annotated routes from {}", routeRegistrations.size(), packageNames);
-
+        log.debug("Added {} annotated routes from '{}'", routeRegistrations.size(), classes);
     }
 
     /**

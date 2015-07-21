@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * @author James Moger
  */
 @Documented
-@Target(ElementType.METHOD)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Order {
     int value();

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -104,34 +103,30 @@ public abstract class ControllerScanner {
      */
     protected Collection<Method> sortMethods(Collection<Method> methods) {
         List<Method> list = new ArrayList<>(methods);
-        Collections.sort(list, new Comparator<Method>() {
+        Collections.sort(list, (m1, m2) -> {
+            int o1 = Integer.MAX_VALUE;
+            Order order1 = ClassUtil.getAnnotation(m1, Order.class);
+            if (order1 != null) {
+                o1 = order1.value();
+            }
 
-            @Override
-            public int compare(Method m1, Method m2) {
-                int o1 = Integer.MAX_VALUE;
-                if (m1.isAnnotationPresent(Order.class)) {
-                    Order order = m1.getAnnotation(Order.class);
-                    o1 = order.value();
-                }
+            int o2 = Integer.MAX_VALUE;
+            Order order2 = ClassUtil.getAnnotation(m2, Order.class);
+            if (order2 != null) {
+                o2 = order2.value();
+            }
 
-                int o2 = Integer.MAX_VALUE;
-                if (m2.isAnnotationPresent(Order.class)) {
-                    Order order = m2.getAnnotation(Order.class);
-                    o2 = order.value();
-                }
+            if (o1 == o2) {
+                // same or unsorted, compare controller+method
+                String s1 = Util.toString(m1);
+                String s2 = Util.toString(m2);
+                return s1.compareTo(s2);
+            }
 
-                if (o1 == o2) {
-                    // same or unsorted, compare controller+method
-                    String s1 = Util.toString(m1);
-                    String s2 = Util.toString(m2);
-                    return s1.compareTo(s2);
-                }
-
-                if (o1 < o2) {
-                    return -1;
-                } else {
-                    return 1;
-                }
+            if (o1 < o2) {
+                return -1;
+            } else {
+                return 1;
             }
         });
 

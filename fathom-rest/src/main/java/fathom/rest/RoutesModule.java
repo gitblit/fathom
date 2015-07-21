@@ -179,22 +179,28 @@ public abstract class RoutesModule {
         return GET(uriPattern, new LanguageHandler(languages, allowQueryParameter, setCookie));
     }
 
-    protected void addAnnotatedControllers() {
+    protected void addControllers() {
         String applicationPackage = Optional.fromNullable(settings.getApplicationPackage()).or("");
         String controllerPackage = StringUtils.removeStart(applicationPackage + ".controllers", ".");
         String controllersPackage = settings.getString(Settings.Setting.application_controllersPackage, controllerPackage);
-        addAnnotatedControllers(controllersPackage);
+        addControllers(controllersPackage);
     }
 
-    protected void addAnnotatedControllers(String... packageNames) {
+    protected void addControllers(String... packageNames) {
         ControllerRegistrar registrar = new ControllerRegistrar(injector, settings);
         registrar.init(packageNames);
         routeRegistrations.addAll(registrar.getRouteRegistrations());
     }
 
-    protected void addAnnotatedControllers(Package... packages) {
+    protected void addControllers(Package... packages) {
         ControllerRegistrar registrar = new ControllerRegistrar(injector, settings);
         registrar.init(packages);
+        routeRegistrations.addAll(registrar.getRouteRegistrations());
+    }
+
+    protected void addControllers(Class<? extends Controller>... controllers) {
+        ControllerRegistrar registrar = new ControllerRegistrar(injector, settings);
+        registrar.init(controllers);
         routeRegistrations.addAll(registrar.getRouteRegistrations());
     }
 
