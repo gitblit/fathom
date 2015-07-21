@@ -37,23 +37,30 @@ To accomplish this add a resource filter...
 ```xml
 <build>
   <resources>
-      <resource>
-          <directory>src/main/java</directory>
-          <filtering>true</filtering>
-          <includes>
-              <include>**/*</include>
-          </includes>
-          <excludes>
-              <exclude>**/*.java</exclude>
-          </excludes>
-      </resource>
-      <resource>
-          <directory>src/main/resources</directory>
-          <filtering>true</filtering>
-          <includes>
-              <include>**/*</include>
-          </includes>
-      </resource>
+    <resource>
+      <directory>src/main/java</directory>
+      <filtering>true</filtering>
+      <includes>
+        <include>**/*</include>
+      </includes>
+      <excludes>
+        <exclude>**/*.java</exclude>
+      </excludes>
+    </resource>
+    <resource>
+      <directory>src/main/resources</directory>
+      <filtering>true</filtering>
+      <includes>
+        <include>**/*.conf</include>
+      </includes>
+    </resource>
+    <resource>
+      <directory>src/main/resources</directory>
+      <filtering>false</filtering>
+      <excludes>
+        <exclude>**/*.conf</exclude>
+      </excludes>
+    </resource>
   </resources>
 </build>
 ```

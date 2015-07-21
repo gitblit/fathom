@@ -124,7 +124,7 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/*</include>
+                    <include>**/*.properties</include>
                 </includes>
             </resource>
         </resources>
