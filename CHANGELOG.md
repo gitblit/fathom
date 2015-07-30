@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to Undertow 1.2.9
 - [fathom-security-jdbc] Update to HikariCP 2.4.0
 - [fathom-security-redis] Update to Jedis 2.7.3
+- [fathom-rest-swagger] Update to Swagger-UI 2.1.1
 
 #### Added
 
