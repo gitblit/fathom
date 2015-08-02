@@ -87,7 +87,7 @@ public class SecurityManager implements Service {
 
         Config config;
         try (InputStreamReader reader = new InputStreamReader(configFileUrl.openStream())) {
-            config = ConfigFactory.parseReader(reader);
+            config = ConfigFactory.parseReader(reader).resolve();
             log.info("Configured Security Realms from '{}'", configFileUrl);
         } catch (IOException e) {
             throw new FathomException(e, "Failed to parse Security Realms file '{}'", configFileUrl);
