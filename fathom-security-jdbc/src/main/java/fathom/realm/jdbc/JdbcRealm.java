@@ -299,6 +299,38 @@ public class JdbcRealm extends CachingRealm {
         return null;
     }
 
+    @Override
+    public boolean hasAccount(String username) {
+        if (super.hasAccount(username)) {
+            return true;
+        }
+
+        Account account = getAccount(username);
+        if (account != null) {
+            return true;
+        }
+
+        log.debug("No account found for '{}' in '{}'", username, getRealmName());
+        return false;
+    }
+
+    @Override
+    public Account getAccount(String username) {
+        Account account = super.getAccount(username);
+        if (account == null) {
+            try (Connection conn = dataSource.getConnection()) {
+                account = getAccount(conn, username);
+                if (account != null) {
+                    setAuthorizationsByQuery(conn, account);
+                }
+            } catch (SQLException e) {
+                log.error("There was an SQL error while getting account '{}'", username, e);
+            }
+        }
+
+        return account;
+    }
+
     protected Account getAccount(Connection conn, String username) throws SQLException {
         Account account = null;
         try (PreparedStatement ps = conn.prepareStatement(accountQuery)) {

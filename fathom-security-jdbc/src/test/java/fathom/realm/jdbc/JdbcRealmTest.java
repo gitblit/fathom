@@ -80,6 +80,7 @@ public class JdbcRealmTest extends Assert {
     public void basicTest() {
         JdbcRealm realm = getRealm();
 
+        assertTrue(realm.hasAccount("gjetson"));
         Account account = realm.authenticate("gjetson", "astro1");
         assertNull("Authentication succeeded with wrong password", account);
 
@@ -94,6 +95,7 @@ public class JdbcRealmTest extends Assert {
         assertFalse("Role lookup failed", account.hasRole("admin"));
 
         // Jane Jetson
+        assertTrue(realm.hasAccount("jjetson"));
         account = realm.authenticate("jjetson", "george");
         assertNotNull("Authentication failed", account);
         assertEquals("Name mappingfailed", "Jane Jetson", account.getName());

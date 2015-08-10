@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 
 - [fathom-rest] Fixed ParamExtractor NPE on optional parameters
+- [fathom-security-jdbc] Fix hasAccount and getAccount
 
 #### Changed
 
