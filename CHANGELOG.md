@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - [fathom-rest] Fixed ParamExtractor NPE on optional parameters
 - [fathom-security-jdbc] Fix hasAccount and getAccount
+- [fathom-security] Add support for CMD5 password type
 
 #### Changed
 

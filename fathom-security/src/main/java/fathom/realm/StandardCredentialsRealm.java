@@ -137,6 +137,14 @@ public abstract class StandardCredentialsRealm implements Realm {
                 authenticated = true;
             }
         }
+        // test username salted MD5 password
+        else if (storedPassword.startsWith("{CMD5}")) {
+            String cmd5Password = CryptoUtil.getHashMD5(username + password);
+            if (storedPassword.substring("{CMD5}".length()).equals(cmd5Password)) {
+                log.trace("Salted MD5 hashed password matched for user '{}'", username);
+                authenticated = true;
+            }
+        }
         // test clear text password
         else if (storedPassword.equals(password)) {
             log.trace("Clear text password matched for user '{}'", username);
