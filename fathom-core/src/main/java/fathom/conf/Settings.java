@@ -203,22 +203,39 @@ public class Settings {
         }
     }
 
+    /**
+     * Returns the preferred application url (https is favored over http).
+     *
+     * @return the preferred application url
+     */
     public String getApplicationUrl() {
-
-        if (getHttpPort() > 0) {
-            return String.format("http://%s:%s%s", getApplicationHostname(), getHttpPort(), getContextPath());
+        if (getHttpsPort() > 0) {
+            int port = getHttpsPort();
+            if (port == 443) {
+                return String.format("https://%s%s", getApplicationHostname(), getContextPath());
+            }
+            return String.format("https://%s:%s%s", getApplicationHostname(), port, getContextPath());
         } else if (getHttpPort() > 0) {
-            return String.format("https://%s:%s%s", getApplicationHostname(), getHttpsPort(), getContextPath());
+            int port = getHttpPort();
+            if (port == 80) {
+                return String.format("http://%s%s", getApplicationHostname(), getContextPath());
+            }
+            return String.format("http://%s:%s%s", getApplicationHostname(), getHttpPort(), getContextPath());
         }
         return null;
     }
 
-
+    /**
+     * Returns the preferred host url (http is favored over https).
+     * Generally this url is used for integration testing.
+     *
+     * @return the preferred host url
+     */
     public String getUrl() {
 
         if (getHttpPort() > 0) {
             return String.format("http://%s:%s%s", getHost(), getHttpPort(), getContextPath());
-        } else if (getHttpPort() > 0) {
+        } else if (getHttpsPort() > 0) {
             return String.format("https://%s:%s%s", getHost(), getHttpsPort(), getContextPath());
         }
         return null;
