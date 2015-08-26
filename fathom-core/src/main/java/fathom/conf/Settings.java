@@ -169,6 +169,19 @@ public class Settings {
         return Strings.emptyToNull(getString(Setting.application_package, ""));
     }
 
+    public String getApplicationHostname() {
+        return getString(Setting.application_hostname, defaultHost);
+    }
+
+    @Option(name = "--hostname", metaVar = "HOSTNAME",
+            usage = "Hostname to use for within the application\n" +
+                    "e.g. 'my.application.com'")
+    public Settings hostname(String hostname) {
+        this.overrideSetting(Setting.application_hostname, hostname);
+
+        return this;
+    }
+
     public URL getFileUrl(String name, String defaultValue) {
         String file = getString(name, defaultValue);
         if (Strings.isNullOrEmpty(file)) {
@@ -190,7 +203,19 @@ public class Settings {
         }
     }
 
+    public String getApplicationUrl() {
+
+        if (getHttpPort() > 0) {
+            return String.format("http://%s:%s%s", getApplicationHostname(), getHttpPort(), getContextPath());
+        } else if (getHttpPort() > 0) {
+            return String.format("https://%s:%s%s", getApplicationHostname(), getHttpsPort(), getContextPath());
+        }
+        return null;
+    }
+
+
     public String getUrl() {
+
         if (getHttpPort() > 0) {
             return String.format("http://%s:%s%s", getHost(), getHttpPort(), getContextPath());
         } else if (getHttpPort() > 0) {
@@ -829,6 +854,7 @@ public class Settings {
         application_name,
         application_version,
         application_package,
+        application_hostname,
         application_controllersPackage,
         application_uploadLocation,
         application_uploadMaxSize,
