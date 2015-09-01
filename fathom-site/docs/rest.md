@@ -120,8 +120,13 @@ public class Routes extends RoutesModule {
       ctx.text().send("Employee Phonebook\n\nThere are {} employees.", count);
     });
 
-    // add all annotated controllers found in the classpath
-    addAnnotatedControllers();
+    // add all annotated controllers found in the controller package
+    addControllers();
+
+    // add all controllers found in the following packages
+    addControllers(V1Controller.class.getPackage(),
+                   V2Controller.class.getPackage(),
+                   V3Controller.class.getPackage());
   }
 
 }
@@ -189,6 +194,7 @@ package controllers;
 
 // To be discoverable, a controller must be annotated with @Path.
 @Path("/employees")
+@Consumes({Consumes.HTML, Consumes.FORM, Consumes.MULTIPART})
 @Produces({Produces.JSON, Produces.XML})
 public class MyController extends Controller {
 
@@ -223,6 +229,12 @@ public class MyController extends Controller {
 
 }
 ```
+
+#### Consumes
+
+The *Consumes* annotation declares the content-types which may be accepted by the *controller* method.  You are not required to specify a *Consumes* annotation but it may make the intenr of your *controller* methods more clear.
+
+If a *Controller* method declares *Consumes* then these types are enforced.  One valuable use-case of *Consumes* is to clearly indicate which methods accept POSTed forms.
 
 #### Produces and Negotiation
 

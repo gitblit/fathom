@@ -70,6 +70,8 @@ This allows you to deploy a complete configuration profile built-into your appli
 application {
   name = "My Application"
   version = "1.0.0"
+  # used to generate advertised application urls for rendered pages, sent emails, etc
+  hostname = ${undertow.host}
 }
 
 # Undertow server settings

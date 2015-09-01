@@ -24,6 +24,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest-swagger] Update to Swagger-Core 1.5.3
 - [fathom-rest-swagger] Update to Swagger-UI 2.1.1
 - [fathom-metrics-librato] Update to Librato 4.0.1.11
+- Renamed `Routes.addAnnotatedControllers()` to `Routes.addControllers()`.
 
 #### Added
 
@@ -31,7 +32,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest] Enforce `@Consumes` for controller routes that specify it
 - [fathom-rest] Add RouteInterceptor concept for controller routes
 - [fathom-rest-security] Add `@BasicAuth` and `@FormAuth` RouteInterceptors
-- [fathom-rest] Add `addAnnotatedControllers(Package... packages)` method
+- [fathom-rest] Add `addControllers(Package... packages)` method
 - [fathom-rest] Add `@CSRF` RouteInterceptor to insert or validate a CSRF token on a controller method
 - [fathom-rest-swagger] Add support for BASIC authentication
 - [fathom-security] Add support for CMD5 password type

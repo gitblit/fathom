@@ -85,7 +85,7 @@ mvn clean package
 
 [Maven]: http://maven.apache.org/
 [Maven archetype]: https://maven.apache.org/guides/introduction/introduction-to-archetypes.html
-[pippo-freemarker]: http://www.pippo.ro/doc/templates.html
+[pippo-pebble]: http://www.pippo.ro/doc/templates.html
 [pippo-jaxb]: http://www.pippo.ro/doc/content-types.html
 [pippo-gson]: http://www.pippo.ro/doc/content-types.html
 [Infinispan]: http://infinispan.org

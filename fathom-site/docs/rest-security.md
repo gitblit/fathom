@@ -109,6 +109,16 @@ And we must also update our page generation to include a hidden form field named
   <input type="submit" value="Rename">
 </form>
 ```
+#### CSRF and Controllers
+
+If your design uses controllers and you need CSRF protection you may annotate the controller or the specific controller methods with `@CSRF`. This will automatically make the *csrfToken* available to the template engine for `GET`  and `POST` requests and it will automatically validate `POST` requests.
+
+```java
+@Path("/employees")
+@CSRF
+public class EmployeesController extends Controller {
+}
+```
 
 ### Controller Method Account Argument Extractor
 
