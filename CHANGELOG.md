@@ -13,7 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - [fathom-archetype-standard] Switched to Pebble, while retaining Freemarker templates
 - [fathom-core] Update to Undertow 1.2.10
-- [fathom-security-jdbc] Update to HikariCP 2.4.0
+- [fathom-security-jdbc] Update to HikariCP 2.4.1
 - [fathom-security-redis] Update to Jedis 2.7.3
 - [fathom-rest-swagger] Update to Swagger-Core 1.5.3
 - [fathom-rest-swagger] Update to Swagger-UI 2.1.1
@@ -29,6 +29,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest] Add `@CSRF` RouteInterceptor to insert or validate a CSRF token on a controller method
 - [fathom-rest-swagger] Add support for BASIC authentication
 - [fathom-security] Add support for CMD5 password type
+- [fathom-core] Add support for an advertised application hostname
 
 #### Removed
 
