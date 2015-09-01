@@ -13,7 +13,7 @@
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.6.1</version>
+    <version>0.6.2-SNAPSHOT</version>
     <name>Fathom Parent</name>
     <description>Microservice Foundation</description>
     <url>http://fathom.gitblit.com</url>
@@ -22,7 +22,7 @@
         <url>https://github.com/gitblit/fathom</url>
         <connection>scm:git://github.com/gitblit/fathom.git</connection>
         <developerConnection>scm:git:git@github.com:gitblit/fathom.git</developerConnection>
-        <tag>release-0.6.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
