@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
+#### Fixed
+#### Changed
+#### Added
+#### Removed
+
+### [0.6.1] - 2015-09-01
 
 #### Fixed
 
@@ -30,8 +36,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest-swagger] Add support for BASIC authentication
 - [fathom-security] Add support for CMD5 password type
 - [fathom-core] Add support for an advertised application hostname
-
-#### Removed
 
 ### [0.6.0] - 2015-07-02
 
@@ -126,7 +130,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.6.0...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.6.1...HEAD
+[0.6.1]: https://github.com/gitblit/fathom/compare/release-0.6.0...release-0.6.1
 [0.6.0]: https://github.com/gitblit/fathom/compare/release-0.5.4...release-0.6.0
 [0.5.4]: https://github.com/gitblit/fathom/compare/release-0.5.3...release-0.5.4
 [0.5.3]: https://github.com/gitblit/fathom/compare/release-0.5.2...release-0.5.3
