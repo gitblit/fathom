@@ -281,7 +281,10 @@ Argument Extractors allow you to specify an annotation which instructs **Fathom-
 | `@Header`  | Extract a Request header to a standard Java type                                    |
 | `@Local`   | Extract a temporary value stored locally within the Request/Response Context        |
 | `@Param`   | Extract an url parameter, query parameter, or form field to a standard Java type    |
-| `@Session` | Extract a value stored within the Session                                           |
+| `@Int`     | Extract a Request integer parameter with a default value                            |
+| `@Long`    | Extract a Request long parameter with a default value                               |
+| `@Float`   | Extract a Request float parameter with a default value                              |
+| `@Bool`    | Extract a Request boolean parameter with a default value                            |
 
 #### Argument Validation
 

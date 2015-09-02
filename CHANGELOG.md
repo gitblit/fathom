@@ -5,7 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
+- [fathom-rest] Updated to Pippo 0.7.0
 #### Added
+- [fathom-rest] Added Int, Long, Float, and Bool controller extractors
 #### Removed
 
 ### [0.6.1] - 2015-09-01
