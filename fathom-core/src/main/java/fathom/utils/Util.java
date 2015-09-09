@@ -197,4 +197,20 @@ public class Util {
         log.debug(Strings.padEnd(name, 32, '.') + (value == null ? "" : (name.equalsIgnoreCase("password") ? "<masked>" : value.toString())));
     }
 
+    public static String getPreSubstring(String input, char c) {
+        int i = input.indexOf(c);
+        if (i > -1) {
+            return input.substring(0, i);
+        }
+        return input;
+    }
+
+    public static String getPostSubstring(String input, char c) {
+        int i = input.indexOf(c);
+        if (i > -1) {
+            return input.substring(i + 1);
+        }
+        return input;
+    }
+
 }

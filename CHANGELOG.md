@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 #### Fixed
+- [fathom-security] Strip encoding from content-type when matching in the CSRF guard
 #### Changed
 - [fathom-rest] Updated to Pippo 0.7.0
 - [fathom-core] Update to Undertow 1.2.11

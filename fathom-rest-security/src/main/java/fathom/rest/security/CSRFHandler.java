@@ -24,6 +24,7 @@ import fathom.exception.StatusCodeException;
 import fathom.rest.Context;
 import fathom.rest.controller.HttpMethod;
 import fathom.utils.CryptoUtil;
+import fathom.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteHandler;
@@ -115,7 +116,7 @@ public class CSRFHandler implements RouteHandler<Context> {
         if (HttpMethod.POST.equals(httpSerlvetRequestMethod)) {
 
             // Verify the content-type is guarded
-            String contentType = context.getRequest().getHeader("Content-Type").toLowerCase();
+            String contentType = Util.getPreSubstring(context.getRequest().getHeader("Content-Type").toLowerCase(), ';');
             if (!guardedTypes.contains(contentType)) {
                 log.debug("Ignoring '{}' request for {} '{}'", contentType, context.getRequestMethod(),
                         context.getRequestUri());
