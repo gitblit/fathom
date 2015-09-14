@@ -43,6 +43,13 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-jcache</artifactId>
+            <version>7.2.2.Final</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
