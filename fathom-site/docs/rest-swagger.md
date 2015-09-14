@@ -100,6 +100,11 @@ swagger {
     #  - YAML specification served on /{swagger.ui.path}/swagger.yaml
     path = "/api"
 
+    # Path to the Swagger UI template, relative to the templates resource directory.
+    # Fathom-REST-Swagger ships with the standard Swagger UI template for Pebble,
+    # Freemarker, and Trimou, although you may wish to customize this template.
+    template = "swagger/index"
+
     # Text to display in the banner of the Swagger UI
     bannerText = "swagger"
 

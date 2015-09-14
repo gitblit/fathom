@@ -152,6 +152,7 @@ public class SwaggerService implements Service {
 
         // Swagger UI route
         String swaggerPath = settings.getString("swagger.ui.path", "/api");
+        String swaggerTemplate = settings.getString("swagger.ui.template", "swagger/index");
         GET(swaggerPath, (ctx) -> {
             ctx.setLocal("apiTitle", settings.getString("swagger.api.title", settings.getApplicationName()));
             ctx.setLocal("bannerText", settings.getString("swagger.ui.bannerText", "swagger"));
@@ -166,7 +167,7 @@ public class SwaggerService implements Service {
             Account account = Optional.fromNullable(session).or(Optional.fromNullable(local).or(Account.GUEST));
             ctx.setLocal("apiKey", Optional.fromNullable(account.getToken()).or(""));
 
-            ctx.render("swagger/index");
+            ctx.render(swaggerTemplate);
         });
 
         // Swagger specification routes

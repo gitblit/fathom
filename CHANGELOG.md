@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
 - [fathom-rest] Updated to Pippo 0.7.0
 - [fathom-core] Update to Undertow 1.2.12
+- [fathom-rest-swagger] Allow specifying Swagger UI template page in config
 #### Added
 - [fathom-rest] Added Int, Long, Float, and Bool controller extractors
 #### Removed
