@@ -144,6 +144,15 @@ public class EmployeeDao {
   }
 ```
 
+!!! Warning
+    It's important to note that the JCache method interceptors, like all Guice method interceptors, are bound by the same limitations - including method scope.
+
+    - Classes must be public or package-private.
+    - Classes must be non-final
+    - Methods must be public, package-private or protected
+    - Methods must be non-final
+    - Instances must be created by Guice by an @Inject-annotated or no-argument constructor It is not possible to use method interception on instances that aren't constructed by Guice.
+
 ### Viewing and Managing your Caches
 
 Fathom does not provide a mechansim to view & manage your caches, however, several JCache providers register [MBeans] which allow cache viewing and management via [JConsole] or [VisualVM].
