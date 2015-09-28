@@ -20,7 +20,7 @@
 
     <scm>
         <url>https://github.com/gitblit/fathom</url>
-        <connection>scm:git://github.com/gitblit/fathom.git</connection>
+        <connection>scm:git:https://github.com/gitblit/fathom.git</connection>
         <developerConnection>scm:git:git@github.com:gitblit/fathom.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
