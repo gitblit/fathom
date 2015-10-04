@@ -52,6 +52,11 @@ public final class JobSchedulerBuilder {
     private String jobName = Scheduled.DEFAULT;
 
     /**
+     * The {@code Job} description.
+     */
+    private String jobDescription;
+
+    /**
      * The {@code Job} group name.
      */
     private String jobGroup = DEFAULT_GROUP;
@@ -131,6 +136,17 @@ public final class JobSchedulerBuilder {
      */
     public JobSchedulerBuilder withJobName(String jobName) {
         this.jobName = jobName;
+        return this;
+    }
+
+    /**
+     * Sets the {@code Job} description.
+     *
+     * @param jobDescription The {@code Job} description
+     * @return This builder instance
+     */
+    public JobSchedulerBuilder withJobDescription(String jobDescription) {
+        this.jobDescription = jobDescription;
         return this;
     }
 
@@ -289,6 +305,7 @@ public final class JobSchedulerBuilder {
 
         scheduler.scheduleJob(newJob(jobClass)
                         .withIdentity(jobKey)
+                        .withDescription(jobDescription)
                         .requestRecovery(requestRecovery)
                         .storeDurably(storeDurably).build(),
                 (trigger == null) ?
