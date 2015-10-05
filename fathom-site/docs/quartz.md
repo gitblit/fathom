@@ -34,6 +34,16 @@ YourApp
 
 By default, this module will try to configure Quartz from a `conf/quartz.properties` resource file.
 
+Quartz has many features and settings.  Two common ones that you are likely to change are how worker threads are named and how many threads are in the Quartz threadpool.
+
+```properties
+# Prefix of Quartz worker thread
+org.quartz.threadPool.threadNamePrefix = Jobs Worker
+
+# Number of threads in the Quartz pool
+org.quartz.threadPool.threadCount = 5
+```
+
 ## Usage
 
 Create a `conf/Jobs.java` class.  Jobs can be manually scheduled in the `conf/Jobs.java` class or they can be annotated on each `Job` class.
