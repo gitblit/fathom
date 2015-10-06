@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-metrics-librato] Update to metrics-librato 4.0.1.12
 #### Added
 - [fathom-rest] Added Int, Long, Float, and Bool controller extractors
+- [fathom-quartz] Added a jobs monitor based on core pieces of JavaMelody
 #### Removed
 
 ### [0.6.1] - 2015-09-01

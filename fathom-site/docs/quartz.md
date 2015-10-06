@@ -68,6 +68,7 @@ Then create some `Job` classes.  `Job` classes support injection.
 
 ```java
 @Scheduled(jobName = "My Job", cronExpression = "0/60 * * * * ?")
+@DisallowConcurrentExecution
 public class MyJob implements Job {
 
   final Logger log = LoggerFactory.getLogger(MyJob`.class);
@@ -125,6 +126,24 @@ public class DevJob implements Job {
     log.debug("My DEV job triggered");
   }
 
+}
+```
+
+### Monitoring
+
+Fathom-Quartz installs a global job listener which automatically tracks job execution statistics, buffers recent job stacktraces, and allows pause & resume control over jobs.
+
+```java
+@Inject
+JobsMonitor jobsMonitor;
+
+public void logJobsThatThrewAnException() {
+  for (JobInfo job : jobsMonitor.getJobs()) {
+    if (job.getExceptionCount() > 0) {}
+      log.error("{} was executed {} times and failed {} times ({}% failure rate)",
+        job.getName(), job.getExecutionCount(), job.getExceptionCount(), job.getExceptionPercentage());
+    }
+  }
 }
 ```
 

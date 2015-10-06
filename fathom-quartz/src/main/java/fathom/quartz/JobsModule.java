@@ -94,6 +94,8 @@ public abstract class JobsModule extends Module {
             }
         }
 
+        addJobListener(JobsMonitor.class);
+
         try {
             schedule();
             bind(JobFactory.class).to(InjectorJobFactory.class).in(Scopes.SINGLETON);
