@@ -16,13 +16,16 @@ Add the **Fathom-JMX** artifact.
 
 ## Configuration
 
-By default, this module will startup a JMX server on port 7091.
-
 ```hocon
 jmx {
-  # The port for serving the JMX registry and handling data connections
-  port = 7091
+  # The port for serving the JMX registry and handling data connections.
+  # Disabled by default.
+  port = 0
 }
+# Enable JMX serving for PROD mode.
+# The JMX server only binds to the loopback adapter and is therefore only
+# accessible via localhost.
+prod.jmx.port = 7091
 ```
 
 ## Usage
