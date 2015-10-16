@@ -27,10 +27,16 @@ jmx {
 
 ## Usage
 
-Once you have configured your preferred JMX port and have started your application, you should be able to establish a JMX connection to `localhost:$JMXPORT` using Mission Control, VisualVM, or JConsole.
+Once you have configured your preferred JMX port and have started your application, you should be able to establish a JMX connection to `127.0.0.1:$JMXPORT` using Mission Control, VisualVM, or JConsole.
+
+You can confirm that your JMX server is running with netstat:
+
+    netstat -t -a
+
+This should indicate all TCP sockets that are listening on your machine.
 
 !!! Note
-    The integrated JMX server binds to `localhost` and does not use authentication.  Your JMX server will be safe from outside intrusion, but is otherwise unprotected from users who already have access to your server.
+    The integrated JMX server binds to the loopback address `127.0.0.1` and does not use authentication.  Your JMX server will be safe from outside intrusion, but is otherwise unprotected from users who already have access to your server.
 
 ### Remote monitoring on Windows
 
@@ -42,9 +48,9 @@ If you have a working SSH connection to your remote server, you may use SSH port
 
 From your local machine, this command establishes an SSH connection with a port-forwarded tunnel for the default JMX port of the remote machine.
 
-    ssh -L 7091:localhost:7091 username@remoteserver.com
+    ssh -L 7091:127.0.0.1:7091 username@remoteserver.com
 
-Then, from your preferred JMX client application on your local machine, you simply open a JMX connection on `localhost:7091`.  Your JMX connection will be available as long as the SSH tunnel is kept alive.
+Then, from your preferred JMX client application on your local machine, you simply open a JMX connection on `127.0.0.1:7091`.  Your JMX connection will be available as long as the SSH tunnel is kept alive.
 
 ### Remote monitoring through Putty
 

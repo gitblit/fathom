@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.management.JMException;
+import java.net.InetAddress;
 
 /**
  * @author James Moger
@@ -24,6 +25,8 @@ public class JmxService implements Service {
 
     JmxServer server;
 
+    String serverName;
+
     @Override
     public int getPreferredStartOrder() {
         return 50;
@@ -33,10 +36,13 @@ public class JmxService implements Service {
     public void start() {
         int jmxPort = settings.getJmxPort();
         if (jmxPort > 0) {
-            server = new JmxServer(jmxPort);
+            InetAddress loopback = InetAddress.getLoopbackAddress();
+            server = new JmxServer(loopback, jmxPort);
+            serverName = "jmx://" + loopback.getHostAddress() + ":" + jmxPort;
             try {
                 server.start();
-                log.info("jmx://localhost:{} started", jmxPort);
+
+                log.info("{} started", serverName);
             } catch (JMException e) {
                 throw new FathomException("Failed to start JMX server", e);
             }
@@ -46,9 +52,9 @@ public class JmxService implements Service {
     @Override
     public void stop() {
         if (server != null) {
-            log.info("jmx://localhost:{} is stopping...", server.getRegistryPort());
+            log.info("{} is stopping...", serverName);
             server.stop();
-            log.info("jmx://localhost:{} stopped", server.getRegistryPort());
+            log.info("{} stopped", serverName);
         }
     }
 }
