@@ -40,5 +40,6 @@ pages:
       - 'Fathom-Mailer' : 'mail.md'
       - 'Fathom-Eventbus' : 'eventbus.md'
       - 'Fathom-JCache' : 'jcache.md'
+      - 'Fathom-JMX' : 'jmx.md'
       - 'Fathom-Quartz' : 'quartz.md'
       - 'Fathom-Test-Tools' : 'testing.md'

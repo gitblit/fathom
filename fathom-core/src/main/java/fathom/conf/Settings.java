@@ -48,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 public class Settings {
 
     private static Logger log = LoggerFactory.getLogger(Settings.class);
+    private final int defaultJmxPort = 7091;
     private final int defaultHttpPort = 8080;
     private final int defaultHttpsPort = 0;
     private final int defaultAjpPort = 0;
@@ -308,6 +309,19 @@ public class Settings {
 
         return this;
     }
+
+    public int getJmxPort() {
+        return getInteger(Setting.jmx_port, defaultJmxPort);
+    }
+
+    @Option(name = "--jmxPort", metaVar = "PORT",
+            usage = "Port for serving the JMX registry & data.\nPORT <= 0 will disable this transport.")
+    public Settings jmxPort(int port) {
+        this.overrideSetting(Setting.jmx_port, port);
+
+        return this;
+    }
+
 
     public int getHttpPort() {
         return getInteger(Setting.undertow_httpPort, defaultHttpPort);
@@ -876,6 +890,7 @@ public class Settings {
         application_uploadLocation,
         application_uploadMaxSize,
         jcache_preferredProvider,
+        jmx_port,
         metrics_jvm_enabled,
         metrics_mbeans_enabled,
         undertow_ajpPort,

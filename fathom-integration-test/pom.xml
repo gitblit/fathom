@@ -101,6 +101,12 @@
 
         <dependency>
             <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-jmx</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
             <artifactId>fathom-jcache</artifactId>
             <version>${project.version}</version>
         </dependency>

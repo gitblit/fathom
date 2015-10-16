@@ -188,6 +188,7 @@
         <module>fathom-core</module>
         <module>fathom-eventbus</module>
         <module>fathom-jcache</module>
+        <module>fathom-jmx</module>
         <module>fathom-metrics</module>
         <module>fathom-metrics-librato</module>
         <module>fathom-metrics-influxdb</module>
