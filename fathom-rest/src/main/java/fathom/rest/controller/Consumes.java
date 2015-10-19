@@ -34,6 +34,8 @@ import java.lang.annotation.Target;
 public @interface Consumes {
     String [] value();
 
+    public static final String ALL = "*/*";
+
     public static final String XML = HttpConstants.ContentType.APPLICATION_XML;
 
     public static final String JSON = HttpConstants.ContentType.APPLICATION_JSON;

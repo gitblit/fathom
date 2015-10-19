@@ -139,4 +139,33 @@ public class ControllerUtil {
         // if unspecified we use the ParamExtractor
         return ParamExtractor.class;
     }
+
+    /**
+     * Removes trailing wildcards from a content type as long as the content type is not a
+     * universal wildcard content type like '*' or '*\*'.
+     *
+     * @param contentTypes
+     * @return the list of content types
+     */
+    public static List<String> cleanupFuzzyContentTypes(List<String> contentTypes) {
+        if (contentTypes == null || contentTypes.isEmpty()) {
+            return contentTypes;
+        }
+
+        List<String> types = new ArrayList<>();
+        for (String contentType : contentTypes) {
+            if (contentType.equals("*") || contentType.equals("*/*")) {
+                types.add(contentType);
+                continue;
+            }
+            int i = contentType.indexOf('*');
+            if (i > -1) {
+                types.add(contentType.substring(0, i));
+            } else {
+                types.add(contentType);
+            }
+        }
+
+        return types;
+    }
 }

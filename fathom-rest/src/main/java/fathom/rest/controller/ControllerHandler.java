@@ -392,6 +392,8 @@ public class ControllerHandler implements RouteHandler<Context> {
      */
     protected void validateConsumes(Collection<String> fathomContentTypes) {
         Set<String> ignoreConsumes = new TreeSet<>();
+        ignoreConsumes.add(Consumes.ALL);
+
         // these are handled by the TemplateEngine
         ignoreConsumes.add(Consumes.HTML);
         ignoreConsumes.add(Consumes.XHTML);
@@ -400,14 +402,26 @@ public class ControllerHandler implements RouteHandler<Context> {
         ignoreConsumes.add(Consumes.FORM);
         ignoreConsumes.add(Consumes.MULTIPART);
 
-        for (String consumes : declaredConsumes) {
-            if (ignoreConsumes.contains(consumes)) {
+        for (String declaredConsume : declaredConsumes) {
+            if (ignoreConsumes.contains(declaredConsume)) {
                 continue;
             }
 
-            if (!fathomContentTypes.contains(consumes)) {
-                throw new FathomException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for that type!",
-                        Util.toString(method), Consumes.class.getSimpleName(), consumes);
+            String consume = declaredConsume;
+            int fuzz = consume.indexOf('*');
+            if (fuzz > -1) {
+                // strip fuzz, we must have a registered engine for the unfuzzed content-type
+                consume = consume.substring(0, fuzz);
+            }
+
+            if (!fathomContentTypes.contains(consume)) {
+                if (consume.equals(declaredConsume)) {
+                    throw new FathomException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for that type!",
+                            Util.toString(method), Consumes.class.getSimpleName(), declaredConsume);
+                } else {
+                    throw new FathomException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for \"{}\"!",
+                            Util.toString(method), Consumes.class.getSimpleName(), declaredConsume, consume);
+                }
             }
         }
     }
@@ -477,12 +491,25 @@ public class ControllerHandler implements RouteHandler<Context> {
 
             for (String type : types) {
                 if (declaredConsumes.contains(type)) {
+                    // explicit content-type match
                     log.debug("{} consumes '{}'", Util.toString(method), type);
                     return true;
+                } else {
+                    // look for a fuzzy content-type match
+                    for (String declaredType : declaredConsumes) {
+                        int fuzz = declaredType.indexOf('*');
+                        if (fuzz > -1) {
+                            String fuzzyType = declaredType.substring(0, fuzz);
+                            if (type.startsWith(fuzzyType)) {
+                                log.debug("{} consumes '{}'", Util.toString(method), type);
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
 
-            log.debug("{} can not consume Request for '{}'", Util.toString(method), types);
+            log.warn("{} can not consume Request for '{}'", Util.toString(method), types);
             return false;
         }
 

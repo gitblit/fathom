@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest] Added Int, Long, Float, and Bool controller extractors
 - [fathom-quartz] Added a jobs monitor based on core pieces of JavaMelody
 - [fathom-jmx] Added a simple JMX server
+- [fathom-rest] Allow fuzzy matching in Consumes declarations (e.g. 'application/vnd.fathom*')
 #### Removed
 
 ### [0.6.1] - 2015-09-01
