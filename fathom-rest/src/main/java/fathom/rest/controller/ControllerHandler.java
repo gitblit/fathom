@@ -477,6 +477,11 @@ public class ControllerHandler implements RouteHandler<Context> {
         Set<String> contentTypes = context.getContentTypes();
 
         if (!declaredConsumes.isEmpty()) {
+            if (declaredConsumes.contains(Consumes.ALL)) {
+                log.debug("{} will handle Request because it consumes '{}'", Util.toString(method), Consumes.ALL);
+                return true;
+            }
+
             Set<String> types = new LinkedHashSet<>(contentTypes);
             if (types.isEmpty()) {
                 // Request does not specify a Content-Type so add Accept type(s)
@@ -484,7 +489,7 @@ public class ControllerHandler implements RouteHandler<Context> {
 
                 // Request can handle any type, so consume the Request
                 if (types.contains("*") || types.contains("*/*")) {
-                    log.debug("{} consumes '{}'", Util.toString(method), "*/*");
+                    log.debug("{} will handle Request because it consumes '{}'", Util.toString(method), "*/*");
                     return true;
                 }
             }
@@ -492,7 +497,7 @@ public class ControllerHandler implements RouteHandler<Context> {
             for (String type : types) {
                 if (declaredConsumes.contains(type)) {
                     // explicit content-type match
-                    log.debug("{} consumes '{}'", Util.toString(method), type);
+                    log.debug("{} will handle Request because it consumes '{}'", Util.toString(method), type);
                     return true;
                 } else {
                     // look for a fuzzy content-type match
@@ -501,7 +506,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                         if (fuzz > -1) {
                             String fuzzyType = declaredType.substring(0, fuzz);
                             if (type.startsWith(fuzzyType)) {
-                                log.debug("{} consumes '{}'", Util.toString(method), type);
+                                log.debug("{} will handle Request because it consumes '{}'", Util.toString(method), type);
                                 return true;
                             }
                         }
@@ -509,7 +514,13 @@ public class ControllerHandler implements RouteHandler<Context> {
                 }
             }
 
-            log.warn("{} can not consume Request for '{}'", Util.toString(method), types);
+            if (types.isEmpty()) {
+                log.warn("{} can not handle Request because neither 'Accept' nor 'Content-Type' are set and Route @Consumes '{}'",
+                        Util.toString(method), declaredConsumes);
+            } else {
+                log.warn("{} can not handle Request for '{}' because Route @Consumes '{}'", Util.toString(method),
+                        types, declaredConsumes);
+            }
             return false;
         }
 
