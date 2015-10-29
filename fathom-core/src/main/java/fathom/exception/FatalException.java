@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fathom;
+package fathom.exception;
 
-public interface Service {
+/**
+ * @author James Moger
+ */
+public class FatalException extends FathomException {
 
-    int getPreferredStartOrder();
+    public FatalException(String message, Object... parameters) {
+        super(message, parameters);
+    }
 
-    void start();
+    public FatalException(Throwable cause, String message, Object... parameters) {
+        super(cause, message, parameters);
+    }
 
-    boolean isRunning();
-
-    void stop();
-
+    public FatalException(Throwable cause) {
+        super(cause);
+    }
 }

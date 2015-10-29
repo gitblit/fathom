@@ -65,8 +65,15 @@ public class JCache implements Service {
     }
 
     @Override
+    public boolean isRunning() {
+         return cachingProvider != null;
+    }
+
+    @Override
     public void stop() {
-        cachingProvider.close();
-        cachingProvider = null;
+        if (cachingProvider != null) {
+            cachingProvider.close();
+            cachingProvider = null;
+        }
     }
 }

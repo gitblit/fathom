@@ -47,6 +47,8 @@ public class Mailer implements Service {
     @Inject
     FtmMailTypes mailTypes;
 
+    boolean isRunning;
+
     @Override
     public int getPreferredStartOrder() {
         return 50;
@@ -66,6 +68,13 @@ public class Mailer implements Service {
         config.setDebug(settings.getBoolean(Setting.mail_debug, false));
 
         eMailer.configure(config);
+
+        isRunning = true;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return isRunning;
     }
 
     @Override

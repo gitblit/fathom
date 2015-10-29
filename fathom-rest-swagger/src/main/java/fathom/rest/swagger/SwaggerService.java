@@ -228,6 +228,11 @@ public class SwaggerService implements Service {
     }
 
     @Override
+    public boolean isRunning() {
+        return specifications != null;
+    }
+
+    @Override
     public void stop() {
         specifications.clear();
     }

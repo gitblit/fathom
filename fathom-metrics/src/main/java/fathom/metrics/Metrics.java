@@ -100,6 +100,11 @@ public class Metrics implements Service {
     }
 
     @Override
+    public boolean isRunning() {
+        return !reporters.isEmpty();
+    }
+
+    @Override
     public void stop() {
 
         for (Closeable reporter : reporters) {

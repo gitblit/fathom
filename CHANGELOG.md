@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest-swagger] Allow specifying Swagger UI template page in config
 - [fathom-rest-swagger] Update to Swagger-Core 1.5.4 & Swagger-UI 2.1.2
 - [fathom-metrics-librato] Update to metrics-librato 4.0.1.12
+- [fathom-core] Services now require implementing an `isRunning()` method.
+- [fathom-core] Services may optionally throw a FatalException on `start()` to terminate an application
 #### Added
 - [fathom-rest] Added Int, Long, Float, and Bool controller extractors
 - [fathom-quartz] Added a jobs monitor based on core pieces of JavaMelody

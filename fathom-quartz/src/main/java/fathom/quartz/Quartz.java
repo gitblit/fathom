@@ -51,6 +51,15 @@ public class Quartz implements Service {
     }
 
     @Override
+    public boolean isRunning() {
+        try {
+            return scheduler.isStarted();
+        } catch (SchedulerException e) {
+            return false;
+        }
+    }
+
+    @Override
     public void stop() {
         try {
             log.debug("Stopping Quartz scheduler");

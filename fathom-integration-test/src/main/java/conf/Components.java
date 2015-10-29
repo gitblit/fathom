@@ -66,8 +66,14 @@ public class Components extends Module {
                 ds.startListening();
                 ds.importFromLDIF(true, new LDIFReader(getClass().getResourceAsStream("/conf/realm.ldif")));
             } catch (LDAPException e) {
+                ds = null;
                 log.error("Failed to start UnboundID LDAP server!", e);
             }
+        }
+
+        @Override
+        public boolean isRunning() {
+            return ds != null;
         }
 
         @Override

@@ -69,6 +69,8 @@ class RestService implements Service {
     @Inject
     MetricRegistry metricRegistry;
 
+    private boolean isRunning;
+
     @Override
     public int getPreferredStartOrder() {
         return 100;
@@ -98,6 +100,13 @@ class RestService implements Service {
                 Strings.isNullOrEmpty(router.getApplicationPath()) ? "/" : router.getApplicationPath());
         log.info(border);
         logRoutes(router);
+
+        isRunning = true;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return isRunning;
     }
 
     @Override

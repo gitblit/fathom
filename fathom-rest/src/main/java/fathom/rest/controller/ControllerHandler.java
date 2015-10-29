@@ -20,6 +20,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import fathom.exception.FatalException;
 import fathom.exception.FathomException;
 import fathom.rest.Context;
 import fathom.rest.controller.exceptions.RangeException;
@@ -271,7 +272,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                 if (controllerMethod == null) {
                     controllerMethod = method;
                 } else {
-                    throw new FathomException("Found overloaded controller method '{}'. Method names must be unique!",
+                    throw new FatalException("Found overloaded controller method '{}'. Method names must be unique!",
                             Util.toString(method));
                 }
             }
@@ -354,7 +355,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                     CollectionExtractor extractor = (CollectionExtractor) extractors[i];
                     extractor.setCollectionType(collectionType);
                 } else {
-                    throw new FathomException(
+                    throw new FatalException(
                             "Controller method '{}' parameter {} of type '{}' does not specify an argument extractor that supports collections!",
                             Util.toString(method), i + 1, Util.toString(collectionType, objectType));
                 }
@@ -375,7 +376,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                         namedExtractor.setName(parameter.getName());
                     } else {
                         log.error("Properly annotate your controller methods OR specify the '-parameters' flag for your Java compiler!");
-                        throw new FathomException(
+                        throw new FatalException(
                                 "Controller method '{}' parameter {} of type '{}' does not specify a name!",
                                 Util.toString(method), i + 1, Util.toString(collectionType, objectType));
                     }
@@ -416,10 +417,10 @@ public class ControllerHandler implements RouteHandler<Context> {
 
             if (!fathomContentTypes.contains(consume)) {
                 if (consume.equals(declaredConsume)) {
-                    throw new FathomException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for that type!",
+                    throw new FatalException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for that type!",
                             Util.toString(method), Consumes.class.getSimpleName(), declaredConsume);
                 } else {
-                    throw new FathomException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for \"{}\"!",
+                    throw new FatalException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for \"{}\"!",
                             Util.toString(method), Consumes.class.getSimpleName(), declaredConsume, consume);
                 }
             }
@@ -443,7 +444,7 @@ public class ControllerHandler implements RouteHandler<Context> {
             }
 
             if (!fathomContentTypes.contains(produces)) {
-                throw new FathomException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for that type!",
+                throw new FatalException("{} declares @{}(\"{}\") but there is no registered ContentTypeEngine for that type!",
                         Util.toString(method), Produces.class.getSimpleName(), produces);
             }
         }
@@ -462,7 +463,7 @@ public class ControllerHandler implements RouteHandler<Context> {
                     return;
                 }
             }
-            throw new FathomException("{} returns an object but does not declare a successful @{}(code=200, onResult={}.class)",
+            throw new FatalException("{} returns an object but does not declare a successful @{}(code=200, onResult={}.class)",
                     Util.toString(method), Return.class.getSimpleName(), method.getReturnType().getSimpleName());
         }
     }

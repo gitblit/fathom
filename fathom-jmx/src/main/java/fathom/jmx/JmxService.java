@@ -44,9 +44,15 @@ public class JmxService implements Service {
 
                 log.info("{} started", serverName);
             } catch (JMException e) {
+                server = null;
                 throw new FathomException("Failed to start JMX server", e);
             }
         }
+    }
+
+    @Override
+    public boolean isRunning() {
+        return server != null;
     }
 
     @Override

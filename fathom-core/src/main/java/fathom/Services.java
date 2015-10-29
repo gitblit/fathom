@@ -19,6 +19,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Injector;
 import fathom.conf.Settings;
+import fathom.exception.FatalException;
 import fathom.utils.RequireUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +107,11 @@ public final class Services {
                 service.start();
             } catch (Exception e) {
                 log.error("Failed to start '{}'", service.getClass().getName(), e);
+
+                if (e instanceof FatalException) {
+                    stop();
+                    System.exit(1);
+                }
             }
         }
     }
@@ -114,11 +120,13 @@ public final class Services {
         // stop the services in the reverse order
         Collections.reverse(instances);
         for (Service service : instances) {
-            log.info("Stopping service '{}'", service.getClass().getName());
-            try {
-                service.stop();
-            } catch (Exception e) {
-                log.error("Failed to stop '{}'", service.getClass().getName(), e);
+            if (service.isRunning()) {
+                log.info("Stopping service '{}'", service.getClass().getName());
+                try {
+                    service.stop();
+                } catch (Exception e) {
+                    log.error("Failed to stop '{}'", service.getClass().getName(), e);
+                }
             }
         }
     }

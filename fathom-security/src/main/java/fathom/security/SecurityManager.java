@@ -132,6 +132,11 @@ public class SecurityManager implements Service {
     }
 
     @Override
+    public boolean isRunning() {
+        return allRealms != null;
+    }
+
+    @Override
     public void stop() {
         clearCache();
 
