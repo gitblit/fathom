@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-security] Strip encoding from content-type when matching in the CSRF guard
 #### Changed
 - [fathom-rest] Updated to Pippo 0.7.0
-- [fathom-core] Update to Undertow 1.3.4
+- [fathom-core] Update to Undertow 1.3.5
 - [fathom-rest-swagger] Allow specifying Swagger UI template page in config
 - [fathom-rest-swagger] Update to Swagger-Core 1.5.4 & Swagger-UI 2.1.2
 - [fathom-metrics-librato] Update to metrics-librato 4.0.1.12
