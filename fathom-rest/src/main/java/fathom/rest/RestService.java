@@ -38,6 +38,7 @@ import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.TemplateEngine;
 import ro.pippo.core.route.Route;
 import ro.pippo.core.route.Router;
+import ro.pippo.core.util.StringUtils;
 import ro.pippo.metrics.MetricsDispatchListener;
 
 import java.util.ArrayList;
@@ -94,12 +95,14 @@ class RestService implements Service {
         log.debug(border);
         initializeRouter(applicationPackage);
 
-        log.info(border);
-        log.info("RESTful routes ({}) served on base path '{}'",
+        StringBuilder sb = new StringBuilder("\n\n");
+        sb.append(border).append('\n');
+        sb.append(StringUtils.format("RESTful routes ({}) served on base path '{}'\n",
                 router.getRoutes().size(),
-                Strings.isNullOrEmpty(router.getApplicationPath()) ? "/" : router.getApplicationPath());
-        log.info(border);
-        logRoutes(router);
+                Strings.isNullOrEmpty(router.getApplicationPath()) ? "/" : router.getApplicationPath()));
+        sb.append(border).append('\n');
+        logRoutes(sb, router);
+        log.info(sb.toString());
 
         isRunning = true;
     }
@@ -182,14 +185,14 @@ class RestService implements Service {
         }
     }
 
-    private void logRoutes(Router router) {
+    private void logRoutes(StringBuilder sb, Router router) {
         // determine the width of the columns
         int maxMethodLen = 0;
         int maxPathLen = 0;
         int maxControllerLen = 0;
 
         if (router.getRoutes().isEmpty()) {
-            log.info("no routes found");
+            sb.append("no routes found\n");
             return;
         }
 
@@ -213,20 +216,20 @@ class RestService implements Service {
             if (route.getRouteHandler() instanceof ControllerHandler) {
 
                 ControllerHandler handler = (ControllerHandler) route.getRouteHandler();
-                log.info("{} {}  =>  {}()",
+                sb.append(StringUtils.format("{} {}  =>  {}()\n",
                         Strings.padEnd(route.getRequestMethod(), maxMethodLen, ' '),
                         Strings.padEnd(route.getUriPattern(), maxPathLen, ' '),
-                        Util.toString(handler.getControllerMethod()));
+                        Util.toString(handler.getControllerMethod())));
 
             } else if (route.getName() != null) {
-                log.info("{} {}  =>  {}",
+                sb.append(StringUtils.format("{} {}  =>  {}\n",
                         Strings.padEnd(route.getRequestMethod(), maxMethodLen, ' '),
                         Strings.padEnd(route.getUriPattern(), maxPathLen, ' '),
-                        route.getName());
+                        route.getName()));
             } else {
-                log.info("{} {}",
+                sb.append(StringUtils.format("{} {}\n",
                         Strings.padEnd(route.getRequestMethod(), maxMethodLen, ' '),
-                        route.getUriPattern());
+                        route.getUriPattern()));
             }
         }
 
