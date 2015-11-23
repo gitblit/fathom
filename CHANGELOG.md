@@ -4,6 +4,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 #### Fixed
+#### Changed
+- [fathom-core] Update to Undertow 1.3.6
+#### Added
+#### Removed
+
+### [0.7.0] - 2015-11-09
+#### Fixed
 - [fathom-security] Strip encoding from content-type when matching in the CSRF guard
 #### Changed
 - [fathom-rest] Updated to Pippo 0.7.0
@@ -18,7 +25,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-quartz] Added a jobs monitor based on core pieces of JavaMelody
 - [fathom-jmx] Added a simple JMX server
 - [fathom-rest] Allow fuzzy matching in Consumes declarations (e.g. 'application/vnd.fathom*')
-#### Removed
 
 ### [0.6.1] - 2015-09-01
 
@@ -143,7 +149,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.6.1...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.7.0...HEAD
+[0.7.0]: https://github.com/gitblit/fathom/compare/release-0.6.1...release-0.7.0
 [0.6.1]: https://github.com/gitblit/fathom/compare/release-0.6.0...release-0.6.1
 [0.6.0]: https://github.com/gitblit/fathom/compare/release-0.5.4...release-0.6.0
 [0.5.4]: https://github.com/gitblit/fathom/compare/release-0.5.3...release-0.5.4
