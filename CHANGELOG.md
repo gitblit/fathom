@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 #### Changed
 - [fathom-core] Update to Undertow 1.3.7
+- [fathom-security-redis] Update to Jedis 2.8.0
 #### Added
 #### Removed
 
