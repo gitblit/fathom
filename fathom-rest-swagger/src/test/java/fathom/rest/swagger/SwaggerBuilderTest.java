@@ -84,7 +84,7 @@ public class SwaggerBuilderTest {
 
     private Route route(Injector injector, String method, String path, Class<? extends Controller> controllerClass) {
         ControllerHandler handler = new ControllerHandler(injector, controllerClass, method.toLowerCase());
-        return new Route(path, method, handler);
+        return new Route(method, path, handler);
     }
 
     public static class TestController extends Controller {

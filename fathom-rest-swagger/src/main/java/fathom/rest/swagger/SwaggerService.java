@@ -181,17 +181,17 @@ public class SwaggerService implements Service {
         String webJarsUri = router.uriPatternFor(WebjarsResourceHandler.class);
         if (webJarsUri == null) {
             WebjarsResourceHandler webjars = new WebjarsResourceHandler();
-            router.addRoute(new Route(webjars.getUriPattern(), HttpMethod.GET, webjars));
+            router.addRoute(new Route(HttpMethod.GET, webjars.getUriPattern(), webjars));
         }
     }
 
     protected void GET(String uriPattern, RouteHandler handler) {
-        Route route = new Route(uriPattern, HttpMethod.GET, handler);
+        Route route = new Route(HttpMethod.GET, uriPattern, handler);
         router.addRoute(route);
     }
 
     protected void HEAD(String uriPattern, RouteHandler handler) {
-        Route route = new Route(uriPattern, HttpMethod.HEAD, handler);
+        Route route = new Route(HttpMethod.HEAD, uriPattern, handler);
         router.addRoute(route);
     }
 

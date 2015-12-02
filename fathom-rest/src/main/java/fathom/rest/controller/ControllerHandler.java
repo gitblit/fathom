@@ -534,7 +534,7 @@ public class ControllerHandler implements RouteHandler<Context> {
         }
         List<RouteMatch> chain = new ArrayList<>();
         for (RouteHandler<Context> interceptor : routeInterceptors) {
-            Route route = new Route(context.getRequestUri(), context.getRequestMethod(), interceptor);
+            Route route = new Route(context.getRequestMethod(), context.getRequestUri(), interceptor);
             route.setName(StringUtils.format("{}<{}>", RouteInterceptor.class.getSimpleName(),
                     route.getRouteHandler().getClass().getSimpleName()));
             RouteMatch match = new RouteMatch(route, null);

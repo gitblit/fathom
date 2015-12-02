@@ -352,7 +352,7 @@ public abstract class RoutesModule {
                 routeHandler = routeRegistration.getRouteHandler();
             }
 
-            Route route = new Route(routeRegistration.getUriPattern(), routeRegistration.getRequestMethod(), routeHandler);
+            Route route = new Route(routeRegistration.getRequestMethod(), routeRegistration.getUriPattern(), routeHandler);
             route.setName(routeRegistration.getName());
             if (routeRegistration.isRunAsFinally()) {
                 route.runAsFinally();
