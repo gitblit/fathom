@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
-- [fathom-core] Update to Undertow 1.3.7
+- [fathom-core] Update to Undertow 1.3.9
 - [fathom-security-redis] Update to Jedis 2.8.0
 - [fathom-rest] Update to Pippo 0.8.0-SNAPSHOT
 #### Added
