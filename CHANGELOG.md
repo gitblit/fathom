@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to Undertow 1.3.9
 - [fathom-security-redis] Update to Jedis 2.8.0
 - [fathom-rest] Update to Pippo 0.8.0-SNAPSHOT
+- [fathom-security-jdbc] Update to HikariCP 2.4.3
 #### Added
 #### Removed
 
