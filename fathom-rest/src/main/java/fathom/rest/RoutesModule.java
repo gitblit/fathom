@@ -208,8 +208,16 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.ALL, handler);
     }
 
+    protected RouteRegistration ALL(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
+        return registerRoute(uriPattern, HttpMethod.ALL, getInjector().getInstance(handlerClass));
+    }
+
     protected RouteRegistration OPTIONS(String uriPattern, RouteHandler<Context> handler) {
         return registerRoute(uriPattern, HttpMethod.OPTIONS, handler);
+    }
+
+    protected RouteRegistration OPTIONS(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
+        return registerRoute(uriPattern, HttpMethod.OPTIONS, getInjector().getInstance(handlerClass));
     }
 
     protected RouteRegistration OPTIONS(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -218,6 +226,10 @@ public abstract class RoutesModule {
 
     protected RouteRegistration HEAD(String uriPattern, RouteHandler<Context> handler) {
         return registerRoute(uriPattern, HttpMethod.HEAD, handler);
+    }
+
+    protected RouteRegistration HEAD(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
+        return registerRoute(uriPattern, HttpMethod.HEAD, getInjector().getInstance(handlerClass));
     }
 
     protected RouteRegistration HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -232,12 +244,20 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.GET, handler);
     }
 
+    protected RouteRegistration GET(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
+        return registerRoute(uriPattern, HttpMethod.GET, getInjector().getInstance(handlerClass));
+    }
+
     protected RouteRegistration GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.GET, controllerClass, methodName);
     }
 
     protected RouteRegistration POST(String uriPattern, RouteHandler<Context> handler) {
         return registerRoute(uriPattern, HttpMethod.POST, handler);
+    }
+
+    protected RouteRegistration POST(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
+        return registerRoute(uriPattern, HttpMethod.POST, getInjector().getInstance(handlerClass));
     }
 
     protected RouteRegistration POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -248,6 +268,10 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.PUT, handler);
     }
 
+    protected RouteRegistration PUT(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
+        return registerRoute(uriPattern, HttpMethod.PUT, getInjector().getInstance(handlerClass));
+    }
+
     protected RouteRegistration PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.PUT, controllerClass, methodName);
     }
@@ -256,12 +280,20 @@ public abstract class RoutesModule {
         return registerRoute(uriPattern, HttpMethod.PATCH, handler);
     }
 
+    protected RouteRegistration PATCH(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
+        return registerRoute(uriPattern, HttpMethod.PATCH, getInjector().getInstance(handlerClass));
+    }
+
     protected RouteRegistration PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.PATCH, controllerClass, methodName);
     }
 
     protected RouteRegistration DELETE(String uriPattern, RouteHandler<Context> handler) {
         return registerRoute(uriPattern, HttpMethod.DELETE, handler);
+    }
+
+    protected RouteRegistration DELETE(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
+        return registerRoute(uriPattern, HttpMethod.DELETE, getInjector().getInstance(handlerClass));
     }
 
     protected RouteRegistration DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {

@@ -47,9 +47,6 @@ public class Routes extends RoutesModule {
     private final Logger log = LoggerFactory.getLogger(Routes.class);
 
     @Inject
-    FormAuthenticationHandler formAuthenticationHandler;
-
-    @Inject
     ItemDao dao;
 
     @Inject
@@ -109,7 +106,7 @@ public class Routes extends RoutesModule {
         /*
          * Create a form authentication handler and guard for the "secure" routes
          */
-        ALL("/login", formAuthenticationHandler);
+        ALL("/login", FormAuthenticationHandler.class);
         ALL("/logout", new LogoutHandler());
 
         /*
