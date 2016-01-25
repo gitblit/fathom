@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-security-jdbc] Update to HikariCP 2.4.3
 - [fathom-metrics-librato] Update to Librato 4.1.2.1
 #### Added
+- [fathom-rest-security] Log form guard redirects for unauthenticated requests
+- [fathom-rest-shiro] Log form guard redirects for unauthenticated requests
 #### Removed
 
 ### [0.7.0] - 2015-11-09

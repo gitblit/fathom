@@ -20,6 +20,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import fathom.conf.Settings;
 import fathom.rest.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteHandler;
 
 /**
@@ -33,6 +35,8 @@ import ro.pippo.core.route.RouteHandler;
  */
 @Singleton
 public class FormAuthenticationGuard implements RouteHandler<Context> {
+
+    private final Logger log = LoggerFactory.getLogger(FormAuthenticationGuard.class);
 
     protected final String loginPath;
 
@@ -53,6 +57,7 @@ public class FormAuthenticationGuard implements RouteHandler<Context> {
             String requestUri = context.getRequest().getApplicationUriWithQuery();
             context.setSession(AuthConstants.DESTINATION_ATTRIBUTE, requestUri);
             context.redirect(loginPath);
+            log.info("Unauthenticated request for {}, redirecting to {}", context.getRequestUri(), loginPath);
         } else {
             // session already authenticated
             context.next();
