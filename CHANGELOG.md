@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest] Update to Pippo 0.8.0-SNAPSHOT
 - [fathom-rest] Add convenience methods to add routes by handler class
 - [fathom-security-jdbc] Update to HikariCP 2.4.3
+- [fathom-metrics-librato] Update to Librato 4.1.2.1
 #### Added
 #### Removed
 
