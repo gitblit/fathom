@@ -44,6 +44,8 @@ public @interface Consumes {
 
     public static final String TEXT = HttpConstants.ContentType.TEXT_PLAIN;
 
+    public static final String CSV = "text/csv";
+
     public static final String HTML = HttpConstants.ContentType.TEXT_HTML;
 
     public static final String XHTML = HttpConstants.ContentType.TEXT_XHTML;

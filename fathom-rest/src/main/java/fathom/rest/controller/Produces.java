@@ -46,4 +46,6 @@ public @interface Produces {
 
     public static final String TEXT = HttpConstants.ContentType.TEXT_PLAIN;
 
+    public static final String CSV = "text/csv";
+
 }
