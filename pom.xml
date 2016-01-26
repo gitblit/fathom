@@ -186,6 +186,7 @@
 
     <modules>
         <module>fathom-core</module>
+        <module>fathom-x509</module>
         <module>fathom-eventbus</module>
         <module>fathom-jcache</module>
         <module>fathom-jmx</module>

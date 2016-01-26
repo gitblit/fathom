@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 - [fathom-rest-security] Log form guard redirects for unauthenticated requests
 - [fathom-rest-shiro] Log form guard redirects for unauthenticated requests
+- [fathom-x509] Self-signed X509 certificate infrastructure for your microservice
 #### Removed
 
 ### [0.7.0] - 2015-11-09
@@ -166,6 +167,7 @@ Initial release.
 [0.5.1]: https://github.com/gitblit/fathom/compare/release-0.5.0...release-0.5.1
 
 [fathom-core]: https://github.com/gitblit/fathom/tree/master/fathom-core
+[fathom-x509]: https://github.com/gitblit/fathom/tree/master/fathom-x509
 [fathom-eventbus]: https://github.com/gitblit/fathom/tree/master/fathom-eventbus
 [fathom-jcache]: https://github.com/gitblit/fathom/tree/master/fathom-jcache
 [fathom-mailer]: https://github.com/gitblit/fathom/tree/master/fathom-mailer
