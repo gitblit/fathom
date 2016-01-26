@@ -529,7 +529,7 @@ public class SwaggerBuilder {
         }
 
         // document any exposed model properties
-        for (Field field : modelClass.getDeclaredFields()) {
+        for (Field field : ClassUtil.getAllFields(modelClass)) {
 
             if (field.isAnnotationPresent(Undocumented.class)) {
                 // undocumented field, skip

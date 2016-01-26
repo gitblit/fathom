@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 #### Fixed
+- [fathom-rest-swagger] Properly recurse model class hierarchy when generating Swagger model
 #### Changed
 - [fathom-core] Update to Undertow 1.3.14
 - [fathom-security-redis] Update to Jedis 2.8.0

@@ -41,6 +41,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -256,6 +257,16 @@ public class ClassUtil {
         }
     }
 
+    public static List<Field> getAllFields(Class clazz) {
+        List<Field> allFields = new ArrayList<>();
+        allFields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+        Class superClass = clazz.getSuperclass();
+        if  (!superClass.equals(Object.class)) {
+            allFields.addAll(getAllFields(superClass));
+        }
+
+        return allFields;
+    }
 
     public static void setField(Object target, String name, Object value) {
         Class<?> clazz = target.getClass();
