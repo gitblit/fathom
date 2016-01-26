@@ -285,7 +285,6 @@ public class SwaggerBuilder {
         }
 
         produces.remove(Produces.HTML);
-        produces.remove(Produces.TEXT);
 
         if (produces.isEmpty()) {
             log.debug("Skip {} {}, {} does not generate RESTful API content '{}",
