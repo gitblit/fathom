@@ -34,7 +34,7 @@ import java.util.Base64;
  * @author James Moger
  */
 @Singleton
-public final class BasicAuthenticationHandler extends StandardCredentialsHandler implements RouteHandler<Context> {
+public class BasicAuthenticationHandler extends StandardCredentialsHandler implements RouteHandler<Context> {
 
     private final boolean createSessions;
     private final boolean isPassive;
@@ -54,11 +54,15 @@ public final class BasicAuthenticationHandler extends StandardCredentialsHandler
     }
 
     @Override
-    public void handle(Context context) {
+    protected boolean isCreateSessions() {
+        return createSessions;
+    }
 
+    @Override
+    public void handle(Context context) {
         if (isAuthenticated(context)) {
             // already authenticated
-            if (createSessions) {
+            if (isCreateSessions()) {
                 // touch the session to prolong it's life
                 context.touchSession();
             }
@@ -69,7 +73,6 @@ public final class BasicAuthenticationHandler extends StandardCredentialsHandler
             return;
         }
 
-        // unauthenticated request
         String authorization = context.getRequest().getHeader("Authorization");
         if (!Strings.isNullOrEmpty(authorization) && authorization.startsWith("Basic")) {
 
@@ -84,18 +87,9 @@ public final class BasicAuthenticationHandler extends StandardCredentialsHandler
 
             Account account = authenticate(username, password);
 
-            if (account != null) {
-                // store the Account in the local Context
-                context.setLocal(AuthConstants.ACCOUNT_ATTRIBUTE, account);
-
-                if (createSessions) {
-                    // store the Account in a Session
-                    context.setSession(AuthConstants.ACCOUNT_ATTRIBUTE, account);
-                }
-
+            if (setupContext(context, account)) {
                 // continue the chain
                 context.next();
-
                 return;
             }
 
@@ -107,4 +101,5 @@ public final class BasicAuthenticationHandler extends StandardCredentialsHandler
             context.getResponse().unauthorized();
         }
     }
+
 }

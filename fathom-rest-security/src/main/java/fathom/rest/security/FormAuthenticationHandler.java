@@ -47,6 +47,11 @@ public final class FormAuthenticationHandler extends StandardCredentialsHandler 
     }
 
     @Override
+    protected boolean isCreateSessions() {
+        return true;
+    }
+
+    @Override
     public void handle(Context context) {
 
         // redirect if already authenticated
@@ -78,11 +83,7 @@ public final class FormAuthenticationHandler extends StandardCredentialsHandler 
                 c.setMaxAge(-1);
                 context.getResponse().cookie(c);
 
-                // store the Account in the Context
-                context.setLocal(AuthConstants.ACCOUNT_ATTRIBUTE, account);
-
-                // store the Account in a Session
-                context.setSession(AuthConstants.ACCOUNT_ATTRIBUTE, account);
+                setupContext(context, account);
 
                 if (rememberMe) {
                     // set a cookie

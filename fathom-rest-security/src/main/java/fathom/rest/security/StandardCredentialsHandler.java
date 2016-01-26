@@ -20,6 +20,7 @@ import fathom.authc.StandardCredentials;
 import fathom.realm.Account;
 import fathom.rest.Context;
 import fathom.security.SecurityManager;
+import ro.pippo.core.route.RouteHandler;
 
 /**
  * Base class for standard authentication handlers.
@@ -60,4 +61,23 @@ public abstract class StandardCredentialsHandler {
         Account account = securityManager.authenticate(authenticationToken);
         return account;
     }
+
+    protected boolean setupContext(Context context, Account account) {
+        if (account != null) {
+            // store the Account in the local Context
+            context.setLocal(AuthConstants.ACCOUNT_ATTRIBUTE, account);
+
+            if (isCreateSessions()) {
+                // store the Account in a Session
+                context.setSession(AuthConstants.ACCOUNT_ATTRIBUTE, account);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected abstract boolean isCreateSessions();
+
 }
