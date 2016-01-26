@@ -132,7 +132,7 @@ public class Boot implements Daemon {
     /**
      * Setup the Boot instance.
      */
-    private void init() {
+    protected void init() {
         System.setProperty("java.awt.headless", "true");
         setupLogback();
     }
