@@ -209,6 +209,8 @@
         <module>fathom-security-jdbc</module>
         <module>fathom-security-redis</module>
         <module>fathom-rest-shiro</module>
+        <module>fathom-xmlrpc</module>
+        <module>fathom-xmlrpc-test</module>
         <module>fathom-integration-test</module>
         <module>fathom-archetype-standard</module>
     </modules>

@@ -38,6 +38,7 @@ import models.Employee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteHandler;
+import routes.XmlRpcMethods;
 
 import java.io.File;
 import java.util.Calendar;
@@ -132,6 +133,11 @@ public class Routes extends RoutesModule {
             ctx.setLocal("items", dao.getAll());
             ctx.render("index");
         }).named("root page");
+
+        /*
+         * Register XML-RPC methods
+         */
+        POST("/RPC2", XmlRpcMethods.class);
 
         /*
          * Employees list is visible for authenticated sessions.

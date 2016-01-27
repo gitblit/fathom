@@ -16,12 +16,12 @@
 
 package conf;
 
-import fathom.test.FathomIntegrationTest;
+import fathom.test.XmlRpcIntegrationTest;
 import org.junit.Test;
 
 import static com.jayway.restassured.RestAssured.get;
 
-public class RoutesTest extends FathomIntegrationTest {
+public class RoutesTest extends XmlRpcIntegrationTest {
 
     @Test
     public void testIndex() {
@@ -31,6 +31,46 @@ public class RoutesTest extends FathomIntegrationTest {
     @Test
     public void testException() {
         get("/internalError").then().assertThat().statusCode(500);
+    }
+
+    @Test
+    public void testXmlrpcInsecureMinAsAnon() {
+        int value = callAnon("insecure.min", 1, 2);
+        assertEquals("Unexpected minimum value!", 1, value);
+    }
+
+    @Test
+    public void testXmlrpcInsecureItemNameAsAnon() {
+        String name = callAnon("insecure.nameOfItem", 1);
+        assertEquals("Unexpected item name!", "Apples", name);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testXmlrpcSecureMinAsAnon() {
+        int value = callAnon("secure.min", 1, 2);
+        assertEquals("Unexpected minimum value!", 1, value);
+    }
+
+    @Test
+    public void testXmlrpcSecureMinAsUser() {
+        int value = callAuth("secure.min", 1, 2);
+        assertEquals("Unexpected minimum value!", 1, value);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testXmlrpcSecureItemNameAsAnon() {
+        String name = callAnon("secure.nameOfItem", 1);
+        assertEquals("Unexpected item name!", "Apples", name);
+    }
+
+    @Test
+    public void testXmlrpcSecureItemNameAsUser() {
+        String name = callAuth("secure.nameOfItem", 1);
+        assertEquals("Unexpected item name!", "Apples", name);
+    }
+
+    protected <X> X callAuth(String methodName, Object... args) {
+        return call("admin", "admin", "/RPC2", methodName, args);
     }
 
 }

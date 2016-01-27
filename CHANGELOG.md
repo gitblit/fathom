@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest-security] Log form guard redirects for unauthenticated requests
 - [fathom-rest-shiro] Log form guard redirects for unauthenticated requests
 - [fathom-x509] Self-signed X509 certificate infrastructure for your microservice
+- [fathom-xmlrpc] Added XML-RPC module built on [fathom-rest] and [fathom-security]
 #### Removed
 
 ### [0.7.0] - 2015-11-09

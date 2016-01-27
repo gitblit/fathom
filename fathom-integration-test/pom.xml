@@ -48,6 +48,12 @@
 
         <dependency>
             <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-xmlrpc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
             <artifactId>fathom-rest-swagger</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -175,6 +181,13 @@
         <dependency>
             <groupId>com.gitblit.fathom</groupId>
             <artifactId>fathom-test-tools</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-xmlrpc-test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
