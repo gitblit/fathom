@@ -194,7 +194,7 @@ public class Util {
     }
 
     public static void logSetting(Logger log, String name, Object value) {
-        log.debug(Strings.padEnd(name, 32, '.') + (value == null ? "" : (name.equalsIgnoreCase("password") ? "<masked>" : value.toString())));
+        log.info(Strings.padEnd(name, 32, '.') + (value == null ? "" : (name.equalsIgnoreCase("password") ? "<masked>" : value.toString())));
     }
 
     public static String getPreSubstring(String input, char c) {
