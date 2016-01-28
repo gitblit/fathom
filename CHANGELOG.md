@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest-shiro] Log form guard redirects for unauthenticated requests
 - [fathom-x509] Self-signed X509 certificate infrastructure for your microservice
 - [fathom-xmlrpc] Added XML-RPC module built on [fathom-rest] and [fathom-security]
+- [fathom-rest] Now validates parameter names specified in controller uri against parameter names declared in the controller method signature
 #### Removed
 
 ### [0.7.0] - 2015-11-09

@@ -59,6 +59,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * ControllerHandler executes controller methods.
@@ -68,6 +70,12 @@ import java.util.TreeSet;
 public class ControllerHandler implements RouteHandler<Context> {
 
     private static final Logger log = LoggerFactory.getLogger(ControllerHandler.class);
+
+    // Matches: {id} AND {id: .*?}
+    // group(1) extracts the name of the group (in that case "id").
+    // group(3) extracts the regex if defined
+    private static final Pattern PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE = Pattern.compile("\\{(.*?)(:\\s(.*?))?\\}");
+
 
     protected final Class<? extends Controller> controllerClass;
     protected final Provider<? extends Controller> controllerProvider;
@@ -383,7 +391,53 @@ public class ControllerHandler implements RouteHandler<Context> {
                 }
             }
         }
+    }
 
+    /**
+     * Validate that the parameters specified in the uri pattern are declared in the method signature.
+     *
+     * @param uriPattern
+     * @throws FatalException if the controller method does not declare all named uri parameters
+     */
+    public void validateMethodArgs(String uriPattern) {
+        Set<String> namedParameters = new LinkedHashSet<>();
+        for (ArgumentExtractor extractor : extractors) {
+            if (extractor instanceof NamedExtractor) {
+                NamedExtractor namedExtractor = (NamedExtractor) extractor;
+                namedParameters.add(namedExtractor.getName());
+            }
+        }
+
+        // validate the url specification and method signature agree on required parameters
+        List<String> requiredParameters = getParameterNames(uriPattern);
+        if (!namedParameters.containsAll(requiredParameters)) {
+            throw new FatalException("Controller method '{}' declares parameters {} but the URL specification requires {}",
+                    Util.toString(method), namedParameters, requiredParameters);
+        }
+    }
+
+    /**
+     * Extracts the name of the parameters from a route
+     * <p/>
+     * /{my_id}/{my_name}
+     * <p/>
+     * would return a List with "my_id" and "my_name"
+     *
+     * @param uriPattern
+     * @return a list with the names of all parameters in the url pattern
+     */
+    private List<String> getParameterNames(String uriPattern) {
+        List<String> list = new ArrayList<>();
+
+        Matcher matcher = PATTERN_FOR_VARIABLE_PARTS_OF_ROUTE.matcher(uriPattern);
+        while (matcher.find()) {
+            // group(1) is the name of the group. Must be always there...
+            // "/assets/{file}" and "/assets/{file: [a-zA-Z][a-zA-Z_0-9]}"
+            // will return file.
+            list.add(matcher.group(1));
+        }
+
+        return list;
     }
 
     /**

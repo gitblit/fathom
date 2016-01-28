@@ -151,6 +151,8 @@ public class ControllerRegistrar extends ControllerScanner {
                     // method does not specify a path, inherit from controller
                     String fullPath = StringUtils.addStart(StringUtils.removeEnd(controllerPath, "/"), "/");
                     ControllerHandler handler = new ControllerHandler(injector, controllerClass, method.getName());
+                    handler.validateMethodArgs(fullPath);
+
                     RouteRegistration registration = new RouteRegistration(httpMethod, fullPath, handler);
                     configureRegistration(registration, method);
                     routeRegistrations.add(registration);
@@ -161,6 +163,8 @@ public class ControllerRegistrar extends ControllerScanner {
                         String fullPath = StringUtils.addStart(StringUtils.removeEnd(path, "/"), "/");
 
                         ControllerHandler handler = new ControllerHandler(injector, controllerClass, method.getName());
+                        handler.validateMethodArgs(fullPath);
+
                         RouteRegistration registration = new RouteRegistration(httpMethod, fullPath, handler);
                         configureRegistration(registration, method);
                         routeRegistrations.add(registration);

@@ -302,6 +302,7 @@ public abstract class RoutesModule {
 
     protected RouteRegistration registerRoute(String uriPattern, String httpMethod, Class<? extends Controller> controllerClass, String methodName) {
         ControllerHandler controllerHandler = new ControllerHandler(injector, controllerClass, methodName);
+        controllerHandler.validateMethodArgs(uriPattern);
         return registerRoute(uriPattern, httpMethod, controllerHandler);
     }
 
