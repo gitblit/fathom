@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
+- [fathom-core] Update to SLF4j 1.7.14
 #### Added
 #### Removed
 
