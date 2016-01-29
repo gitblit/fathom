@@ -4,6 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 #### Fixed
+#### Changed
+#### Added
+#### Removed
+
+### [0.8.0] - 2016-01-29
+#### Fixed
 - [fathom-rest-swagger] Properly recurse model class hierarchy when generating Swagger model
 #### Changed
 - [fathom-core] Update to Undertow 1.3.16
@@ -18,7 +24,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-x509] Self-signed X509 certificate infrastructure for your microservice
 - [fathom-xmlrpc] Added XML-RPC module built on [fathom-rest] and [fathom-security]
 - [fathom-rest] Now validates parameter names specified in controller uri against parameter names declared in the controller method signature
-#### Removed
 
 ### [0.7.0] - 2015-11-09
 #### Fixed
@@ -160,7 +165,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.7.0...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.0...HEAD
+[0.8.0]: https://github.com/gitblit/fathom/compare/release-0.7.0...release-0.8.0
 [0.7.0]: https://github.com/gitblit/fathom/compare/release-0.6.1...release-0.7.0
 [0.6.1]: https://github.com/gitblit/fathom/compare/release-0.6.0...release-0.6.1
 [0.6.0]: https://github.com/gitblit/fathom/compare/release-0.5.4...release-0.6.0
@@ -184,6 +190,7 @@ Initial release.
 [fathom-rest-security]: https://github.com/gitblit/fathom/tree/master/fathom-rest-security
 [fathom-rest-shiro]: https://github.com/gitblit/fathom/tree/master/fathom-rest-shiro
 [fathom-rest-swagger]: https://github.com/gitblit/fathom/tree/master/fathom-rest-swagger
+[fathom-xmlrpc]: https://github.com/gitblit/fathom/tree/master/fathom-xmlrpc
 [fathom-security]: https://github.com/gitblit/fathom/tree/master/fathom-security
 [fathom-security-htpasswd]: https://github.com/gitblit/fathom/tree/master/fathom-security-htpasswd
 [fathom-security-jdbc]: https://github.com/gitblit/fathom/tree/master/fathom-security-jdbc
