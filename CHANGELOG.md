@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 - [fathom-rest-swagger] Properly recurse model class hierarchy when generating Swagger model
 #### Changed
-- [fathom-core] Update to Undertow 1.3.15
+- [fathom-core] Update to Undertow 1.3.16
 - [fathom-security-redis] Update to Jedis 2.8.0
 - [fathom-rest] Update to Pippo 0.8.0
 - [fathom-rest] Add convenience methods to add routes by handler class
