@@ -17,6 +17,7 @@
 package fathom.security;
 
 import fathom.Module;
+import org.kohsuke.MetaInfServices;
 
 
 /**
@@ -24,6 +25,7 @@ import fathom.Module;
  *
  * @author James Moger
  */
+@MetaInfServices
 public class SecurityModule extends Module {
 
     @Override

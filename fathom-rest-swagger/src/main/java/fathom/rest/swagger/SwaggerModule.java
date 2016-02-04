@@ -17,11 +17,13 @@
 package fathom.rest.swagger;
 
 import fathom.Module;
+import org.kohsuke.MetaInfServices;
 
 /**
  * Module that registers the Fathom SwaggerService.
  * @author James Moger
  */
+@MetaInfServices
 public class SwaggerModule extends Module {
 
     @Override

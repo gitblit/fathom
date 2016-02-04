@@ -49,6 +49,11 @@
             <version>${quartz.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.kohsuke.metainf-services</groupId>
+            <artifactId>metainf-services</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.gitblit.fathom</groupId>
             <artifactId>fathom-test-tools</artifactId>
             <version>${project.version}</version>

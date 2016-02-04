@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 #### Changed
 - [fathom-core] Update to SLF4j 1.7.14
+- Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
 #### Added
 #### Removed
 

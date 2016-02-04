@@ -17,6 +17,7 @@
 package fathom.mailer;
 
 import fathom.Module;
+import org.kohsuke.MetaInfServices;
 import org.sonatype.micromailer.EMailer;
 import org.sonatype.micromailer.MailComposer;
 import org.sonatype.micromailer.MailSender;
@@ -29,6 +30,7 @@ import org.sonatype.micromailer.imp.DefaultMailStorage;
 /**
  * @author James Moger
  */
+@MetaInfServices
 public class MailModule extends Module {
 
     @Override

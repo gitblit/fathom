@@ -17,6 +17,7 @@ package fathom.eventbus;
 
 import com.google.common.eventbus.EventBus;
 import fathom.Module;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author James Moger
  */
+@MetaInfServices
 public final class EventBusModule extends Module {
 
     private static final Logger log = LoggerFactory.getLogger(EventBusModule.class);

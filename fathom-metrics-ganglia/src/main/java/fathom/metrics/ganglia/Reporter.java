@@ -21,6 +21,7 @@ import fathom.conf.Settings;
 import fathom.metrics.MetricsReporter;
 import info.ganglia.gmetric4j.gmetric.GMetric;
 import info.ganglia.gmetric4j.gmetric.GMetric.UDPAddressingMode;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author James Moger
  */
+@MetaInfServices
 public class Reporter implements MetricsReporter {
 
     private final Logger log = LoggerFactory.getLogger(Reporter.class);

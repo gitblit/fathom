@@ -16,12 +16,14 @@
 package fathom.jmx;
 
 import fathom.Module;
+import org.kohsuke.MetaInfServices;
 
 /**
  * Fathom module which binds a JMX server.
  *
  * @author James Moger
  */
+@MetaInfServices
 public final class JmxModule extends Module {
 
     @Override

@@ -25,6 +25,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.web.env.IniWebEnvironment;
 import org.apache.shiro.web.env.WebEnvironment;
 import org.apache.shiro.web.mgt.WebSecurityManager;
+import org.kohsuke.MetaInfServices;
 
 
 /**
@@ -32,6 +33,7 @@ import org.apache.shiro.web.mgt.WebSecurityManager;
  *
  * @author James Moger
  */
+@MetaInfServices
 public class ShiroModule extends ServletsModule {
 
     @Override

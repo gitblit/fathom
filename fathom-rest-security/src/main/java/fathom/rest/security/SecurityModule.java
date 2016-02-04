@@ -35,12 +35,14 @@ import fathom.rest.security.aop.RequireRolesInterceptor;
 import fathom.rest.security.aop.RequireToken;
 import fathom.rest.security.aop.RequireTokenInterceptor;
 import fathom.security.SecurityManager;
+import org.kohsuke.MetaInfServices;
 
 import static com.google.inject.matcher.Matchers.*;
 
 /**
  * @author James Moger
  */
+@MetaInfServices
 public class SecurityModule extends Module {
 
     @Override

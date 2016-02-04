@@ -17,6 +17,7 @@ package fathom.metrics;
 
 import com.codahale.metrics.MetricRegistry;
 import fathom.Module;
+import org.kohsuke.MetaInfServices;
 
 import static com.google.inject.matcher.Matchers.annotatedWith;
 import static com.google.inject.matcher.Matchers.any;
@@ -26,6 +27,7 @@ import static com.google.inject.matcher.Matchers.any;
  *
  * @author James Moger
  */
+@MetaInfServices
 public final class MetricsModule extends Module {
 
     @Override

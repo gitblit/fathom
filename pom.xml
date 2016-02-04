@@ -181,6 +181,12 @@
                 <version>${slf4j.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.kohsuke.metainf-services</groupId>
+                <artifactId>metainf-services</artifactId>
+                <version>1.7</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

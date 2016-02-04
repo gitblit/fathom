@@ -18,6 +18,7 @@ package fathom.quartz;
 import com.google.common.base.Optional;
 import fathom.Module;
 import fathom.utils.ClassUtil;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
  * Fathom module for Quartz.
  * This module auto-loads the JobsModule and registers the Quartz service.
  */
+@MetaInfServices
 public class QuartzModule extends Module {
 
     private static final Logger log = LoggerFactory.getLogger(QuartzModule.class);

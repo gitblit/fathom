@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import fathom.ServletsModule;
 import fathom.conf.Settings;
+import org.kohsuke.MetaInfServices;
 import ro.pippo.core.Application;
 import ro.pippo.core.ContentTypeEngines;
 import ro.pippo.core.ErrorHandler;
@@ -40,6 +41,7 @@ import java.util.Properties;
 /**
  * @author James Moger
  */
+@MetaInfServices
 public class RestModule extends ServletsModule {
 
     @Override

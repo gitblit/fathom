@@ -29,6 +29,7 @@ import org.jsr107.ri.annotations.guice.CachePutInterceptor;
 import org.jsr107.ri.annotations.guice.CacheRemoveAllInterceptor;
 import org.jsr107.ri.annotations.guice.CacheRemoveEntryInterceptor;
 import org.jsr107.ri.annotations.guice.CacheResultInterceptor;
+import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,7 @@ import java.util.Map;
  *
  * @author James Moger
  */
+@MetaInfServices
 public final class JCacheModule extends Module {
 
     private static final Logger log = LoggerFactory.getLogger(JCacheModule.class);
