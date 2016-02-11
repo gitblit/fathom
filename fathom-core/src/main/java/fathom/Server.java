@@ -122,7 +122,8 @@ public class Server {
         for (ListenerInfo listener : fathomDeploymentManager.getDeployment().getDeploymentInfo().getListeners()) {
             if (ServletContextListener.class == listener.getListenerClass()) {
                 try {
-                    ServletContextListener servletContextListener = (ServletContextListener) listener.getInstanceFactory().createInstance();
+                    ServletContextListener servletContextListener = (ServletContextListener) listener
+                            .getInstanceFactory().createInstance().getInstance();
                     Injector injector = servletContextListener.getInjector();
                     return injector;
                 } catch (Exception e) {
