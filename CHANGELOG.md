@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to SLF4j 1.7.14
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
 #### Added
+- [fathom-rest-test] New test module that integrates Fathom-REST/Pippo ContentTypeEngines
 #### Removed
 
 ### [0.8.0] - 2016-01-29
@@ -193,6 +194,7 @@ Initial release.
 [fathom-rest-security]: https://github.com/gitblit/fathom/tree/master/fathom-rest-security
 [fathom-rest-shiro]: https://github.com/gitblit/fathom/tree/master/fathom-rest-shiro
 [fathom-rest-swagger]: https://github.com/gitblit/fathom/tree/master/fathom-rest-swagger
+[fathom-rest-test]: https://github.com/gitblit/fathom/tree/master/fathom-rest-test
 [fathom-xmlrpc]: https://github.com/gitblit/fathom/tree/master/fathom-xmlrpc
 [fathom-security]: https://github.com/gitblit/fathom/tree/master/fathom-security
 [fathom-security-htpasswd]: https://github.com/gitblit/fathom/tree/master/fathom-security-htpasswd

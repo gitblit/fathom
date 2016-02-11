@@ -89,7 +89,7 @@
 
         <dependency>
             <groupId>com.gitblit.fathom</groupId>
-            <artifactId>fathom-test-tools</artifactId>
+            <artifactId>fathom-rest-test</artifactId>
             <version>${fathom.version}</version>
             <scope>test</scope>
         </dependency>
