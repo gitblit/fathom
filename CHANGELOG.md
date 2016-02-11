@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 - [fathom-test-tools] Fixed broken getInjector() method
+- [fathom-rest-swagger] Fixed property mapping for java.sql.Timestamp and java.sql.Time
 #### Changed
 - [fathom-core] Update to SLF4j 1.7.14
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files

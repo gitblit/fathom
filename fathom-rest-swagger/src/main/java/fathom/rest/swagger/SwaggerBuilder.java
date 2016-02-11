@@ -95,6 +95,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -902,13 +903,16 @@ public class SwaggerBuilder {
         } else if (String.class == objectClass) {
             // STRING
             swaggerProperty = new StringProperty();
-        } else if (Date.class == objectClass) {
+        } else if (Date.class == objectClass || Timestamp.class == objectClass) {
             // DATETIME
-            DateTimeProperty property = new DateTimeProperty();
-            swaggerProperty = property;
+            swaggerProperty = new DateTimeProperty();
         } else if (java.sql.Date.class == objectClass) {
             // DATE
-            DateProperty property = new DateProperty();
+            swaggerProperty = new DateProperty();
+        } else if (java.sql.Time.class == objectClass) {
+            // TIME -> STRING
+            StringProperty property = new StringProperty();
+            property.setPattern("HH:mm:ss");
             swaggerProperty = property;
         } else if (UUID.class == objectClass) {
             // UUID
@@ -924,8 +928,7 @@ public class SwaggerBuilder {
             swaggerProperty = property;
         } else if (FileItem.class == objectClass) {
             // FILE UPLOAD
-            FileProperty property = new FileProperty();
-            swaggerProperty = property;
+            swaggerProperty = new FileProperty();
         } else {
             // Register a Model class
             String modelRef = registerModel(swagger, objectClass);
