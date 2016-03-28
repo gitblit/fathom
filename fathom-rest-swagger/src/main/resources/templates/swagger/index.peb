@@ -19,6 +19,7 @@
     <script src="{{ webjarsAt('swagger-ui/lib/backbone-min.js') }}"></script>
     <script src="{{ webjarsAt('swagger-ui/swagger-ui.js') }}"></script>
     <script src="{{ webjarsAt('swagger-ui/lib/highlight.7.3.pack.js') }}"></script>
+    <script src="{{ webjarsAt('swagger-ui/lib/jsoneditor.min.js')}}"></script>
     <script src="{{ webjarsAt('swagger-ui/lib/marked.js') }}"></script>
 
     <!-- enabling this will enable oauth2 implicit scope support -->
@@ -48,6 +49,7 @@
                     log("Unable to Load SwaggerUI");
                 },
                 docExpansion: "none",
+                jsonEditor: false,
                 apisSorter: "alpha",
                 showRequestHeaders: false
             });

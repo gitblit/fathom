@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to SLF4j 1.7.14
 - Use `org.kohsuke.metainf-services:meta-services` annotation processor to automatically generate all META-INF/services files
 - [fathom-core] Update to Undertow 1.3.19
-- [fathom-rest-swagger] Update to Swagger Core 1.5.7
+- [fathom-rest-swagger] Update to Swagger Core 1.5.8 and Swagger-UI 2.1.4
 - [fathom-security-redis] Update to Jedis 2.8.1
 - [fathom-security-jdbc] Update to HikariCP 2.4.5
 - [fathom-metrics-librato] Update to Librato 4.1.2.5
