@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to Undertow 1.3.18
 - [fathom-rest-swagger] Update to Swagger Core 1.5.7
 - [fathom-security-redis] Update to Jedis 2.8.1
+- [fathom-security-jdbc] Update to HikariCP 2.4.5
 #### Added
 - [fathom-rest-test] New test module that integrates Fathom-REST/Pippo ContentTypeEngines
 #### Removed
