@@ -4,6 +4,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 #### Fixed
+#### Changed
+- [fathom-core] Update to SLF4j 1.7.20
+#### Added
+#### Removed
+
+### [0.8.1] - 2016-03-31
+#### Fixed
 - [fathom-test-tools] Fixed broken getInjector() method
 - [fathom-rest-swagger] Fixed property mapping for java.sql.Timestamp and java.sql.Time
 #### Changed
@@ -16,7 +23,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-metrics-librato] Update to Librato 4.1.2.5
 #### Added
 - [fathom-rest-test] New test module that integrates Fathom-REST/Pippo ContentTypeEngines
-#### Removed
 
 ### [0.8.0] - 2016-01-29
 #### Fixed
@@ -175,7 +181,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.0...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.1...HEAD
+[0.8.1]: https://github.com/gitblit/fathom/compare/release-0.8.0...release-0.8.1
 [0.8.0]: https://github.com/gitblit/fathom/compare/release-0.7.0...release-0.8.0
 [0.7.0]: https://github.com/gitblit/fathom/compare/release-0.6.1...release-0.7.0
 [0.6.1]: https://github.com/gitblit/fathom/compare/release-0.6.0...release-0.6.1
