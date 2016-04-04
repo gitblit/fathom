@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to Undertow 1.3.20
 - [fathom-core] Update to Guava 19.0
 - [fathom-core] Update to Config 1.3.0
+- [fathom-core] Update to args4j 2.33
 #### Added
 #### Removed
 
