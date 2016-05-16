@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to Guava 19.0
 - [fathom-core] Update to Config 1.3.0
 - [fathom-core] Update to args4j 2.33
+- [fathom-security-jdbc] Update to HikariCP 2.4.6
 #### Added
 #### Removed
 
