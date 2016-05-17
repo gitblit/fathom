@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
-- [fathom-core] Update to SLF4j 1.7.20
+- [fathom-core] Update to SLF4j 1.7.21
 - [fathom-core] Update to Undertow 1.3.22
 - [fathom-core] Update to Guava 19.0
 - [fathom-core] Update to Config 1.3.0
