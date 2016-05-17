@@ -16,7 +16,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest] Added route group registration
 #### Removed
 
-### [0.8.1] - 2016-03-31
+### [0.8.2] - 2016-03-28
+#### Changed
+- [fathom-core] Update to Undertow 1.3.19
+- [fathom-rest-swagger] Update to Swagger Core 1.5.8 and Swagger-UI 2.1.4
+- [fathom-security-redis] Update to Jedis 2.8.1
+- [fathom-security-jdbc] Update to HikariCP 2.4.5
+- [fathom-metrics-librato] Update to Librato 4.1.2.5
+
+### [0.8.1] - 2016-02-11
 #### Fixed
 - [fathom-test-tools] Fixed broken getInjector() method
 - [fathom-rest-swagger] Fixed property mapping for java.sql.Timestamp and java.sql.Time
@@ -188,7 +196,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.1...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.2...HEAD
+[0.8.2]: https://github.com/gitblit/fathom/compare/release-0.8.1...release-0.8.2
 [0.8.1]: https://github.com/gitblit/fathom/compare/release-0.8.0...release-0.8.1
 [0.8.0]: https://github.com/gitblit/fathom/compare/release-0.7.0...release-0.8.0
 [0.7.0]: https://github.com/gitblit/fathom/compare/release-0.6.1...release-0.7.0
