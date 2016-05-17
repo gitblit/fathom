@@ -36,6 +36,7 @@ import java.util.Set;
  */
 public class RouteRegistration {
 
+    private RouteGroup routeGroup;
     private String requestMethod;
     private String uriPattern;
     private RouteHandler routeHandler;
@@ -49,6 +50,11 @@ public class RouteRegistration {
     private boolean contentTypeSuffixesRequired;
 
     public RouteRegistration(String requestMethod, String uriPattern, RouteHandler routeHandler) {
+        this(null, requestMethod, uriPattern, routeHandler);
+    }
+
+    public RouteRegistration(RouteGroup routeGroup, String requestMethod, String uriPattern, RouteHandler routeHandler) {
+        this.routeGroup = routeGroup;
         this.requestMethod = requestMethod;
         this.uriPattern = uriPattern;
         this.routeHandler = routeHandler;
@@ -197,6 +203,10 @@ public class RouteRegistration {
 
     public Set<String> getContentTypeSuffixes() {
         return contentTypeSuffixes;
+    }
+
+    public RouteGroup routeGroup() {
+        return routeGroup;
     }
 
     @Override

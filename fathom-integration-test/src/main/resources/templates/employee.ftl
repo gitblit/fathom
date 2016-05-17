@@ -91,7 +91,7 @@
                 <p class="lead">Are you sure you want to delete this employee?</p>
                 <a class="close-reveal-modal">&#215;</a>
 
-                <form class="inline" method="POST" action="${appPath}/secure/employee/${employee.id}/delete">
+                <form class="inline" method="POST" action="${appPath}/secure/employees/${employee.id}/delete">
                     <input type="hidden" name="_csrf_token" value="${csrfToken}"/>
                     <button type="submit" class="small radius alert">
                     ${i18n('fathom.delete')}

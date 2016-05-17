@@ -179,29 +179,45 @@ public abstract class RoutesModule {
         return GET(uriPattern, new LanguageHandler(languages, allowQueryParameter, setCookie));
     }
 
-    protected void addControllers() {
+    protected RoutesModule addControllers() {
         String applicationPackage = Optional.fromNullable(settings.getApplicationPackage()).or("");
         String controllerPackage = StringUtils.removeStart(applicationPackage + ".controllers", ".");
         String controllersPackage = settings.getString(Settings.Setting.application_controllersPackage, controllerPackage);
-        addControllers(controllersPackage);
+        return addControllers(controllersPackage);
     }
 
-    protected void addControllers(String... packageNames) {
+    protected RoutesModule addControllers(String... packageNames) {
         ControllerRegistrar registrar = new ControllerRegistrar(injector, settings);
         registrar.init(packageNames);
         routeRegistrations.addAll(registrar.getRouteRegistrations());
+
+        return this;
     }
 
-    protected void addControllers(Package... packages) {
+    protected RoutesModule addControllers(Package... packages) {
         ControllerRegistrar registrar = new ControllerRegistrar(injector, settings);
         registrar.init(packages);
         routeRegistrations.addAll(registrar.getRouteRegistrations());
+
+        return this;
     }
 
-    protected void addControllers(Class<? extends Controller>... controllers) {
+    protected RoutesModule addControllers(Class<? extends Controller>... controllers) {
         ControllerRegistrar registrar = new ControllerRegistrar(injector, settings);
         registrar.init(controllers);
         routeRegistrations.addAll(registrar.getRouteRegistrations());
+
+        return this;
+    }
+
+    protected RouteGroup addRouteGroup(String uriPattern) {
+        return new RouteGroup(this, uriPattern);
+    }
+
+    RoutesModule addRouteRegistration(RouteRegistration registration) {
+        this.routeRegistrations.add(registration);
+
+        return this;
     }
 
     protected RouteRegistration ALL(String uriPattern, RouteHandler<Context> handler) {
@@ -209,7 +225,7 @@ public abstract class RoutesModule {
     }
 
     protected RouteRegistration ALL(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
-        return registerRoute(uriPattern, HttpMethod.ALL, getInjector().getInstance(handlerClass));
+        return registerRoute(uriPattern, HttpMethod.ALL, handlerClass);
     }
 
     protected RouteRegistration OPTIONS(String uriPattern, RouteHandler<Context> handler) {
@@ -217,7 +233,7 @@ public abstract class RoutesModule {
     }
 
     protected RouteRegistration OPTIONS(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
-        return registerRoute(uriPattern, HttpMethod.OPTIONS, getInjector().getInstance(handlerClass));
+        return registerRoute(uriPattern, HttpMethod.OPTIONS, handlerClass);
     }
 
     protected RouteRegistration OPTIONS(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -229,7 +245,7 @@ public abstract class RoutesModule {
     }
 
     protected RouteRegistration HEAD(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
-        return registerRoute(uriPattern, HttpMethod.HEAD, getInjector().getInstance(handlerClass));
+        return registerRoute(uriPattern, HttpMethod.HEAD, handlerClass);
     }
 
     protected RouteRegistration HEAD(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -245,7 +261,7 @@ public abstract class RoutesModule {
     }
 
     protected RouteRegistration GET(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
-        return registerRoute(uriPattern, HttpMethod.GET, getInjector().getInstance(handlerClass));
+        return registerRoute(uriPattern, HttpMethod.GET, handlerClass);
     }
 
     protected RouteRegistration GET(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -257,7 +273,7 @@ public abstract class RoutesModule {
     }
 
     protected RouteRegistration POST(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
-        return registerRoute(uriPattern, HttpMethod.POST, getInjector().getInstance(handlerClass));
+        return registerRoute(uriPattern, HttpMethod.POST, handlerClass);
     }
 
     protected RouteRegistration POST(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -269,7 +285,7 @@ public abstract class RoutesModule {
     }
 
     protected RouteRegistration PUT(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
-        return registerRoute(uriPattern, HttpMethod.PUT, getInjector().getInstance(handlerClass));
+        return registerRoute(uriPattern, HttpMethod.PUT, handlerClass);
     }
 
     protected RouteRegistration PUT(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -281,7 +297,7 @@ public abstract class RoutesModule {
     }
 
     protected RouteRegistration PATCH(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
-        return registerRoute(uriPattern, HttpMethod.PATCH, getInjector().getInstance(handlerClass));
+        return registerRoute(uriPattern, HttpMethod.PATCH, handlerClass);
     }
 
     protected RouteRegistration PATCH(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
@@ -293,21 +309,25 @@ public abstract class RoutesModule {
     }
 
     protected RouteRegistration DELETE(String uriPattern, Class<? extends RouteHandler<Context>> handlerClass) {
-        return registerRoute(uriPattern, HttpMethod.DELETE, getInjector().getInstance(handlerClass));
+        return registerRoute(uriPattern, HttpMethod.DELETE, handlerClass);
     }
 
     protected RouteRegistration DELETE(String uriPattern, Class<? extends Controller> controllerClass, String methodName) {
         return registerRoute(uriPattern, HttpMethod.DELETE, controllerClass, methodName);
     }
 
-    protected RouteRegistration registerRoute(String uriPattern, String httpMethod, Class<? extends Controller> controllerClass, String methodName) {
+    private RouteRegistration registerRoute(String uriPattern, String httpMethod, Class<? extends Controller> controllerClass, String methodName) {
         ControllerHandler controllerHandler = new ControllerHandler(injector, controllerClass, methodName);
         controllerHandler.validateMethodArgs(uriPattern);
         return registerRoute(uriPattern, httpMethod, controllerHandler);
     }
 
+    private RouteRegistration registerRoute(String uriPattern, String httpMethod, Class<? extends RouteHandler<Context>> handlerClass) {
+        return registerRoute(uriPattern, httpMethod, injector.getInstance(handlerClass));
+    }
+
     private RouteRegistration registerRoute(String uriPattern, String httpMethod, RouteHandler routeHandler) {
-        RouteRegistration routeRegistration = new RouteRegistration(httpMethod, uriPattern, routeHandler);
+        RouteRegistration routeRegistration = new RouteRegistration(null, httpMethod, uriPattern, routeHandler);
         routeRegistrations.add(routeRegistration);
         return routeRegistration;
     }

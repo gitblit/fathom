@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-security-jdbc] Update to HikariCP 2.4.6
 - [fathom-rest-swagger] Update to Swagger Core 1.5.9
 #### Added
+- [fathom-rest] Added route group registration
 #### Removed
 
 ### [0.8.1] - 2016-03-31
