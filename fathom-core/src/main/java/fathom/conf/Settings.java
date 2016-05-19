@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
@@ -53,7 +54,7 @@ public class Settings {
     private final int defaultHttpsPort = 0;
     private final int defaultAjpPort = 0;
     private final String defaultContextPath = "/";
-    private final String defaultHost = "0.0.0.0";
+    private final String defaultListenAddress = "0.0.0.0";
     private final String defaultUploadFilesLocation = System.getProperty("java.io.tmpdir");
     private final long defaultUploadFilesMaxSize = -1L;
     private final Config config;
@@ -170,19 +171,6 @@ public class Settings {
         return Strings.emptyToNull(getString(Setting.application_package, ""));
     }
 
-    public String getApplicationHostname() {
-        return getString(Setting.application_hostname, defaultHost);
-    }
-
-    @Option(name = "--hostname", metaVar = "HOSTNAME",
-            usage = "Hostname to use for within the application\n" +
-                    "e.g. 'my.application.com'")
-    public Settings hostname(String hostname) {
-        this.overrideSetting(Setting.application_hostname, hostname);
-
-        return this;
-    }
-
     public URL getFileUrl(String name, String defaultValue) {
         String file = getString(name, defaultValue);
         if (Strings.isNullOrEmpty(file)) {
@@ -204,24 +192,43 @@ public class Settings {
         }
     }
 
+    @Option(name = "--applicationUrl", metaVar = "URL",
+            usage = "The URL to advertise to clients.")
+    public Settings applicationUrl(String url) {
+        this.overrideSetting(Setting.application_url, url);
+
+        return this;
+    }
+
     /**
-     * Returns the preferred application url (https is favored over http).
+     * Returns the preferred application url, if no application url is specified use the Fathom url.
      *
      * @return the preferred application url
      */
     public String getApplicationUrl() {
-        if (getHttpsPort() > 0) {
-            int port = getHttpsPort();
-            if (port == 443) {
-                return String.format("https://%s%s", getApplicationHostname(), getContextPath());
-            }
-            return String.format("https://%s:%s%s", getApplicationHostname(), port, getContextPath());
-        } else if (getHttpPort() > 0) {
+        return getString(Setting.application_url, getFathomUrl());
+    }
+
+    /**
+     * Returns the url of the Fathom application based on the listen address, port, and context path.
+     * This url is intended for integration testing and will return an http url over https even if both
+     * are configured.
+     *
+     * @return the fathom url
+     */
+    public String getFathomUrl() {
+        if (getHttpPort() > 0) {
             int port = getHttpPort();
             if (port == 80) {
-                return String.format("http://%s%s", getApplicationHostname(), getContextPath());
+                return String.format("http://%s%s", getHttpListenAddress(), getContextPath());
             }
-            return String.format("http://%s:%s%s", getApplicationHostname(), getHttpPort(), getContextPath());
+            return String.format("http://%s:%s%s", getHttpListenAddress(), getHttpPort(), getContextPath());
+        } else if (getHttpsPort() > 0) {
+            int port = getHttpsPort();
+            if (port == 443) {
+                return String.format("https://%s%s", getHttpsListenAddress(), getContextPath());
+            }
+            return String.format("https://%s:%s%s", getHttpsListenAddress(), port, getContextPath());
         }
         return null;
     }
@@ -231,15 +238,11 @@ public class Settings {
      * Generally this url is used for integration testing.
      *
      * @return the preferred host url
+     * @deprecated Use getFathomUrl() or getApplicationUrl() instead.
      */
+    @Deprecated
     public String getUrl() {
-
-        if (getHttpPort() > 0) {
-            return String.format("http://%s:%s%s", getHost(), getHttpPort(), getContextPath());
-        } else if (getHttpsPort() > 0) {
-            return String.format("https://%s:%s%s", getHost(), getHttpsPort(), getContextPath());
-        }
-        return null;
+        return getFathomUrl();
     }
 
     public void applyArgs(final String... args) {
@@ -296,18 +299,33 @@ public class Settings {
         return this;
     }
 
+    /**
+     * Returns the listen address of Undertow.
+     *
+     * @return thre listen address of Undertow
+     * @deprecated Use the transport specific method.
+     */
+    @Deprecated
     public String getHost() {
-        return getString(Setting.undertow_host, defaultHost);
+        if (getHttpPort() > 0) {
+            return getHttpListenAddress();
+        } else if (getHttpsPort() > 0) {
+            return getHttpsListenAddress();
+        } else {
+            return getAjpListenAddress();
+        }
     }
 
-    @Option(name = "--host", metaVar = "HOST",
-            usage = "Host interface for binding transports\n" +
-                    "e.g. '0.0.0.0' to serve on all interfaces to all clients\n" +
-                    "     'localhost' to serve only to this machine")
+    /**
+     * Sets the host interface for binding all transports.
+     *
+     * @param host
+     * @return this
+     * @deprecated Please use the transport-specific settings.
+     */
+    @Deprecated
     public Settings host(String host) {
-        this.overrideSetting(Setting.undertow_host, host);
-
-        return this;
+        throw new FathomException("Setting the host address is no longer supported!  Please use the transport-specific settings.");
     }
 
     public int getJmxPort() {
@@ -322,7 +340,6 @@ public class Settings {
         return this;
     }
 
-
     public int getHttpPort() {
         return getInteger(Setting.undertow_httpPort, defaultHttpPort);
     }
@@ -331,6 +348,18 @@ public class Settings {
             usage = "Port for serving HTTP.\nPORT <= 0 will disable this transport.")
     public Settings httpPort(int port) {
         this.overrideSetting(Setting.undertow_httpPort, port);
+
+        return this;
+    }
+
+    public String getHttpListenAddress() {
+        return getString(Setting.undertow_httpListenAddress, defaultListenAddress);
+    }
+
+    @Option(name = "--httpListenAddress", metaVar = "ADDRESS",
+            usage = "Interface to use for serving HTTP.")
+    public Settings httpListenAddress(String address) {
+        this.overrideSetting(Setting.undertow_httpListenAddress, address);
 
         return this;
     }
@@ -347,6 +376,18 @@ public class Settings {
         return this;
     }
 
+    public String getHttpsListenAddress() {
+        return getString(Setting.undertow_httpsListenAddress, defaultListenAddress);
+    }
+
+    @Option(name = "--httpsListenAddress", metaVar = "ADDRESS",
+            usage = "Interface to use for serving HTTPS.")
+    public Settings httpsListenAddress(String address) {
+        this.overrideSetting(Setting.undertow_httpsListenAddress, address);
+
+        return this;
+    }
+
     public int getAjpPort() {
         return getInteger(Setting.undertow_ajpPort, defaultAjpPort);
     }
@@ -355,6 +396,18 @@ public class Settings {
             usage = "Port for serving AJP.\nPORT <= 0 will disable this transport.")
     public Settings ajpPort(int port) {
         this.overrideSetting(Setting.undertow_ajpPort, port);
+
+        return this;
+    }
+
+    public String getAjpListenAddress() {
+        return getString(Setting.undertow_ajpListenAddress, defaultListenAddress);
+    }
+
+    @Option(name = "--ajpListenAddress", metaVar = "ADDRESS",
+            usage = "Interface to use for serving AJP.")
+    public Settings ajpListenAddress(String address) {
+        this.overrideSetting(Setting.undertow_ajpListenAddress, address);
 
         return this;
     }
@@ -469,6 +522,71 @@ public class Settings {
 
     public void overrideSetting(Enum<?> key, boolean defaultValue) {
         overrideSetting(key.toString(), defaultValue);
+    }
+
+    private String extractScheme(String url) {
+        try {
+            return URI.create(url).getScheme();
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public String getApplicationScheme() {
+        String fathomScheme = extractScheme(getFathomUrl());
+        String applicationScheme = extractScheme(getApplicationUrl());
+        return Optional.fromNullable(Strings.emptyToNull(applicationScheme)).or(fathomScheme);
+    }
+
+    public int getApplicationPort() {
+        int fathomPort = extractPort(getFathomUrl());
+        int applicationPort = extractPort(getApplicationUrl());
+        return applicationPort > 0 ? applicationPort : fathomPort;
+    }
+
+    private int extractPort(String url) {
+        try {
+            URI uri = URI.create(url);
+            int port = uri.getPort();
+            if (port > 0) {
+                return port;
+            }
+            if ("https".equals(uri.getScheme())) {
+                return 443;
+            } else if ("http".equals(uri.getScheme())) {
+                return 80;
+            }
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+
+    private String extractHostname(String url) {
+        try {
+            return URI.create(url).getHost();
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public String getApplicationHostname() {
+        String fathomHostname = extractHostname(getFathomUrl());
+        String applicationHostname = extractHostname(getApplicationUrl());
+        return Optional.fromNullable(Strings.emptyToNull(applicationHostname))
+                .or(Optional.fromNullable(Strings.emptyToNull(fathomHostname)).or(getLocalHostname()));
+    }
+
+    /**
+     * Formerly set the application hostname.
+     *
+     * @param hostname
+     *
+     * @return this
+     * @deprecated does nothing
+     */
+    @Deprecated
+    public Settings hostname(String hostname) {
+        throw new FathomException("Setting the application hostname is no longer supported!");
     }
 
     public String getLocalHostname() {
@@ -885,18 +1003,20 @@ public class Settings {
         application_name,
         application_version,
         application_package,
-        application_hostname,
         application_controllersPackage,
         application_uploadLocation,
         application_uploadMaxSize,
+        application_url,
         jcache_preferredProvider,
         jmx_port,
         metrics_jvm_enabled,
         metrics_mbeans_enabled,
         undertow_ajpPort,
+        undertow_ajpListenAddress,
         undertow_httpPort,
+        undertow_httpListenAddress,
         undertow_httpsPort,
-        undertow_host,
+        undertow_httpsListenAddress,
         undertow_contextPath,
         undertow_keystoreFile,
         undertow_keystorePassword,

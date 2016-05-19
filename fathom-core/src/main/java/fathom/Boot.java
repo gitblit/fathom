@@ -203,17 +203,16 @@ public class Boot implements Daemon {
         long startTime = System.nanoTime();
         getServer().start();
 
-        String hostname = settings.getHost();
         String contextPath = settings.getContextPath();
 
         if (settings.getHttpsPort() > 0) {
-            log.info("https://{}:{}{}", hostname, settings.getHttpsPort(), contextPath);
+            log.info("https://{}:{}{}", settings.getHttpsListenAddress(), settings.getHttpsPort(), contextPath);
         }
         if (settings.getHttpPort() > 0) {
-            log.info("http://{}:{}{}", hostname, settings.getHttpPort(), contextPath);
+            log.info("http://{}:{}{}", settings.getHttpListenAddress(), settings.getHttpPort(), contextPath);
         }
         if (settings.getAjpPort() > 0) {
-            log.info("ajp://{}:{}{}", hostname, settings.getAjpPort(), contextPath);
+            log.info("ajp://{}:{}{}", settings.getAjpListenAddress(), settings.getAjpPort(), contextPath);
         }
 
         long delta = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);

@@ -48,7 +48,7 @@ public abstract class FathomIntegrationTest extends FathomTest {
     @BeforeClass
     public static void startFathom() {
         testBoot.start();
-        String url = testBoot.getSettings().getUrl();
+        String url = testBoot.getSettings().getFathomUrl();
         RestAssured.baseURI = url;
     }
 

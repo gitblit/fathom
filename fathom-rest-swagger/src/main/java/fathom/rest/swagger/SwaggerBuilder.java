@@ -22,6 +22,7 @@ import com.google.common.base.Strings;
 import fathom.conf.Settings;
 import fathom.rest.RestServlet;
 import fathom.rest.controller.Auth;
+import fathom.rest.controller.BasicAuth;
 import fathom.rest.controller.Body;
 import fathom.rest.controller.Controller;
 import fathom.rest.controller.ControllerHandler;
@@ -37,7 +38,6 @@ import fathom.rest.controller.Required;
 import fathom.rest.controller.Return;
 import fathom.rest.controller.ReturnHeader;
 import fathom.rest.controller.Session;
-import fathom.rest.controller.BasicAuth;
 import fathom.rest.security.aop.RequireToken;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
@@ -226,12 +226,9 @@ public class SwaggerBuilder {
         List<String> configuredSchemes = settings.getStrings("swagger.schemes");
         List<Scheme> schemes = new ArrayList<>();
         if (configuredSchemes.isEmpty()) {
-            // add schemes based on undertow settings
-            if (settings.getInteger(Settings.Setting.undertow_httpPort, 0) > 0) {
-                schemes.add(Scheme.HTTP);
-            }
-            if (settings.getInteger(Settings.Setting.undertow_httpsPort, 0) > 0) {
-                schemes.add(Scheme.HTTPS);
+            Scheme s = Scheme.forValue(settings.getApplicationScheme());
+            if (s != null) {
+                schemes.add(s);
             }
         } else {
             // set configured schemes

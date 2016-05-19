@@ -34,7 +34,7 @@ public abstract class XmlRpcIntegrationTest extends FathomIntegrationTest {
 
     protected <X> X call(String username, String password, String path, String methodName, Object... args) {
         try {
-            URL url = new URL(getTestBoot().getSettings().getUrl() + StringUtils.removeStart(path, "/"));
+            URL url = new URL(getTestBoot().getSettings().getFathomUrl() + StringUtils.removeStart(path, "/"));
             XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
             config.setBasicUserName(username);
             config.setBasicPassword(password);

@@ -83,7 +83,7 @@ public class Boot extends fathom.Boot {
         File serverTrustStore = new File(truststore);
         File baseDirectory = serverKeyStore.getParentFile();
 
-        String hostname = Optional.fromNullable(Strings.emptyToNull(getSettings().getString(Settings.Setting.application_hostname, null))).or("localhost");
+        String hostname = Optional.fromNullable(Strings.emptyToNull(getSettings().getApplicationHostname())).or("localhost");
         int validityDuration = getSettings().getInteger("undertow.certificateValidityDuration", 10);
 
         if (!serverKeyStore.exists()) {

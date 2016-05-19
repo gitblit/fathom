@@ -161,7 +161,7 @@ public class Server {
 
         if (settings.getHttpPort() > 0) {
             // HTTP
-            builder.addHttpListener(settings.getHttpPort(), settings.getHost());
+            builder.addHttpListener(settings.getHttpPort(), settings.getHttpListenAddress());
             logSetting(Settings.Setting.undertow_httpPort, settings.getHttpPort());
         }
 
@@ -172,7 +172,7 @@ public class Server {
                 KeyStore keyStore = loadKeyStore(settings.getKeystoreFile(), settings.getKeystorePassword());
                 KeyStore trustStore = loadKeyStore(settings.getTruststoreFile(), settings.getTruststorePassword());
                 SSLContext sslContext = createSSLContext(keyStore, trustStore);
-                builder.addHttpsListener(settings.getHttpsPort(), settings.getHost(), sslContext);
+                builder.addHttpsListener(settings.getHttpsPort(), settings.getHttpsListenAddress(), sslContext);
                 logSetting(Settings.Setting.undertow_httpsPort, settings.getHttpsPort());
             } catch (Exception e) {
                 throw new FathomException(e, "Failed to setup an Undertow SSL listener!");
@@ -181,7 +181,7 @@ public class Server {
 
         if (settings.getAjpPort() > 0) {
             // AJP
-            builder.addAjpListener(settings.getAjpPort(), settings.getHost());
+            builder.addAjpListener(settings.getAjpPort(), settings.getAjpListenAddress());
             logSetting(Settings.Setting.undertow_ajpPort, settings.getAjpPort());
         }
 

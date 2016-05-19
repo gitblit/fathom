@@ -31,7 +31,7 @@ public class TestBoot extends Boot {
         super(Constants.Mode.TEST);
 
         int port = findAvailablePort(1000, 10000);
-        getSettings().host("localhost").contextPath("/").ajpPort(0).httpsPort(0).httpPort(port);
+        getSettings().httpListenAddress("localhost").contextPath("/").ajpPort(0).httpsPort(0).httpPort(port);
     }
 
     private int findAvailablePort(int min, int max) {

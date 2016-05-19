@@ -51,7 +51,7 @@ public abstract class FathomUnitTest extends FathomTest {
     @Before
     public void startFathom() {
         testBoot.start();
-        String url = testBoot.getSettings().getUrl();
+        String url = testBoot.getSettings().getFathomUrl();
         RestAssured.baseURI = url;
     }
 
