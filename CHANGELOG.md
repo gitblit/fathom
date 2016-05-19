@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to args4j 2.33
 - [fathom-security-jdbc] Update to HikariCP 2.4.6
 - [fathom-rest-swagger] Update to Swagger Core 1.5.9
+- [fathom-archetype-standard] Update to Stork 2.0.0
 #### Added
 - [fathom-rest] Added route group registration
 #### Removed

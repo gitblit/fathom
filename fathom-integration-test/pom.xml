@@ -244,17 +244,17 @@
             </plugin>
             <plugin>
                 <groupId>com.fizzed</groupId>
-                <artifactId>fizzed-stork-maven-plugin</artifactId>
-                <version>1.2.2</version>
+                <artifactId>stork-maven-plugin</artifactId>
+                <version>2.0.0</version>
                 <executions>
                     <execution>
-                        <id>generate-stork-launchers</id>
+                        <id>stork-launcher</id>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>launcher</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>generate-stork-assembly</id>
+                        <id>stork-assembly</id>
                         <goals>
                             <goal>assembly</goal>
                         </goals>
