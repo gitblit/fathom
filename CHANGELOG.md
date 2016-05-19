@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
+#### Added
+#### Removed
+
+### [0.8.3] - 2016-05-19
+#### Changed
 - [fathom-core] Update to SLF4j 1.7.21
 - [fathom-core] Update to Undertow 1.3.22
 - [fathom-core] Update to Guava 19.0
@@ -19,7 +24,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] `Settings.host(String)` and `Settings.hostname(String)` throw FathomExceptions if they are called
 #### Added
 - [fathom-rest] Added route group registration
-#### Removed
 
 ### [0.8.2] - 2016-03-28
 #### Changed
@@ -201,7 +205,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.2...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.3...HEAD
+[0.8.3]: https://github.com/gitblit/fathom/compare/release-0.8.2...release-0.8.3
 [0.8.2]: https://github.com/gitblit/fathom/compare/release-0.8.1...release-0.8.2
 [0.8.1]: https://github.com/gitblit/fathom/compare/release-0.8.0...release-0.8.1
 [0.8.0]: https://github.com/gitblit/fathom/compare/release-0.7.0...release-0.8.0
