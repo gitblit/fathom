@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to args4j 2.33
 - [fathom-security-jdbc] Update to HikariCP 2.4.6
 - [fathom-rest-swagger] Update to Swagger Core 1.5.9
-- [fathom-archetype-standard] Update to Stork 2.0.0
+- [fathom-archetype-standard] Update to Stork 2.0.1
 - [fathom-core] Dropped `undertow.host` and replaced with `undertow.httpListenAddress`, `undertow.httpsListenAddress`, and `undertow.ajpListenAddress`
 - [fathom-core] Renamed Settings.getUrl() to Settings.getFathomUrl()
 - [fathom-core] Dropped `application.hostname` in favor of `application.url`
