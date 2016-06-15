@@ -237,6 +237,16 @@ public class SecurityManager implements Service {
         }
     }
 
+    public <X> List<X> getRealms(Class<X> realmClass) {
+        List<X> list = new ArrayList<>();
+        for (Realm realm : allRealms) {
+            if (realmClass.isAssignableFrom(realm.getClass())) {
+                list.add((X) realm);
+            }
+        }
+        return list;
+    }
+
     /**
      * Parse the Realms from the Config object.
      *
