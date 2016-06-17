@@ -29,6 +29,12 @@ import fathom.realm.Account;
 import fathom.realm.Realm;
 import fathom.utils.ClassUtil;
 import fathom.utils.Util;
+import org.keycloak.adapters.KeycloakDeployment;
+import org.keycloak.adapters.KeycloakDeploymentBuilder;
+import org.keycloak.adapters.NodesRegistrationManagement;
+import org.keycloak.adapters.spi.InMemorySessionIdMapper;
+import org.keycloak.adapters.spi.SessionIdMapper;
+import org.keycloak.adapters.spi.UserSessionManagement;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.util.JsonSerialization;
 import org.slf4j.Logger;
@@ -47,14 +53,18 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author James Moger
  */
-public class KeycloakRealm implements Realm {
+public class KeycloakRealm implements Realm, UserSessionManagement {
 
     private final Logger log = LoggerFactory.getLogger(KeycloakRealm.class);
 
     private final Cache<String, Account> accountCache;
     private final Map<String, Role> definedRoles;
+    private final SessionIdMapper sessionIdMapper;
+    private final NodesRegistrationManagement nodesRegistrationManagement;
     private String realmName;
     private KeycloakConfig keycloakConfig;
+    private KeycloakDeployment keycloakDeployment;
+
 
     public KeycloakRealm() {
         this.definedRoles = new ConcurrentHashMap<>();
@@ -62,10 +72,24 @@ public class KeycloakRealm implements Realm {
                 .newBuilder()
                 .expireAfterAccess(15, TimeUnit.SECONDS)
                 .build();
+        this.sessionIdMapper = new InMemorySessionIdMapper();
+        this.nodesRegistrationManagement = new NodesRegistrationManagement();
     }
 
     public KeycloakConfig getKeycloakConfig() {
         return keycloakConfig;
+    }
+
+    public KeycloakDeployment getKeycloakDeployment() {
+        return keycloakDeployment;
+    }
+
+    public SessionIdMapper getSessionIdMapper() {
+        return sessionIdMapper;
+    }
+
+    public void registerKeycloakDeployment(KeycloakDeployment keycloakDeployment) {
+        nodesRegistrationManagement.tryRegister(keycloakDeployment);
     }
 
     @Override
@@ -74,7 +98,9 @@ public class KeycloakRealm implements Realm {
         if (config.hasPath("file")) {
             configFile = config.getString("file");
         }
+
         keycloakConfig = parseKeycloakConfig(configFile);
+        keycloakDeployment = KeycloakDeploymentBuilder.build(keycloakConfig);
 
         realmName = keycloakConfig.getRealm() + "/" + keycloakConfig.getResource();
         if (config.hasPath("name")) {
@@ -248,6 +274,19 @@ public class KeycloakRealm implements Realm {
     public void clearCache() {
         if (accountCache != null) {
             accountCache.invalidateAll();
+        }
+    }
+
+    @Override
+    public void logoutAll() {
+        sessionIdMapper.clear();
+    }
+
+    @Override
+    public void logoutHttpSessions(List<String> ids) {
+        for (String id : ids) {
+            log.trace("logout session ID: " + id);
+            sessionIdMapper.removeSession(id);
         }
     }
 }

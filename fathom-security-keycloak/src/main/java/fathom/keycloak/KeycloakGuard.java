@@ -16,11 +16,10 @@
 
 package fathom.keycloak;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import fathom.realm.Account;
-import fathom.realm.keycloak.KeycloakConfig;
 import fathom.realm.keycloak.KeycloakRealm;
 import fathom.realm.keycloak.KeycloakToken;
 import fathom.rest.Context;
@@ -30,24 +29,18 @@ import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.AdapterDeploymentContext;
 import org.keycloak.adapters.AuthenticatedActionsHandler;
 import org.keycloak.adapters.KeycloakDeployment;
-import org.keycloak.adapters.KeycloakDeploymentBuilder;
-import org.keycloak.adapters.NodesRegistrationManagement;
 import org.keycloak.adapters.PreAuthActionsHandler;
 import org.keycloak.adapters.servlet.FilterRequestAuthenticator;
 import org.keycloak.adapters.servlet.OIDCFilterSessionStore;
 import org.keycloak.adapters.servlet.OIDCServletHttpFacade;
 import org.keycloak.adapters.spi.AuthChallenge;
 import org.keycloak.adapters.spi.AuthOutcome;
-import org.keycloak.adapters.spi.InMemorySessionIdMapper;
-import org.keycloak.adapters.spi.SessionIdMapper;
-import org.keycloak.adapters.spi.UserSessionManagement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ro.pippo.core.route.RouteHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * A guard that delegates authentication to a Keycloak server.
@@ -59,9 +52,8 @@ public final class KeycloakGuard implements RouteHandler<Context> {
     private final Logger log = LoggerFactory.getLogger(KeycloakGuard.class);
 
     private final SecurityManager securityManager;
+    private final KeycloakRealm keycloakRealm;
     private final AdapterDeploymentContext deploymentContext;
-    private final SessionIdMapper idMapper = new InMemorySessionIdMapper();
-    private final NodesRegistrationManagement nodesRegistrationManagement;
 
     @Inject
     public KeycloakGuard(SecurityManager securityManager) {
@@ -71,28 +63,26 @@ public final class KeycloakGuard implements RouteHandler<Context> {
     public KeycloakGuard(String realm, String resource, SecurityManager securityManager) {
         this.securityManager = securityManager;
 
-        KeycloakConfig keycloakConfig = new KeycloakConfig();
+        KeycloakRealm kRealm = null;
         for (KeycloakRealm keycloakRealm : securityManager.getRealms(KeycloakRealm.class)) {
             if (Strings.isNullOrEmpty(realm) && Strings.isNullOrEmpty(resource)) {
                 // take first KeycloakRealm hit
-                keycloakConfig = keycloakRealm.getKeycloakConfig();
+                kRealm = keycloakRealm;
                 break;
-            } else if (realm.equals(keycloakConfig.getRealm()) && resource.equals(keycloakConfig.getResource())) {
+            } else if (realm.equals(keycloakRealm.getKeycloakConfig().getRealm())
+                    && resource.equals(keycloakRealm.getKeycloakConfig().getResource())) {
                 // match the realm & resource to the KeycloakRealm
-                keycloakConfig = keycloakRealm.getKeycloakConfig();
+                kRealm = keycloakRealm;
                 break;
             }
         }
 
-        KeycloakDeployment keycloakDeployment;
-        if (Strings.isNullOrEmpty(keycloakConfig.getRealm()) || Strings.isNullOrEmpty(keycloakConfig.getRealmKey())) {
-            keycloakDeployment = new KeycloakDeployment();
-        } else {
-            keycloakDeployment = KeycloakDeploymentBuilder.build(keycloakConfig);
-        }
+        this.keycloakRealm = kRealm;
 
-        this.deploymentContext = new AdapterDeploymentContext(keycloakDeployment);
-        this.nodesRegistrationManagement = new NodesRegistrationManagement();
+        Preconditions.checkArgument(keycloakRealm != null, "Please specify a KeycloakRealm in realms.conf!");
+        Preconditions.checkArgument(keycloakRealm.getKeycloakDeployment().isConfigured(), "Keycloak is not properly configured!");
+
+        this.deploymentContext = new AdapterDeploymentContext(keycloakRealm.getKeycloakDeployment());
     }
 
     @Override
@@ -108,35 +98,19 @@ public final class KeycloakGuard implements RouteHandler<Context> {
             return;
         }
 
-        PreAuthActionsHandler preActions = new PreAuthActionsHandler(new UserSessionManagement() {
-            @Override
-            public void logoutAll() {
-                if (idMapper != null) {
-                    idMapper.clear();
-                }
-            }
-
-            @Override
-            public void logoutHttpSessions(List<String> ids) {
-                log.trace("**************** logoutHttpSessions");
-                for (String id : ids) {
-                    log.trace("removed idMapper: " + id);
-                    idMapper.removeSession(id);
-                }
-
-            }
-        }, deploymentContext, facade);
-
+        PreAuthActionsHandler preActions = new PreAuthActionsHandler(keycloakRealm, deploymentContext, facade);
         if (preActions.handleRequest()) {
             return;
         }
 
-        nodesRegistrationManagement.tryRegister(deployment);
-        OIDCFilterSessionStore tokenStore = new OIDCFilterSessionStore(request, facade, 100000, deployment, idMapper);
+        keycloakRealm.registerKeycloakDeployment(deployment);
+
+        OIDCFilterSessionStore tokenStore = new OIDCFilterSessionStore(request, facade, 100000, deployment, keycloakRealm.getSessionIdMapper());
         tokenStore.checkCurrentToken();
 
         FilterRequestAuthenticator authenticator = new FilterRequestAuthenticator(deployment, tokenStore, facade, request, 8443);
-        AuthOutcome outcome = authenticator.authenticate();
+
+        final AuthOutcome outcome = authenticator.authenticate();
         if (outcome == AuthOutcome.AUTHENTICATED) {
             log.trace("Keycloak authenticated request");
             KeycloakSecurityContext securityContext = (KeycloakSecurityContext) context.getRequest()
