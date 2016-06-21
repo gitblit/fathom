@@ -87,4 +87,10 @@ public class Context extends DefaultRouteContext {
         return set;
     }
 
+    public <T> Context putLocal(String name, T t) {
+        setLocal(name, t);
+
+        return this;
+    }
+
 }
