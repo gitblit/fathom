@@ -116,11 +116,15 @@ public final class KeycloakGuard implements RouteHandler<Context> {
             KeycloakSecurityContext securityContext = (KeycloakSecurityContext) context.getRequest()
                     .getHttpServletRequest().getAttribute(KeycloakSecurityContext.class.getName());
 
-            // configure Session with Fathom Security Account
-            if (request.getSession().getAttribute(AuthConstants.ACCOUNT_ATTRIBUTE) == null) {
+            // configure Context and conditionally the Session with Fathom Security Account
+            if (keycloakRealm.getKeycloakConfig().isAlwaysRefreshToken()
+                    || context.getSession(AuthConstants.ACCOUNT_ATTRIBUTE) == null) {
                 Account account = securityManager.authenticate(new KeycloakToken(securityContext.getToken()));
-                request.getSession().setAttribute(AuthConstants.ACCOUNT_ATTRIBUTE, account);
-                log.info("{} logged in via Keycloak", account.getUsername());
+                context.setLocal(AuthConstants.ACCOUNT_ATTRIBUTE, account);
+                if (context.hasSession()) {
+                    context.setSession(AuthConstants.ACCOUNT_ATTRIBUTE, account);
+                }
+                log.trace("{} logged in via Keycloak", account.getUsername());
             }
 
             if (facade.isEnded()) {
