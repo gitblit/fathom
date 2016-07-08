@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
+#### Added
+#### Removed
+
+### [0.8.4] - 2016-07-08
+#### Fixed
+#### Changed
 - [fathom-core] Update to Undertow 1.3.23
 - [fathom-security-jdbc] Update to HikariCP 2.4.7
 #### Added
@@ -208,7 +214,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.3...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.4...HEAD
+[0.8.4]: https://github.com/gitblit/fathom/compare/release-0.8.3...release-0.8.4
 [0.8.3]: https://github.com/gitblit/fathom/compare/release-0.8.2...release-0.8.3
 [0.8.2]: https://github.com/gitblit/fathom/compare/release-0.8.1...release-0.8.2
 [0.8.1]: https://github.com/gitblit/fathom/compare/release-0.8.0...release-0.8.1
