@@ -5,8 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
+- [fathom-core] Update to Undertow 1.3.23
 - [fathom-security-jdbc] Update to HikariCP 2.4.7
 #### Added
+- [fathom-security-keycloak] Add a Keycloak realm for Fathom Security and appropriate guards for Fathom-REST.
 #### Removed
 
 ### [0.8.3] - 2016-05-19
@@ -239,6 +241,7 @@ Initial release.
 [fathom-security]: https://github.com/gitblit/fathom/tree/master/fathom-security
 [fathom-security-htpasswd]: https://github.com/gitblit/fathom/tree/master/fathom-security-htpasswd
 [fathom-security-jdbc]: https://github.com/gitblit/fathom/tree/master/fathom-security-jdbc
+[fathom-security-keycloak]: https://github.com/gitblit/fathom/tree/master/fathom-security-keycloak
 [fathom-security-ldap]: https://github.com/gitblit/fathom/tree/master/fathom-security-ldap
 [fathom-security-pam]: https://github.com/gitblit/fathom/tree/master/fathom-security-pam
 [fathom-security-redis]: https://github.com/gitblit/fathom/tree/master/fathom-security-redis
