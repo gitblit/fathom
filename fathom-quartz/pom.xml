@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.gitblit.fathom</groupId>
         <artifactId>fathom-parent</artifactId>
-        <version>0.8.4</version>
+        <version>0.8.5-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
