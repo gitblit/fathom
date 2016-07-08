@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
+- [fathom-security-jdbc] Update to HikariCP 2.4.7
 #### Added
 #### Removed
 
