@@ -36,6 +36,12 @@
 
         <dependency>
             <groupId>com.gitblit.fathom</groupId>
+            <artifactId>fathom-x509</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitblit.fathom</groupId>
             <artifactId>fathom-eventbus</artifactId>
             <version>${project.version}</version>
         </dependency>

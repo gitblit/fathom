@@ -241,10 +241,11 @@ public class X509Utils {
      * Prepare all the certificates and stores necessary for a Fathom server.
      *
      * @param metadata
-     * @param folder
+     * @param serverKeyStore
+     * @param serverTrustStore
      */
-    public static void prepareX509Infrastructure(X509Metadata metadata, File folder) {
-        prepareX509Infrastructure(metadata, folder, message -> {
+    public static void prepareX509Infrastructure(X509Metadata metadata, File serverKeyStore, File serverTrustStore) {
+        prepareX509Infrastructure(metadata, serverKeyStore, serverTrustStore, message -> {
         });
     }
 
@@ -252,11 +253,13 @@ public class X509Utils {
      * Prepare all the certificates and stores necessary for a Fathom server.
      *
      * @param metadata
-     * @param folder
+     * @param serverKeyStore
+     * @param serverTrustStore
      * @param x509log
      */
-    public static void prepareX509Infrastructure(X509Metadata metadata, File folder, X509Log x509log) {
+    public static void prepareX509Infrastructure(X509Metadata metadata, File serverKeyStore, File serverTrustStore, X509Log x509log) {
         // make the specified folder, if necessary
+        File folder = serverKeyStore.getParentFile();
         folder.mkdirs();
 
         // Fathom CA certificate
@@ -276,7 +279,6 @@ public class X509Utils {
         }
 
         // create web SSL certificate signed by CA
-        File serverKeyStore = new File(folder, SERVER_KEY_STORE);
         if (!serverKeyStore.exists()) {
             logger.info(MessageFormat.format("Generating SSL certificate for {0} signed by {1} ({2})", metadata.commonName, CA_CN, serverKeyStore.getAbsolutePath()));
             PrivateKey caPrivateKey = getPrivateKey(CA_ALIAS, caKeyStore, metadata.password);
@@ -285,7 +287,6 @@ public class X509Utils {
         }
 
         // server certificate trust store holds trusted public certificates
-        File serverTrustStore = new File(folder, X509Utils.SERVER_TRUST_STORE);
         if (!serverTrustStore.exists()) {
             logger.info(MessageFormat.format("Importing {0} into trust store ({1})", CA_ALIAS, serverTrustStore.getAbsolutePath()));
             X509Certificate caCert = getCertificate(CA_ALIAS, caKeyStore, metadata.password);
@@ -317,6 +318,7 @@ public class X509Utils {
             } else {
                 store = KeyStore.getInstance(type, provider);
             }
+            storeFile.getParentFile().mkdirs();
             if (storeFile.exists()) {
                 FileInputStream fis = null;
                 try {

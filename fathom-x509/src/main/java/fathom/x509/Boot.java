@@ -81,14 +81,13 @@ public class Boot extends fathom.Boot {
 
         File serverKeyStore = new File(keystore);
         File serverTrustStore = new File(truststore);
-        File baseDirectory = serverKeyStore.getParentFile();
 
         String hostname = Optional.fromNullable(Strings.emptyToNull(getSettings().getApplicationHostname())).or("localhost");
         int validityDuration = getSettings().getInteger("undertow.certificateValidityDuration", 10);
 
         if (!serverKeyStore.exists()) {
             X509Utils.X509Metadata metadata = new X509Utils.X509Metadata(hostname, keystorePassword, validityDuration);
-            X509Utils.prepareX509Infrastructure(metadata, baseDirectory);
+            X509Utils.prepareX509Infrastructure(metadata, serverKeyStore, serverTrustStore);
         }
 
         // Update Fathom runtime settings

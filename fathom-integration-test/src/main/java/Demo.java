@@ -15,7 +15,7 @@
  */
 
 import com.google.common.base.Throwables;
-import fathom.Boot;
+import fathom.x509.Boot;
 
 public class Demo {
 
