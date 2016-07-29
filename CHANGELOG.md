@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
+- [fathom-core] Update to Guice 4.1.0
 #### Added
 #### Removed
 
