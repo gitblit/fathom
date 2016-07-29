@@ -203,12 +203,6 @@ public class Server {
             logSetting(Settings.Setting.undertow_bufferSize, bufferSize);
         }
 
-        int buffersPerRegion = settings.getInteger(Settings.Setting.undertow_buffersPerRegion, 0);
-        if (buffersPerRegion > 0) {
-            builder.setBuffersPerRegion(buffersPerRegion);
-            logSetting(Settings.Setting.undertow_buffersPerRegion, buffersPerRegion);
-        }
-
         builder.setHandler(contextHandler);
         io.undertow.Undertow server = builder.build();
         return server;

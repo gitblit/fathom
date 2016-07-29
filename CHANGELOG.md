@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-x509] Fixed configuration of custom keystore and truststore files
 #### Changed
 - [fathom-core] Update to Guice 4.1.0
+- [fathom-core] Dropped deprecated undertow.buffersPerRegion setting
 #### Added
 #### Removed
 

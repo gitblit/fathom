@@ -1024,8 +1024,7 @@ public class Settings {
         undertow_truststorePassword,
         undertow_ioThreads,
         undertow_workerThreads,
-        undertow_bufferSize,
-        undertow_buffersPerRegion;
+        undertow_bufferSize;
 
         @Override
         public String toString() {
