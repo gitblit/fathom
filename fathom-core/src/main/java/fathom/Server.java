@@ -167,7 +167,7 @@ public class Server {
 
         if (settings.getHttpsPort() > 0) {
             // HTTPS
-            builder.setServerOption(UndertowOptions.ENABLE_SPDY, true);
+            builder.setServerOption(UndertowOptions.ENABLE_HTTP2, true);
             try {
                 KeyStore keyStore = loadKeyStore(settings.getKeystoreFile(), settings.getKeystorePassword());
                 KeyStore trustStore = loadKeyStore(settings.getTruststoreFile(), settings.getTruststorePassword());
