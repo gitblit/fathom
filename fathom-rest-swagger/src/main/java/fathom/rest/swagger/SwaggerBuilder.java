@@ -32,7 +32,6 @@ import fathom.rest.controller.Local;
 import fathom.rest.controller.Max;
 import fathom.rest.controller.Min;
 import fathom.rest.controller.Param;
-import fathom.rest.controller.Produces;
 import fathom.rest.controller.Range;
 import fathom.rest.controller.Required;
 import fathom.rest.controller.Return;
@@ -282,25 +281,15 @@ public class SwaggerBuilder {
             return false;
         }
 
-        produces.remove(Produces.HTML);
-
-        if (produces.isEmpty()) {
-            log.debug("Skip {} {}, {} does not generate RESTful API content '{}",
-                    route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()),
-                    handler.getDeclaredProduces());
-            return false;
-        }
-
         if (handler.getDeclaredReturns().isEmpty()) {
             log.debug("Skip {} {}, {} does not declare expected @Returns",
                     route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()));
             return false;
         }
 
-
         if (handler.getControllerMethod().isAnnotationPresent(Undocumented.class)
                 || handler.getControllerMethod().getDeclaringClass().isAnnotationPresent(Undocumented.class)) {
-            log.debug("Skip {} {}, {} is annotated as Undocumented",
+            log.debug("Skip {} {}, {} is annotated as @Undocumented",
                     route.getRequestMethod(), route.getUriPattern(), Util.toString(handler.getControllerMethod()));
             return false;
         }

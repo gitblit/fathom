@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Update to Undertow 1.3.24
 - [fathom-core] Update to Guice 4.1.0
 - [fathom-core] Dropped deprecated undertow.buffersPerRegion setting
+- [fathom-rest-swagger] Allow @Produces(Produces.HTML) to be documented
 #### Added
 #### Removed
 
