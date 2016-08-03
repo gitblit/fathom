@@ -574,7 +574,7 @@ public class SwaggerBuilder {
                 }
             }
 
-            model.addProperty(field.getName(), property);
+            model.addProperty(Optional.fromNullable(property.getName()).or(field.getName()), property);
 
         }
 
