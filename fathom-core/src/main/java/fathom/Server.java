@@ -219,7 +219,7 @@ public class Server {
         info.setClassLoader(this.getClass().getClassLoader());
         info.setContextPath(settings.getContextPath());
         info.setIgnoreFlush(true);
-		info.setDefaultEncoding("UTF-8");
+        info.setDefaultEncoding("UTF-8");
 
         FilterInfo guiceFilter = new FilterInfo("GuiceFilter", GuiceFilter.class);
         guiceFilter.setAsyncSupported(true);
