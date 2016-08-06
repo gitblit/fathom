@@ -28,6 +28,7 @@
         </encoder>
     </appender>
     <logger name="org.apache.commons.beanutils.converters" level="INFO"/>
+    <logger name="io.undertow.request" level="INFO"/>
     <logger name="org.jboss.logging" level="INFO"/>
     <logger name="org.apache.shiro" level="INFO"/>
     <logger name="net.sf.ehcache" level="INFO"/>
