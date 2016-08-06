@@ -6,11 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 - [fathom-x509] Fixed configuration of custom keystore and truststore files
 #### Changed
-- [fathom-core] Update to Undertow 1.3.24
+- [fathom-core] Update to Undertow 1.4.0
 - [fathom-core] Update to Guice 4.1.0
 - [fathom-core] Dropped deprecated undertow.buffersPerRegion setting
 - [fathom-rest-swagger] Allow @Produces(Produces.HTML) to be documented
 - [fathom-rest-swagger] Fix @ApiProperty name registration
+- [fathom-integration-test] Update to Infinispan 8.2.3
+- [fathom-archetype-standard] Update to Infinispan 8.2.3
 #### Added
 #### Removed
 
