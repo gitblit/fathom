@@ -26,6 +26,7 @@ import fathom.Constants;
 import fathom.Service;
 import fathom.conf.Settings;
 import fathom.exception.FathomException;
+import fathom.exception.RedirectException;
 import fathom.exception.StatusCodeException;
 import fathom.rest.controller.ControllerHandler;
 import fathom.utils.ClassUtil;
@@ -130,6 +131,17 @@ class RestService implements Service {
         application.getRoutePreDispatchListeners().add(metricsDispatchListener);
         application.getRoutePostDispatchListeners().add(metricsDispatchListener);
 
+        // set the RedirectException handler
+        application.getErrorHandler().setExceptionHandler(RedirectException.class, (exception, ctx) -> {
+            RedirectException redirectException = (RedirectException) exception;
+
+            if (!Strings.isNullOrEmpty(redirectException.getSessionUrlAttribute())) {
+                String requestUri = ctx.getRequest().getApplicationUriWithQuery();
+                ctx.setSession(redirectException.getSessionUrlAttribute(), requestUri);
+            }
+            ctx.redirect(redirectException.getPath());
+        });
+
         // set the StatusCodeException handler
         application.getErrorHandler().setExceptionHandler(StatusCodeException.class, (exception, ctx) -> {
             StatusCodeException statusCodeException = (StatusCodeException) exception;
@@ -228,7 +240,7 @@ class RestService implements Service {
         }
 
         // log the routing table
-        final int maxLineLength = settings.getInteger(SETTING_ROUTES_MAX_LINE_LENGTH,120);
+        final int maxLineLength = settings.getInteger(SETTING_ROUTES_MAX_LINE_LENGTH, 120);
         final boolean logHandlers = settings.getBoolean(REST_ROUTES_LOG_HANDLERS, true);
         final boolean oneLine = (maxMethodLen + maxPathLen + maxControllerLen + 11 /* whitespace */) <= maxLineLength;
         if (!oneLine || !logHandlers) {

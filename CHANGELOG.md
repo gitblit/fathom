@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-integration-test] Update to Infinispan 8.2.3
 - [fathom-archetype-standard] Update to Infinispan 8.2.3
 #### Added
+- [fathom-rest] Add RedirectException for use in controller logic to conditionally force a redirect
+- [fathom-rest-security] Add FormAuthenticationRedirectException for use in controller logic to conditionally force a redirect to the login page
 #### Removed
 
 ### [0.8.4] - 2016-07-08
