@@ -13,7 +13,7 @@
     <groupId>com.gitblit.fathom</groupId>
     <artifactId>fathom-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.8.5-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
     <name>Fathom Parent</name>
     <description>Microservice Foundation</description>
     <url>http://fathom.gitblit.com</url>
@@ -50,7 +50,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <pippo.version>0.8.0</pippo.version>
+        <pippo.version>0.9.0</pippo.version>
         <h2.version>1.4.186</h2.version>
         <mockito.version>1.9.5</mockito.version>
         <junit.version>4.10</junit.version>
