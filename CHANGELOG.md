@@ -2,13 +2,21 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
 ### [Unreleased][unreleased]
+#### Fixed
+#### Changed
+#### Added
+#### Removed
+
+### [0.9.0] - 2016-09-04
 #### Fixed
 - [fathom-x509] Fixed configuration of custom keystore and truststore files
 #### Changed
 - [fathom-core] Update to Undertow 1.4.0
 - [fathom-core] Update to Guice 4.1.0
 - [fathom-core] Dropped deprecated undertow.buffersPerRegion setting
+- [fathom-rest] Update to Pippo 0.9.0
 - [fathom-rest-swagger] Allow @Produces(Produces.HTML) to be documented
 - [fathom-rest-swagger] Fix @ApiProperty name registration
 - [fathom-integration-test] Update to Infinispan 8.2.3
@@ -16,7 +24,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 - [fathom-rest] Add RedirectException for use in controller logic to conditionally force a redirect
 - [fathom-rest-security] Add FormAuthenticationRedirectException for use in controller logic to conditionally force a redirect to the login page
-#### Removed
 
 ### [0.8.4] - 2016-07-08
 #### Fixed
@@ -224,8 +231,9 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.8.4...HEAD
-[0.8.4]: https://github.com/gitblit/fathom/compare/release-0.8.3...release-0.8.4
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.9.0...HEAD
+[0.9.0]: https://github.com/gitblit/fathom/compare/release-0.8.4...release-0.9.0
+[0.8.4]: https://github.com/gitblit/fathom/compare/release-0.8.4...release-0.8.4
 [0.8.3]: https://github.com/gitblit/fathom/compare/release-0.8.2...release-0.8.3
 [0.8.2]: https://github.com/gitblit/fathom/compare/release-0.8.1...release-0.8.2
 [0.8.1]: https://github.com/gitblit/fathom/compare/release-0.8.0...release-0.8.1
