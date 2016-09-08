@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
 - [fathom-core] Update to Undertow 1.4.2
 - [fathom-security-jdbc] Update to HikariCP 2.5.0
+- [fathom-rest-swagger] Update to Swagger Core 1.5.10
 #### Added
 #### Removed
 
