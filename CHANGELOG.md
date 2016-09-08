@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### [Unreleased][unreleased]
 #### Fixed
 #### Changed
+- [fathom-core] Update to Undertow 1.4.2
 #### Added
 #### Removed
 
