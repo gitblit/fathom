@@ -47,7 +47,7 @@ public class PamRealm extends CachingRealm {
         super.setup(config);
 
         String os = System.getProperty("os.name").toLowerCase();
-        Preconditions.checkState(!os.startsWith("windows"), "PAM authentication is not supported on '{}'", os);
+        Preconditions.checkState(!os.startsWith("windows"), "PAM authentication is not supported on '{0}'", os);
 
         // Try to identify the passwd database
         String[] files = {"/etc/shadow", "/etc/master.passwd"};

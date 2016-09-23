@@ -51,7 +51,7 @@ public class WindowsRealm extends CachingRealm {
         super.setup(config);
 
         String os = System.getProperty("os.name").toLowerCase();
-        Preconditions.checkState(os.startsWith("windows"), "Windows authentication is not supported on '{}'", os);
+        Preconditions.checkState(os.startsWith("windows"), "Windows authentication is not supported on '{0}'", os);
 
         if (config.hasPath("defaultDomain")) {
             defaultDomain = Strings.emptyToNull(config.getString("defaultDomain"));
