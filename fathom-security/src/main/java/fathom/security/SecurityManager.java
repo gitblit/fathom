@@ -268,10 +268,14 @@ public class SecurityManager implements Service {
                 if (ClassUtil.doesClassExist(realmType)) {
                     Class<? extends Realm> realmClass = ClassUtil.getClass(realmType);
                     if (RequireUtil.allowClass(settings, realmClass)) {
-                        Realm realm = injector.getInstance(realmClass);
-                        realm.setup(realmConfig);
-                        realms.add(realm);
-                        log.debug("Created '{}' named '{}'", realmType, realm.getRealmName());
+                        try {
+                            Realm realm = injector.getInstance(realmClass);
+                            realm.setup(realmConfig);
+                            realms.add(realm);
+                            log.debug("Created '{}' named '{}'", realmType, realm.getRealmName());
+                        } catch (Exception e) {
+                            log.error("Failed to create '{}' realm", realmType, e);
+                        }
                     }
                 } else {
                     throw new FathomException("Unknown realm type '{}'!", realmType);
