@@ -41,6 +41,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -57,8 +58,7 @@ public class Settings {
     private final String defaultListenAddress = "0.0.0.0";
     private final String defaultUploadFilesLocation = System.getProperty("java.io.tmpdir");
     private final long defaultUploadFilesMaxSize = -1L;
-    private final Config config;
-    private final Properties overrides;
+    private Config config;
     private String profile = "default";
     private Constants.Mode mode;
 
@@ -76,7 +76,6 @@ public class Settings {
 
     public Settings(Constants.Mode mode, String[] args) {
         this.mode = mode;
-        this.overrides = new Properties();
 
         applyArgs(args);
         this.config = loadConfig();
@@ -497,7 +496,7 @@ public class Settings {
     }
 
     public long getLong(Enum<?> key, long defaultValue) {
-        return defaultValue;//getLong(key.toString(), defaultValue);
+        return getLong(key.toString(), defaultValue);
     }
 
     public boolean getBoolean(Enum<?> key, boolean defaultValue) {
@@ -580,7 +579,6 @@ public class Settings {
      * Formerly set the application hostname.
      *
      * @param hostname
-     *
      * @return this
      * @deprecated does nothing
      */
@@ -614,6 +612,15 @@ public class Settings {
         return "Fathom";
     }
 
+    /**
+     * Merges the supplied config into the current config.
+     *
+     * @param config
+     */
+    public void mergeConfig(Config config) {
+        this.config = config.withFallback(this.config);
+    }
+
     public Config getConfig() {
         return config;
     }
@@ -641,7 +648,6 @@ public class Settings {
         if (getConfig().hasPath(name)) {
             value = getConfig().getString(name);
         }
-        value = overrides.getProperty(name, value);
 
         return value;
     }
@@ -896,6 +902,16 @@ public class Settings {
     }
 
     /**
+     * Override the settings at runtime with the specified value.
+     * This change does not persist.
+     *
+     * @param settings
+     */
+    public void overrideSettings(Map<String, Object> settings) {
+        mergeConfig(ConfigFactory.parseMap(settings));
+    }
+
+    /**
      * Override the setting at runtime with the specified value.
      * This change does not persist.
      *
@@ -903,7 +919,7 @@ public class Settings {
      * @param value
      */
     public void overrideSetting(String name, boolean value) {
-        overrides.put(name, "" + value);
+        overrideSetting(name, "" + value);
     }
 
     /**
@@ -914,7 +930,9 @@ public class Settings {
      * @param value
      */
     public void overrideSetting(String name, String value) {
-        overrides.put(name, value);
+        overrideSettings(new HashMap<String, Object>() {{
+            put(name, value);
+        }});
     }
 
     /**
@@ -925,7 +943,7 @@ public class Settings {
      * @param value
      */
     public void overrideSetting(String name, char value) {
-        overrides.put(name, "" + value);
+        overrideSetting(name, "" + value);
     }
 
     /**
@@ -936,7 +954,7 @@ public class Settings {
      * @param value
      */
     public void overrideSetting(String name, int value) {
-        overrides.put(name, "" + value);
+        overrideSetting(name, "" + value);
     }
 
     /**
@@ -947,7 +965,7 @@ public class Settings {
      * @param value
      */
     public void overrideSetting(String name, long value) {
-        overrides.put(name, "" + value);
+        overrideSetting(name, "" + value);
     }
 
     /**
@@ -958,7 +976,7 @@ public class Settings {
      * @param value
      */
     public void overrideSetting(String name, float value) {
-        overrides.put(name, "" + value);
+        overrideSetting(name, "" + value);
     }
 
     /**
@@ -969,7 +987,7 @@ public class Settings {
      * @param value
      */
     public void overrideSetting(String name, double value) {
-        overrides.put(name, "" + value);
+        overrideSetting(name, "" + value);
     }
 
     public Properties toProperties() {
@@ -979,7 +997,6 @@ public class Settings {
             Object value = entry.getValue().unwrapped();
             props.put(key, value);
         }
-        props.putAll(overrides);
         return props;
     }
 
@@ -989,12 +1006,6 @@ public class Settings {
             String key = entry.getKey();
             Object value = entry.getValue().unwrapped();
             props.put(key, value);
-        }
-        String nameGroup = name + ".";
-        for (String override : overrides.stringPropertyNames()) {
-            if (override.startsWith(nameGroup)) {
-                props.put(override, overrides.get(override));
-            }
         }
         return props;
     }
