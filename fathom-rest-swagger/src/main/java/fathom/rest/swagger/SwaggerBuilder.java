@@ -16,6 +16,7 @@
 
 package fathom.rest.swagger;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
@@ -137,6 +138,8 @@ public class SwaggerBuilder {
 
     private final String relativeSwaggerBasePath;
 
+    private final boolean outputSnakeCaseParameters;
+
     public SwaggerBuilder(Settings settings, Router router) {
         this(settings, router, null, null);
     }
@@ -149,6 +152,7 @@ public class SwaggerBuilder {
         List<String> languages = settings.getStrings("application.languages");
         this.defaultLanguage = languages.isEmpty() ? "en" : languages.get(0);
         this.relativeSwaggerBasePath = Optional.fromNullable(Strings.emptyToNull(settings.getString("swagger.basePath", null))).or("/");
+        this.outputSnakeCaseParameters = settings.getBoolean("swagger.outputSnakeCaseParameters", false);
     }
 
     /**
@@ -574,7 +578,10 @@ public class SwaggerBuilder {
                 }
             }
 
-            model.addProperty(Optional.fromNullable(property.getName()).or(field.getName()), property);
+            String name = prepareParameterName(Optional.fromNullable(property.getName()).or(field.getName()));
+            property.setName(name);
+
+            model.addProperty(name, property);
 
         }
 
@@ -672,7 +679,7 @@ public class SwaggerBuilder {
         // identify body, header, query, & form parameters
         for (Parameter methodParameter : method.getParameters()) {
 
-            String methodParameterName = ControllerUtil.getParameterName(methodParameter);
+            String methodParameterName = getParameterName(methodParameter);
 
             if (pathParameterPlaceholders.containsKey(methodParameterName)) {
                 // path parameter already accounted for
@@ -783,7 +790,7 @@ public class SwaggerBuilder {
 
         for (Parameter methodParameter : method.getParameters()) {
 
-            String methodParameterName = ControllerUtil.getParameterName(methodParameter);
+            String methodParameterName = getParameterName(methodParameter);
 
             if (methodParameterName.equals(swaggerParameter.getName())) {
                 // determine Swagger property from type of method parameter
@@ -1029,6 +1036,17 @@ public class SwaggerBuilder {
         }
 
         return list;
+    }
+
+    protected String getParameterName(Parameter parameter) {
+        return prepareParameterName(ControllerUtil.getParameterName(parameter));
+    }
+
+    protected String prepareParameterName(String name) {
+        if (outputSnakeCaseParameters) {
+            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+        }
+        return name;
     }
 
     protected String stripContentTypeSuffixPattern(String uriPattern) {
