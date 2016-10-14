@@ -76,9 +76,9 @@ public class Settings {
 
     public Settings(Constants.Mode mode, String[] args) {
         this.mode = mode;
+        this.config = loadConfig();
 
         applyArgs(args);
-        this.config = loadConfig();
     }
 
     private Config loadConfig() {
@@ -618,7 +618,11 @@ public class Settings {
      * @param config
      */
     public void mergeConfig(Config config) {
-        this.config = config.withFallback(this.config);
+        if (this.config == null) {
+            this.config = config;
+        } else {
+            this.config = config.withFallback(this.config);
+        }
     }
 
     public Config getConfig() {

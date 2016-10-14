@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 #### Fixed
+- [fathom-core] Fixed null pointer exception when applying command-line setting overrides
+#### Changed
+#### Added
+#### Removed
+
+### [0.9.1] - 2016-10-14
 #### Changed
 - [fathom-core] Update to Undertow 1.4.3
 - [fathom-security-jdbc] Update to HikariCP 2.5.0
@@ -16,7 +22,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-core] Merge setting overrides directly into the Config object rather than maintaining a separate overrides Map
 - [fathom-rest-swagger] Support `swagger.outputSnakeCaseParameters` to control generated parameter names in Swagger spec (i.e. mySampleParameter = my_sample_parameter)
 - [fathom-rest-swagger] Allow primitive types to be declared for request bodies (e.g. document a POST body as a String)
-#### Removed
 
 ### [0.9.0] - 2016-09-04
 #### Fixed
@@ -240,7 +245,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.9.0...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.9.1...HEAD
+[0.9.1]: https://github.com/gitblit/fathom/compare/release-0.9.0...release-0.9.1
 [0.9.0]: https://github.com/gitblit/fathom/compare/release-0.8.4...release-0.9.0
 [0.8.4]: https://github.com/gitblit/fathom/compare/release-0.8.4...release-0.8.4
 [0.8.3]: https://github.com/gitblit/fathom/compare/release-0.8.2...release-0.8.3
