@@ -12,6 +12,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - [fathom-rest-swagger] Update to Swagger Core 1.5.10
 - [fathom-rest-swagger] Update to Swagger UI 2.2.2
 #### Added
+- [fathom-core] Add @RequireSettingValue ot more discretely control class or method registration
+- [fathom-core] Merge setting overrides directly into the Config object rather than maintaining a separate overrides Map
+- [fathom-rest-swagger] Support `swagger.outputSnakeCaseParameters` to control generated parameter names in Swagger spec (i.e. mySampleParameter = my_sample_parameter)
+- [fathom-rest-swagger] Allow primitive types to be declared for request bodies (e.g. document a POST body as a String)
 #### Removed
 
 ### [0.9.0] - 2016-09-04
