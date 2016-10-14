@@ -21,6 +21,8 @@ import fathom.Constants;
 import fathom.conf.Mode;
 import fathom.conf.RequireSetting;
 import fathom.conf.RequireSettings;
+import fathom.conf.RequireSettingValue;
+import fathom.conf.RequireSettingValues;
 import fathom.conf.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,30 +72,60 @@ public class RequireUtil {
      * @return true if the class may be used
      */
     public static boolean allowClass(Settings settings, Class<?> aClass) {
-        // Settings-based method exclusions/inclusions
+        // Settings-based class exclusions/inclusions
         if (aClass.isAnnotationPresent(RequireSettings.class)) {
             // multiple keys required
             RequireSetting[] requireSettings = aClass.getAnnotation(RequireSettings.class).value();
             StringJoiner joiner = new StringJoiner(", ");
             Arrays.asList(requireSettings).forEach((require) -> {
                 if (!settings.hasSetting(require.value())) {
-                    joiner.add("\"" + require.value() + "\"");
+                    joiner.add(require.value());
                 }
             });
             String requiredSettings = joiner.toString();
+            if (!requiredSettings.isEmpty()) {
+                log.warn("skipping {}, it requires the following {} mode settings: {}",
+                        aClass.getName(), settings.getMode(), requiredSettings);
 
-            log.warn("skipping '{}', it requires the following {} mode settings: {}",
-                    aClass.getName(), settings.getMode(), requiredSettings);
-
-            return false;
+                return false;
+            }
 
         } else if (aClass.isAnnotationPresent(RequireSetting.class)) {
             // single key required
             RequireSetting requireSetting = aClass.getAnnotation(RequireSetting.class);
             String requiredKey = requireSetting.value();
             if (!settings.hasSetting(requiredKey)) {
-                log.warn("skipping '{}', it requires the following {} mode setting: \"{}\"",
+                log.warn("skipping {}, it requires the following {} mode setting: {}",
                         aClass.getName(), settings.getMode(), requiredKey);
+
+                return false;
+            }
+        }
+
+        // Value-based class exclusions/inclusions
+        if (aClass.isAnnotationPresent(RequireSettingValues.class)) {
+            // multiple keys required
+            RequireSettingValue[] requireSettingValues = aClass.getAnnotation(RequireSettingValues.class).value();
+            StringJoiner joiner = new StringJoiner(", ");
+            Arrays.asList(requireSettingValues).forEach((require) -> {
+                if (!require.value().equalsIgnoreCase(settings.getString(require.key(), null))) {
+                    joiner.add(require.key() + "=" + require.value());
+                }
+            });
+            String requiredValues = joiner.toString();
+            if (!requiredValues.isEmpty()) {
+                log.warn("skipping {}, it requires the following {} mode settings: {}",
+                        aClass.getName(), settings.getMode(), requiredValues);
+
+                return false;
+            }
+
+        } else if (aClass.isAnnotationPresent(RequireSettingValue.class)) {
+            // single key required
+            RequireSettingValue require = aClass.getAnnotation(RequireSettingValue.class);
+            if (!require.value().equalsIgnoreCase(settings.getString(require.key(), null))) {
+                log.debug("skipping {}, it requires the following {} mode setting: {}={}",
+                        aClass.getName(), settings.getMode(), require.key(), require.value());
 
                 return false;
             }
@@ -115,7 +147,7 @@ public class RequireUtil {
             modes.forEach((mode) -> joiner.add(mode.name()));
             String requiredModes = joiner.toString();
 
-            log.warn("skipping '{}', it may only be used in the following modes: {}",
+            log.warn("skipping {}, it may only be used in the following modes: {}",
                     aClass.getName(), requiredModes);
         }
 
@@ -139,23 +171,54 @@ public class RequireUtil {
             StringJoiner joiner = new StringJoiner(", ");
             Arrays.asList(requireSettings).forEach((require) -> {
                 if (!settings.hasSetting(require.value())) {
-                    joiner.add("\"" + require.value() + "\"");
+                    joiner.add(require.value());
                 }
             });
             String requiredSettings = joiner.toString();
+            if (!requiredSettings.isEmpty()) {
+                log.warn("skipping {}, it requires the following {} mode settings: {}",
+                        Util.toString(method), settings.getMode(), requiredSettings);
 
-            log.warn("skipping '{}', it requires the following {} mode settings: {}",
-                    Util.toString(method), settings.getMode(), requiredSettings);
-
-            return false;
+                return false;
+            }
 
         } else if (method.isAnnotationPresent(RequireSetting.class)) {
             // single key required
             RequireSetting requireSetting = method.getAnnotation(RequireSetting.class);
             String requiredKey = requireSetting.value();
             if (!settings.hasSetting(requiredKey)) {
-                log.debug("skipping '', it requires the following {} mode setting: \"{}\"",
+                log.debug("skipping {}, it requires the following {} mode setting: {}",
                         Util.toString(method), settings.getMode(), requiredKey);
+
+                return false;
+            }
+        }
+
+        // Value-based method exclusions/inclusions
+        if (method.isAnnotationPresent(RequireSettingValues.class)) {
+            // multiple keys required
+            RequireSettingValue[] requireSettingValues = method.getAnnotation(RequireSettingValues.class).value();
+            StringJoiner joiner = new StringJoiner(", ");
+            Arrays.asList(requireSettingValues).forEach((require) -> {
+                if (!require.value().equalsIgnoreCase(settings.getString(require.key(), null))) {
+                    joiner.add(require.key() + "=" + require.value());
+                }
+            });
+            String requiredValues = joiner.toString();
+            if (!requiredValues.isEmpty()) {
+                log.warn("skipping {}, it requires the following {} mode settings: {}",
+                        Util.toString(method), settings.getMode(), requiredValues);
+
+                return false;
+            }
+
+        } else if (method.isAnnotationPresent(RequireSettingValue.class)) {
+            // single key required
+            RequireSettingValue require = method.getAnnotation(RequireSettingValue.class);
+            String requiredKey = require.key();
+            if (!require.value().equalsIgnoreCase(settings.getString(require.key(), null))) {
+                log.debug("skipping {}, it requires the following {} mode setting: {}={}",
+                        Util.toString(method), settings.getMode(), requiredKey, require.value());
 
                 return false;
             }
@@ -176,7 +239,7 @@ public class RequireUtil {
             modes.forEach((mode) -> joiner.add(mode.name()));
             String requiredModes = joiner.toString();
 
-            log.warn("skipping '{}', it may only be used in the following modes: {}",
+            log.warn("skipping {}, it may only be used in the following modes: {}",
                     Util.toString(method), requiredModes);
 
             return false;
