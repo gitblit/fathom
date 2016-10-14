@@ -726,8 +726,15 @@ public class SwaggerBuilder {
                     // OBJECT
                     Property property = getSwaggerProperty(swagger, methodParameter.getType());
                     if (property instanceof RefProperty) {
+                        // Domain Model
                         RefProperty ref = (RefProperty) property;
                         bodyParameter.setSchema(new RefModel(ref.getSimpleRef()));
+                    } else {
+                        // Primitive Type
+                        ModelImpl model = new ModelImpl();
+                        model.setType(property.getType());
+                        model.setFormat(property.getFormat());
+                        bodyParameter.setSchema(model);
                     }
                 }
 
