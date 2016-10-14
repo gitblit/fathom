@@ -2,13 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-
 ### [Unreleased][unreleased]
 #### Fixed
-- [fathom-core] Fixed null pointer exception when applying command-line setting overrides
 #### Changed
 #### Added
 #### Removed
+
+### [0.9.2] 2016-10-14
+#### Fixed
+- [fathom-core] Fixed null pointer exception when applying command-line setting overrides
 
 ### [0.9.1] - 2016-10-14
 #### Changed
@@ -245,7 +247,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.9.1...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-0.9.2...HEAD
+[0.9.2]: https://github.com/gitblit/fathom/compare/release-0.9.1...release-0.9.2
 [0.9.1]: https://github.com/gitblit/fathom/compare/release-0.9.0...release-0.9.1
 [0.9.0]: https://github.com/gitblit/fathom/compare/release-0.8.4...release-0.9.0
 [0.8.4]: https://github.com/gitblit/fathom/compare/release-0.8.4...release-0.8.4
