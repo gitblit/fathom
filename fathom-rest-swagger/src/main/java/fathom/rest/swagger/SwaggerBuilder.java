@@ -838,18 +838,18 @@ public class SwaggerBuilder {
                         AbstractNumericProperty numericProperty = (AbstractNumericProperty) swaggerProperty;
                         if (methodParameter.isAnnotationPresent(Min.class)) {
                             Min min = methodParameter.getAnnotation(Min.class);
-                            numericProperty.setMinimum((double) min.value());
+                            numericProperty.setMinimum(BigDecimal.valueOf(min.value()));
                         }
 
                         if (methodParameter.isAnnotationPresent(Max.class)) {
                             Max max = methodParameter.getAnnotation(Max.class);
-                            numericProperty.setMaximum((double) max.value());
+                            numericProperty.setMaximum(BigDecimal.valueOf(max.value()));
                         }
 
                         if (methodParameter.isAnnotationPresent(Range.class)) {
                             Range range = methodParameter.getAnnotation(Range.class);
-                            numericProperty.setMinimum((double) range.min());
-                            numericProperty.setMaximum((double) range.max());
+                            numericProperty.setMinimum(BigDecimal.valueOf(range.min()));
+                            numericProperty.setMaximum(BigDecimal.valueOf(range.max()));
                         }
                     }
 
@@ -879,8 +879,8 @@ public class SwaggerBuilder {
         } else if (short.class == objectClass || Short.class == objectClass) {
             // SHORT is INTEGER with 16-bit max & min
             IntegerProperty property = new IntegerProperty();
-            property.setMinimum((double) Short.MIN_VALUE);
-            property.setMaximum((double) Short.MAX_VALUE);
+            property.setMinimum(BigDecimal.valueOf(Short.MIN_VALUE));
+            property.setMaximum(BigDecimal.valueOf(Short.MAX_VALUE));
             swaggerProperty = property;
         } else if (int.class == objectClass || Integer.class == objectClass) {
             // INTEGER

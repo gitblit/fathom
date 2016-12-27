@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 #### Changed
 - [fathom-core] Update to Undertow 1.4.8
+- [fathom-rest-swagger] Update to Swagger Core 1.5.12
 #### Added
 #### Removed
 
