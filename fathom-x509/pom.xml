@@ -19,7 +19,7 @@
     <parent>
         <artifactId>fathom-parent</artifactId>
         <groupId>com.gitblit.fathom</groupId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     
