@@ -76,8 +76,15 @@ public class Settings {
 
     public Settings(Constants.Mode mode, String[] args) {
         this.mode = mode;
-        this.config = loadConfig();
 
+        // We apply args twice - which at first seems redundant.
+        // The first pass sets up state fields of Settings (e.g. runtime mode).
+        // The second pass overrides settings in the parsed config of the specified runtime mode.
+        // This is a little wasteful, but it doesn't require adding special parsing conditions.
+        this.config = ConfigFactory.empty();
+        applyArgs(args);
+
+        this.config = loadConfig();
         applyArgs(args);
     }
 

@@ -4,8 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 #### Fixed
+- [fathom-core] Fixed failure to properly configure DEV mode logging
 #### Changed
 - [fathom-core] Update to Undertow 1.4.8
+- [fathom-rest] Update to Pippo 1.0.0
 - [fathom-rest-swagger] Update to Swagger Core 1.5.12
 #### Added
 #### Removed
