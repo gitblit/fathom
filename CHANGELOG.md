@@ -4,13 +4,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### [Unreleased][unreleased]
 #### Fixed
+#### Changed
+#### Added
+#### Removed
+
+### [1.0.1] - 2016-01-27
+
+Upload of 1.0.0 to Sonatype failed due to a broken GPG trust store after switching development workstations.
+
+#### Fixed
 - [fathom-core] Fixed failure to properly configure DEV mode logging
 #### Changed
 - [fathom-core] Update to Undertow 1.4.8
 - [fathom-rest] Update to Pippo 1.0.0
 - [fathom-rest-swagger] Update to Swagger Core 1.5.12
-#### Added
-#### Removed
 
 ### [0.9.2] 2016-10-14
 #### Fixed
@@ -251,7 +258,8 @@ Initial release.
 - Added [fathom-test-tools]
 - Added [fathom-archetype-standard]
 
-[unreleased]: https://github.com/gitblit/fathom/compare/release-0.9.2...HEAD
+[unreleased]: https://github.com/gitblit/fathom/compare/release-1.0.1...HEAD
+[1.0.1]: https://github.com/gitblit/fathom/compare/release-0.9.2...release-1.0.1
 [0.9.2]: https://github.com/gitblit/fathom/compare/release-0.9.1...release-0.9.2
 [0.9.1]: https://github.com/gitblit/fathom/compare/release-0.9.0...release-0.9.1
 [0.9.0]: https://github.com/gitblit/fathom/compare/release-0.8.4...release-0.9.0
