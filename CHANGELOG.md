@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Fixed
 #### Changed
 - [fathom-core] Update to Undertow 1.4.11
+- [fathom-rest] Update to Pippo 1.2.0
 #### Added
 #### Removed
 
