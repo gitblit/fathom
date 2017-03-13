@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Changed
 - [fathom-core] Update to Undertow 1.4.11
 - [fathom-rest] Update to Pippo 1.2.0
+- [fathom-security-jdbc] Update to HikariCP 2.6.1
 #### Added
 #### Removed
 
