@@ -53,7 +53,7 @@
         <pippo.version>1.2.0</pippo.version>
         <h2.version>1.4.186</h2.version>
         <mockito.version>1.9.5</mockito.version>
-        <junit.version>4.10</junit.version>
+        <junit.version>4.13.1</junit.version>
         <slf4j.version>1.7.21</slf4j.version>
     </properties>
 
