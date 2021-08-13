@@ -24,7 +24,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <properties>
-      <bouncycastle.version>1.49</bouncycastle.version>
+      <bouncycastle.version>1.67</bouncycastle.version>
     </properties>
 
     <artifactId>fathom-x509</artifactId>
